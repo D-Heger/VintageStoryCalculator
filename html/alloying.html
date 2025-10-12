@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alloying Calculator - Vintage Story Calculator</title>
+    <link rel="stylesheet" href="../styles/styles.css">
+</head>
+
+<body>
+    <header>
+        <a class="subtle-link" href="../index.html" aria-label="Home">
+            <h1>Vintage Story Calculator</h1>
+            <p>Alloying Calculator</p>
+        </a>
+    </header>
+    
+    <main>
+        <nav aria-label="Main navigation">
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="alloying.html">Alloying Calculator</a></li>
+                <!-- More features will be added here -->
+            </ul>
+        </nav>
+
+        <div class="card">
+            <h2>Alloying Calculator</h2>
+            <p>Calculate the exact amounts of metals needed to create your desired alloy. Adjust the percentages to match the valid recipe ranges, and the calculator will show you how many pieces of each metal to use.</p>
+        </div>
+
+        <div class="controls">
+            <div class="control">
+                <label for="alloySelect">Choose alloy</label>
+                <select id="alloySelect">
+                    <option value="tin_bronze">Tin Bronze</option>
+                    <option value="bismuth_bronze">Bismuth Bronze</option>
+                    <option value="black_bronze">Black Bronze</option>
+                    <option value="lead_solder">Lead Solder</option>
+                    <option value="molybdochalkos">Molybdochalkos</option>
+                    <option value="silver_solder">Silver Solder</option>
+                    <option value="electrum">Electrum</option>
+                    <option value="cupronickel">Cupronickel</option>
+                </select>
+            </div>
+
+            <div class="control">
+                <label for="targetIngots">Target ingots</label>
+                <input id="targetIngots" type="number" value="10" min="0" step="1">
+            </div>
+        </div>
+
+        <div id="calculator">
+            <!-- table and sliders are injected by script -->
+        </div>
+    </main>
+
+    <footer>
+        <p>2025 Vintage Story Calculator</p>
+        <p>&copy; Developed by David Heger | Licensed under MIT</p>
+        <p>Source code available on <a href="https://github.com/D-Heger/VintageStoryCalculator">GitHub</a></p>
+    </footer>
+    
+    <script src="../scripts/alloy_calculator.js"></script>
+</body>
+</html>
