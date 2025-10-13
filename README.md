@@ -71,7 +71,7 @@ See [CHANGELOG.md](CHANGELOG.md) for a detailed list of changes and release hist
 [release-badge]: https://img.shields.io/github/release/D-Heger/VintageStoryCalculator.svg
 [netlify-badge]: https://api.netlify.com/api/v1/badges/3da43ce5-7b01-468a-a86c-4b6f90933b76/deploy-status
 [license-badge]: https://img.shields.io/github/license/D-Heger/VintageStoryCalculator.svg
-[changelog-badge]: https://img.shields.io/github/v/release/D-Heger/VintageStoryCalculator?include_prereleases&sort=semver
+[changelog-badge]: https://img.shields.io/github/v/release/D-Heger/VintageStoryCalculator.svg?label=changelog&include_prereleases&sort=semver
 <!-- Links -->
 [release-link]: https://github.com/D-Heger/VintageStoryCalculator/releases
 [netlify-link]: https://app.netlify.com/sites/kaleidoscopic-kitsune-48847d/deploys?branch=release
