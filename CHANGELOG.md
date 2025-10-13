@@ -7,10 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.1] - 2025-10-13
+
+### Fixed
+
+- Corrected version number in alloying.html
+- Corrected changelog badge
+
 ## [0.1.0] - 2025-10-13
 
 ### Added
 
 - Initial release with Alloying Calculator
 
+[0.1.1]: https://github.com/D-Heger/VintageStoryCalculator/releases/tag/0.1.1
 [0.1.0]: https://github.com/D-Heger/VintageStoryCalculator/releases/tag/0.1.0
