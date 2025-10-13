@@ -1,0 +1,73 @@
+name: General Issue
+description: Report general issues, questions, or discussions this project.
+title: "[GENERAL] "
+labels: ["question", "discussion"]
+assignees: []
+body:
+  - type: textarea
+    attributes:
+      label: Issue Summary
+      description: Provide a brief summary of your issue or question.
+      placeholder: What is this issue about?
+    validations:
+      required: true
+
+  - type: dropdown
+    attributes:
+      label: Issue Type
+      description: What type of issue is this?
+      options:
+        - Question
+        - Discussion
+        - Documentation Issue
+        - Performance Issue
+        - Security Concern
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Details
+      description: Provide detailed information about your issue or question.
+      placeholder: |
+        Please provide as much detail as possible:
+
+        - What are you trying to do?
+        - What did you expect to happen?
+        - What actually happened?
+        - Any error messages or logs?
+        - Steps you've already tried?
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: Browser (if applicable)
+      description: Which browser are you using?
+      placeholder: e.g., Chrome 120, Firefox 119, Safari 17
+
+  - type: input
+    attributes:
+      label: Operating System (if applicable)
+      description: Which operating system are you using?
+      placeholder: e.g., Windows 11, macOS 14, Ubuntu 22.04
+
+  - type: textarea
+    attributes:
+      label: Additional Context
+      description: Add any other context, screenshots, or related information.
+      placeholder: |
+        - Screenshots: [Attach or link to screenshots]
+        - Links: [Related links or documentation]
+        - Related issues: [Link to related issues if any]
+
+  - type: checkboxes
+    attributes:
+      label: Checklist
+      description: Please check all that apply.
+      options:
+        - label: I have searched for existing issues to avoid duplicates
+          required: true
+        - label: I have included all relevant information
+          required: true

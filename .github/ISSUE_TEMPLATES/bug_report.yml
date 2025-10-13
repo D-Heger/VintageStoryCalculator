@@ -1,0 +1,88 @@
+name: Bug Report
+description: Report a bug or issue with this project.
+title: "[BUG] "
+labels: ["bug", "triage"]
+assignees: []
+body:
+  - type: textarea
+    attributes:
+      label: Description
+      description: A clear and concise description of the bug.
+      placeholder: Describe what the bug is and what you expected to happen.
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Steps to Reproduce
+      description: Provide step-by-step instructions to reproduce the issue.
+      placeholder: |
+        1. Go to '...'
+        2. Click on '....'
+        3. Scroll down to '....'
+        4. See error
+      value: |
+        1.
+        2.
+        3.
+        4.
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Expected Behavior
+      description: What should happen when following the steps above?
+      placeholder: The calculator should display correct alloy ratios...
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Actual Behavior
+      description: What actually happens when following the steps above?
+      placeholder: The calculator shows incorrect values...
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: Browser
+      description: Which browser are you using?
+      placeholder: e.g., Chrome 120, Firefox 119, Safari 17
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: Operating System
+      description: Which operating system are you using?
+      placeholder: e.g., Windows 11, macOS 14, Ubuntu 22.04
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: Calculator Version/Commit
+      description: If applicable, which version or commit are you using?
+      placeholder: e.g., v1.0.0, commit hash, or "latest from main branch"
+
+  - type: textarea
+    attributes:
+      label: Additional Context
+      description: Add any other context about the problem here, such as screenshots, error messages, or related issues.
+      placeholder: |
+        - Screenshot: [Attach or link to screenshot]
+        - Error message: [Paste any error messages]
+        - Related issues: [Link to related issues if any]
+
+  - type: checkboxes
+    attributes:
+      label: Checklist
+      description: Please check all that apply.
+      options:
+        - label: I have searched for existing issues to avoid duplicates
+          required: true
+        - label: I have tested this on multiple browsers (if applicable)
+        - label: I have included all relevant information
+          required: true
