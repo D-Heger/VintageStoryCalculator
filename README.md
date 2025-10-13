@@ -25,11 +25,18 @@ Calculate the exact amounts of metals needed to create your desired alloy. Suppo
 
 ```shell
 VintageStoryCalculator/         # Root directory
+├── .github/                    # GitHub configuration files
+│   └── ISSUE_TEMPLATE/         # Issue templates
+│       ├── config.yml          # Issue template configuration
+│       └── bug_report.yml      # Bug report template
+│       └── feature_request.yml # Feature request template
+│       └── general_issue.yml   # General issue template
 ├── index.html                  # Main homepage
 ├── html/                       # Pages directory
 │   └── alloying.html           # Alloying calculator page
 ├── scripts/                    # JavaScript files
-│   └── alloy_calculator.js     # Calculator logic
+│   ├── alloy_calculator.js     # Calculator logic
+│   └── version_setter.js       # Version management
 ├── styles/                     # CSS styles
 │   └── styles.css              # Application styling
 └── LICENSE                     # MIT License
