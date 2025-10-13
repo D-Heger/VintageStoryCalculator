@@ -1,0 +1,91 @@
+name: Feature Request
+description: Suggest a new feature or enhancement for this project.
+title: "[FEATURE] "
+labels: ["enhancement", "feature-request"]
+assignees: []
+body:
+  - type: textarea
+    attributes:
+      label: Feature Description
+      description: A clear and concise description of the feature you'd like to see.
+      placeholder: Describe the feature and what it should do.
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Use Case
+      description: Describe the use case or problem this feature would solve.
+      placeholder: |
+        As a [user type], I want [goal] so that [benefit].
+
+        Example: As a Vintage Story player, I want to calculate how many pieces of different metals I need for creating an alloy to plan my smelting operations.
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Proposed Solution
+      description: Describe how you think this feature should work.
+      placeholder: |
+        - Step 1: [Describe what happens]
+        - Step 2: [Describe what happens]
+        - UI mockup: [If applicable, describe or link to UI mockup]
+        - API changes: [If applicable, describe API changes]
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Alternatives Considered
+      description: Describe any alternative solutions or features you've considered.
+      placeholder: |
+        - Alternative 1: [Description and why it wasn't chosen]
+        - Alternative 2: [Description and why it wasn't chosen]
+
+  - type: dropdown
+    attributes:
+      label: Priority
+      description: How important is this feature to you?
+      options:
+        - Low
+        - Medium
+        - High
+        - Critical
+    validations:
+      required: true
+
+  - type: dropdown
+    attributes:
+      label: Calculator Area
+      description: Which part of the calculator would this feature affect?
+      multiple: true
+      options:
+        - Alloying Calculator
+        - General UI/UX
+        - New Calculator Type
+        - Data/Recipes
+        - Performance
+        - Mobile Experience
+        - Other
+
+  - type: textarea
+    attributes:
+      label: Additional Context
+      description: Add any other context, screenshots, or examples about the feature request.
+      placeholder: |
+        - Screenshots: [Attach or link to screenshots]
+        - Examples: [Link to similar features in other tools]
+        - Research: [Any research or data supporting this request]
+
+  - type: checkboxes
+    attributes:
+      label: Checklist
+      description: Please check all that apply.
+      options:
+        - label: I have searched for existing feature requests to avoid duplicates
+          required: true
+        - label: This feature would benefit other users
+        - label: I am willing to help implement this feature (code, testing, etc.)
+        - label: I have included all relevant information
+          required: true
