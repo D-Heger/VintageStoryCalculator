@@ -1,0 +1,124 @@
+/* Layout - Header, Navigation, Main, Footer */
+
+/* Header */
+header {
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+  color: #fff;
+  padding: var(--spacing-md) var(--spacing-lg);
+  box-shadow: 0 2px 8px var(--shadow);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+header p {
+  margin: var(--spacing-xs) 0 0 0;
+  opacity: 0.9;
+  font-size: 0.95rem;
+}
+
+.subtle-link {
+  display: block;
+}
+
+.subtle-link:focus {
+  outline: 2px dashed rgba(255, 255, 255, 0.8);
+  outline-offset: 4px;
+}
+
+/* Main Content */
+main {
+  flex: 1;
+  padding: var(--spacing-lg);
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Navigation */
+nav {
+  background: var(--surface);
+  border-radius: var(--border-radius);
+  box-shadow: 0 2px 4px var(--shadow);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+nav ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+}
+
+nav a {
+  display: inline-block;
+  padding: var(--spacing-xs) var(--spacing-md);
+  background: var(--primary-light);
+  color: var(--primary-dark);
+  border-radius: calc(var(--border-radius) / 2);
+  transition: all var(--transition);
+  font-weight: 500;
+}
+
+nav a:hover {
+  background: var(--primary-color);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px var(--shadow-hover);
+}
+
+nav a:active {
+  transform: translateY(0);
+}
+
+nav a.active,
+nav a[aria-current="page"] {
+  background: var(--primary-color);
+  color: white;
+  cursor: default;
+}
+
+/* Footer */
+footer {
+  background: var(--primary-dark);
+  color: rgba(255, 255, 255, 0.9);
+  text-align: center;
+  padding: var(--spacing-lg) var(--spacing-md);
+  margin-top: auto;
+}
+
+footer p {
+  margin: var(--spacing-xs) 0;
+  font-size: 0.9rem;
+}
+
+footer a {
+  color: var(--primary-light);
+  transition: color var(--transition);
+}
+
+footer a:hover {
+  color: white;
+  text-decoration: underline;
+}
+
+/* Responsive Layout */
+@media (max-width: 768px) {
+  :root {
+    --spacing-lg: 1rem;
+    --spacing-xl: 1.5rem;
+  }
+  
+  header h1 {
+    font-size: 1.4rem;
+  }
+  
+  nav ul {
+    flex-direction: column;
+  }
+  
+  nav a {
+    display: block;
+    text-align: center;
+  }
+}

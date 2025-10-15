@@ -5,7 +5,7 @@
 [![Changelog][changelog-badge]][changelog]
 [![Netlify Status][netlify-badge]][netlify-link]
 
-A web-based (currently just) calculator application designed to assist players of Vintage Story with various game calculations, including alloy recipes and resource management.
+A modern, Svelte-powered calculator application designed to assist players of Vintage Story with various game calculations, including alloy recipes and resource management.
 
 ## Available Tools
 
@@ -15,31 +15,40 @@ Calculate the exact amounts of metals needed to create your desired alloy. Suppo
 
 ## How to Use
 
-1. Open [index.html][index] in your web browser
-2. Navigate to the desired calculator from the home page
-3. Select your alloy type and target number of ingots
-4. Adjust the metal percentages using the sliders or input fields
-5. View the calculated amounts of each metal needed
+1. Run `npm install` to install dependencies
+2. Start the development server with `npm run dev`
+3. Open the provided local URL in your browser
+4. Navigate to the desired calculator using the in-app navigation
+5. Select your alloy type and target number of ingots to view the calculated amounts needed
+
+## Development
+
+- `npm run dev`: start a hot-reloading development server (default port 5173)
+- `npm run build`: generate an optimized production build
+- `npm run preview`: serve the production build locally for verification
 
 ## Project Structure
 
 ```shell
 VintageStoryCalculator/         # Root directory
-├── .github/                    # GitHub configuration files
-│   └── ISSUE_TEMPLATE/         # Issue templates
-│       ├── config.yml          # Issue template configuration
-│       └── bug_report.yml      # Bug report template
-│       └── feature_request.yml # Feature request template
-│       └── general_issue.yml   # General issue template
-├── index.html                  # Main homepage
-├── html/                       # Pages directory
-│   └── alloying.html           # Alloying calculator page
-├── scripts/                    # JavaScript files
-│   ├── alloy_calculator.js     # Calculator logic
-│   └── version_setter.js       # Version management
-├── styles/                     # CSS styles
-│   └── styles.css              # Application styling
-└── LICENSE                     # MIT License
+├── .github/                    # Issue templates and repo automation
+├── index.html                  # Vite entry point
+├── package.json                # Project configuration and scripts
+├── scripts/                    # Framework-agnostic logic
+│   └── alloy_calculator.js     # Calculator engine shared with the UI
+├── src/                        # Svelte application source
+│   ├── App.svelte              # Root layout and navigation
+│   ├── lib/                    # Shared utilities
+│   │   └── version.js          # Changelog parser
+│   ├── main.js                 # Application bootstrap
+│   └── routes/                 # Route-aligned components
+│       ├── AlloyingCalculator.svelte
+│       └── Home.svelte
+├── styles/                     # Shared styling
+│   └── styles.css
+├── CHANGELOG.md                # Release notes
+├── LICENSE                     # MIT License
+└── README.md                   # Project overview
 ```
 
 ## Browser Support
@@ -63,7 +72,6 @@ See [CHANGELOG.md](CHANGELOG.md) for a detailed list of changes and release hist
 - [Vintage Story Official Website](https://www.vintagestory.at/)
 
 <!-- Files -->
-[index]: ./index.html
 [contributing]: ./CONTRIBUTING.md
 [license]: ./LICENSE
 [changelog]: ./CHANGELOG.md

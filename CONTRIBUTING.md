@@ -35,21 +35,28 @@ Thank you for your interest in contributing to this project! This document provi
    git checkout -b feature/your-feature-name
    ```
 
-4. **Make your changes** and test them
+4. **Install dependencies and start the dev server**:
 
-5. **Commit your changes**:
+   ```bash
+   npm install
+   npm run dev
+   ```
+
+5. **Make your changes** and test them
+
+6. **Commit your changes**:
 
    ```bash
    git commit -m "feat(/refactor/etc.): brief description of your changes"
    ```
 
-6. **Push to your fork**:
+7. **Push to your fork**:
 
    ```bash
    git push origin feature/your-feature-name
    ```
 
-7. **Create a Pull Request** on GitHub
+8. **Create a Pull Request** on GitHub
 
 ## Code Guidelines
 
