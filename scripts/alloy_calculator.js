@@ -1,6 +1,18 @@
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 
-const ALLOY_DEFINITIONS = {
+const resolveDocument = (...nodes) => {
+  for (const node of nodes) {
+    if (node && node.ownerDocument) {
+      return node.ownerDocument;
+    }
+  }
+  if (typeof document !== "undefined") {
+    return document;
+  }
+  return null;
+};
+
+export const ALLOY_DEFINITIONS = {
   tin_bronze: {
     name: "Tin Bronze",
     parts: [
@@ -19,9 +31,9 @@ const ALLOY_DEFINITIONS = {
   black_bronze: {
     name: "Black Bronze",
     parts: [
-      { metal: "Copper", min: 68, max: 84, color: "#b87333" },
-      { metal: "Gold", min: 8, max: 12, color: "#ffd700" },
-      { metal: "Silver", min: 8, max: 12, color: "#c0c0ff" },
+      { metal: "Copper", min: 68, max: 84, default: 80, color: "#b87333" },
+      { metal: "Gold", min: 8, max: 12, default: 10, color: "#ffd700" },
+      { metal: "Silver", min: 8, max: 12, default: 10, color: "#c0c0ff" },
     ],
   },
   lead_solder: {
@@ -61,17 +73,44 @@ const ALLOY_DEFINITIONS = {
   },
 };
 
-class AlloyCalculator {
-  constructor(root = document, { alloys = ALLOY_DEFINITIONS } = {}) {
+export default class AlloyCalculator {
+  constructor(
+    {
+      root = typeof document !== "undefined" ? document : null,
+      container,
+      alloySelect,
+      ingotsInput,
+      alloys = ALLOY_DEFINITIONS,
+    } = {}
+  ) {
     this.root = root;
     this.alloys = alloys;
 
     this.UNITS_PER_INGOT = 100;
     this.UNITS_PER_PIECE = 5;
 
-    this.container = this.root.querySelector("#calculator");
-    this.alloySelect = this.root.querySelector("#alloySelect");
-    this.ingotsInput = this.root.querySelector("#targetIngots");
+    this.container =
+      container ||
+      (this.root && typeof this.root.querySelector === "function"
+        ? this.root.querySelector("#calculator")
+        : null);
+    this.alloySelect =
+      alloySelect ||
+      (this.root && typeof this.root.querySelector === "function"
+        ? this.root.querySelector("#alloySelect")
+        : null);
+    this.ingotsInput =
+      ingotsInput ||
+      (this.root && typeof this.root.querySelector === "function"
+        ? this.root.querySelector("#targetIngots")
+        : null);
+
+    this.document = resolveDocument(
+      this.container,
+      this.alloySelect,
+      this.ingotsInput,
+      this.root
+    );
 
     this.state = { parts: [] };
 
@@ -83,7 +122,7 @@ class AlloyCalculator {
     });
 
     this.isReady = Boolean(
-      this.container && this.alloySelect && this.ingotsInput
+      this.container && this.alloySelect && this.ingotsInput && this.document
     );
     if (!this.isReady) {
       console.warn("AlloyCalculator: required DOM nodes not found.");
@@ -172,12 +211,13 @@ class AlloyCalculator {
           ? part.max
           : Math.max(min, 100);
       const midpoint = (min + max) / 2;
+      const base = Number.isFinite(part.default) ? part.default : midpoint;
       return {
         metal: part.metal,
         color: part.color,
         min,
         max,
-        pct: clamp(midpoint, min, max),
+        pct: clamp(base, min, max),
       };
     });
 
@@ -216,16 +256,17 @@ class AlloyCalculator {
 
   syncInputs() {
     const rows = Array.from(this.rowsEl.children);
+    const activeElement = this.getActiveElement();
     rows.forEach((tr, idx) => {
       const part = this.state.parts[idx];
       if (!part) return;
       const pct = part.pct;
       const numberInput = tr.querySelector(".percent");
       const sliderInput = tr.querySelector(".slider");
-      if (numberInput && document.activeElement !== numberInput) {
+      if (numberInput && activeElement !== numberInput) {
         numberInput.value = pct.toFixed(this.percentPrecision);
       }
-      if (sliderInput && document.activeElement !== sliderInput) {
+      if (sliderInput && activeElement !== sliderInput) {
         sliderInput.value = pct.toFixed(this.percentPrecision);
       }
     });
@@ -250,6 +291,7 @@ class AlloyCalculator {
     let percentTotal = 0;
 
     const pieceAllocations = this.calculatePieceAllocations(totalUnits);
+    const activeElement = this.getActiveElement();
 
     this.state.parts.forEach((part, index) => {
       percentTotal += part.pct;
@@ -266,10 +308,10 @@ class AlloyCalculator {
 
       const numberInput = row.querySelector(".percent");
       const sliderInput = row.querySelector(".slider");
-      if (numberInput && document.activeElement !== numberInput) {
+      if (numberInput && activeElement !== numberInput) {
         numberInput.value = part.pct.toFixed(this.percentPrecision);
       }
-      if (sliderInput && document.activeElement !== sliderInput) {
+      if (sliderInput && activeElement !== sliderInput) {
         sliderInput.value = part.pct.toFixed(this.percentPrecision);
       }
     });
@@ -573,7 +615,11 @@ class AlloyCalculator {
   }
 
   createRow(part, index) {
-    const row = document.createElement("tr");
+    const doc = this.document || (typeof document !== "undefined" ? document : null);
+    if (!doc) {
+      throw new Error("AlloyCalculator: cannot create table row without document context.");
+    }
+    const row = doc.createElement("tr");
     row.dataset.index = String(index);
 
     const min = Number.isFinite(part.min) ? part.min : 0;
@@ -635,16 +681,27 @@ class AlloyCalculator {
   formatQuantity(value) {
     return this.integerFormatter.format(Number.isFinite(value) ? value : 0);
   }
-}
 
-// instantiate when script loaded
-if (typeof document !== "undefined") {
-  if (document.readyState === "loading") {
-    document.addEventListener(
-      "DOMContentLoaded",
-      () => new AlloyCalculator(document)
-    );
-  } else {
-    new AlloyCalculator(document);
+  getActiveElement() {
+    const doc = this.document || (typeof document !== "undefined" ? document : null);
+    return doc ? doc.activeElement : null;
+  }
+
+  destroy() {
+    if (!this.isReady) return;
+    this.alloySelect.removeEventListener("change", this.handleSelectChange);
+    this.ingotsInput.removeEventListener("input", this.handleIngotsInput);
+    if (this.rowsEl) {
+      const percentInputs = this.rowsEl.querySelectorAll(".percent");
+      percentInputs.forEach((input) => {
+        input.removeEventListener("input", this.handlePercentInput);
+        input.removeEventListener("change", this.handlePercentBlur);
+      });
+      const sliderInputs = this.rowsEl.querySelectorAll(".slider");
+      sliderInputs.forEach((input) => {
+        input.removeEventListener("input", this.handleSliderInput);
+      });
+    }
+    this.isReady = false;
   }
 }
