@@ -14,8 +14,29 @@
     { id: "alloying", label: "Alloying Calculator", hash: "#alloying" }
   ];
 
+  const THEMES = {
+    LIGHT: "light",
+    DARK: "dark"
+  };
+
+  const THEME_STORAGE_KEY = "vsc-theme";
+
   let currentRoute = "home";
+  let theme = THEMES.LIGHT;
   let version = "Loading...";
+
+  const applyTheme = (value) => {
+    if (typeof document === "undefined") return;
+    document.documentElement.dataset.theme = value;
+  };
+
+  const setTheme = (value, persist = false) => {
+    theme = value;
+    applyTheme(value);
+    if (persist && typeof window !== "undefined") {
+      window.localStorage.setItem(THEME_STORAGE_KEY, value);
+    }
+  };
 
   const getRouteFromHash = (hash) => {
     if (hash === "#alloying") return "alloying";
@@ -36,6 +57,11 @@
     }
   };
 
+  const toggleTheme = () => {
+    const nextTheme = theme === THEMES.DARK ? THEMES.LIGHT : THEMES.DARK;
+    setTheme(nextTheme, true);
+  };
+
   onMount(() => {
     let isActive = true;
 
@@ -44,6 +70,25 @@
     });
 
     if (typeof window !== "undefined") {
+      const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+      const storedTheme = window.localStorage.getItem(THEME_STORAGE_KEY);
+      const hasStoredTheme = storedTheme === THEMES.LIGHT || storedTheme === THEMES.DARK;
+
+      const resolvedTheme = hasStoredTheme
+        ? storedTheme
+        : mediaQuery.matches
+          ? THEMES.DARK
+          : THEMES.LIGHT;
+
+      setTheme(resolvedTheme);
+
+      const handleMediaPreference = (event) => {
+        if (window.localStorage.getItem(THEME_STORAGE_KEY)) return;
+        setTheme(event.matches ? THEMES.DARK : THEMES.LIGHT);
+      };
+
+      mediaQuery.addEventListener("change", handleMediaPreference);
+
       const applyHashRoute = () => {
         currentRoute = getRouteFromHash(window.location.hash || "#home");
       };
@@ -63,6 +108,7 @@
       return () => {
         isActive = false;
         window.removeEventListener("hashchange", handleHashChange);
+        mediaQuery.removeEventListener("change", handleMediaPreference);
       };
     }
 
@@ -79,6 +125,16 @@
     <h1>Vintage Story Calculator</h1>
     <p>Your companion for game calculations</p>
   </a>
+  <button
+    class="theme-toggle"
+    type="button"
+    on:click={toggleTheme}
+    aria-pressed={theme === THEMES.DARK}
+    aria-label={`Switch to ${theme === THEMES.DARK ? "light" : "dark"} mode`}
+  >
+    <span class="theme-toggle__icon" aria-hidden="true">{theme === THEMES.DARK ? "🌙" : "☀️"}</span>
+    <span class="theme-toggle__label">{theme === THEMES.DARK ? "Dark" : "Light"} mode</span>
+  </button>
 </header>
 
 <main>
