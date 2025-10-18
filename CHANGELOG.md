@@ -11,7 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Support for theming via CSS variables
-- Introduced dark mode theme and toggle button
+- Added multiple named themes and theme palettes (Nature, Ocean, Bauxite, Lavender — light/dark variants)
+- Added a theme selector UI including preview swatches and responsive dropdown
+- Persist theme selection to localStorage and respect system color-scheme preference
 
 ## [0.2.0] - 2025-10-15
 
