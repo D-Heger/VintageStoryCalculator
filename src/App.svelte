@@ -15,15 +15,22 @@
   ];
 
   const THEMES = {
-    LIGHT: "light",
-    DARK: "dark"
+    "nature-light": "Nature Light",
+    "nature-dark": "Nature Dark",
+    "ocean-light": "Ocean Light",
+    "ocean-dark": "Ocean Dark",
+    "bauxite-light": "Bauxite Light",
+    "bauxite-dark": "Bauxite Dark",
+    "lavender-light": "Lavender Light",
+    "lavender-dark": "Lavender Dark"
   };
 
   const THEME_STORAGE_KEY = "vsc-theme";
 
   let currentRoute = "home";
-  let theme = THEMES.LIGHT;
+  let theme = "nature-light";
   let version = "Loading...";
+  let showThemeSelector = false;
 
   const applyTheme = (value) => {
     if (typeof document === "undefined") return;
@@ -36,6 +43,7 @@
     if (persist && typeof window !== "undefined") {
       window.localStorage.setItem(THEME_STORAGE_KEY, value);
     }
+    showThemeSelector = false;
   };
 
   const getRouteFromHash = (hash) => {
@@ -57,10 +65,11 @@
     }
   };
 
-  const toggleTheme = () => {
-    const nextTheme = theme === THEMES.DARK ? THEMES.LIGHT : THEMES.DARK;
-    setTheme(nextTheme, true);
+  const toggleThemeSelector = () => {
+    showThemeSelector = !showThemeSelector;
   };
+
+  $: currentThemeName = THEMES[theme] || "Nature Light";
 
   onMount(() => {
     let isActive = true;
@@ -72,19 +81,19 @@
     if (typeof window !== "undefined") {
       const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
       const storedTheme = window.localStorage.getItem(THEME_STORAGE_KEY);
-      const hasStoredTheme = storedTheme === THEMES.LIGHT || storedTheme === THEMES.DARK;
+      const hasStoredTheme = Object.keys(THEMES).includes(storedTheme);
 
       const resolvedTheme = hasStoredTheme
         ? storedTheme
         : mediaQuery.matches
-          ? THEMES.DARK
-          : THEMES.LIGHT;
+          ? "nature-dark"
+          : "nature-light";
 
       setTheme(resolvedTheme);
 
       const handleMediaPreference = (event) => {
         if (window.localStorage.getItem(THEME_STORAGE_KEY)) return;
-        setTheme(event.matches ? THEMES.DARK : THEMES.LIGHT);
+        setTheme(event.matches ? "nature-dark" : "nature-light");
       };
 
       mediaQuery.addEventListener("change", handleMediaPreference);
@@ -125,16 +134,34 @@
     <h1>Vintage Story Calculator</h1>
     <p>Your companion for game calculations</p>
   </a>
-  <button
-    class="theme-toggle"
-    type="button"
-    on:click={toggleTheme}
-    aria-pressed={theme === THEMES.DARK}
-    aria-label={`Switch to ${theme === THEMES.DARK ? "light" : "dark"} mode`}
-  >
-    <span class="theme-toggle__icon" aria-hidden="true">{theme === THEMES.DARK ? "🌙" : "☀️"}</span>
-    <span class="theme-toggle__label">{theme === THEMES.DARK ? "Dark" : "Light"} mode</span>
-  </button>
+  <div class="theme-selector">
+    <button
+      class="theme-toggle"
+      type="button"
+      on:click={toggleThemeSelector}
+      aria-expanded={showThemeSelector}
+      aria-label="Theme selector"
+    >
+      <span class="theme-toggle__icon" aria-hidden="true">🎨</span>
+      <span class="theme-toggle__label">{currentThemeName}</span>
+    </button>
+    {#if showThemeSelector}
+      <div class="theme-dropdown" role="menu">
+        {#each Object.entries(THEMES) as [themeKey, themeName]}
+          <button
+            class="theme-option {theme === themeKey ? 'active' : ''}"
+            type="button"
+            role="menuitem"
+            on:click={() => setTheme(themeKey, true)}
+            data-theme={themeKey}
+          >
+            <span class="theme-preview"></span>
+            {themeName}
+          </button>
+        {/each}
+      </div>
+    {/if}
+  </div>
 </header>
 
 <main>
