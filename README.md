@@ -7,6 +7,18 @@
 
 A modern, Svelte-powered calculator application designed to assist players of Vintage Story with various game calculations, including alloy recipes and resource management.
 
+## Roadmap
+
+Planned features and improvements include (but are not limited to):
+
+- Claywork calculator: compute clay needed for bricks, vessels, pots, and molds by target count
+- Brick blocks calculator: Calculate resource requirements for the amount of brick blocks desired
+- Glass calculator: calculate ingredients and fuel for the desired amount of glass
+- Smelting planner: total input (ore and fuel) for ingots, including iron and steel blooms
+- Bloomery estimator: number of bloomeries required for a target output and the bricks needed to build them
+- XSkills compatibility: adjust calculations based on relevant skill perks
+- Mobile UX: fix responsive CSS and improve small‑screen layout
+
 ## Available Tools
 
 ### Alloying Calculator

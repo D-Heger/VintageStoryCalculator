@@ -1,6 +1,6 @@
 import changelogRaw from "../../CHANGELOG.md?raw";
 
-const VERSION_PATTERN = /^## \[(\d+\.\d+\.\d+)\]/m;
+const VERSION_PATTERN = /^## \[(\d+\.\d+\.\d+(?:-[a-zA-Z0-9.]+)?)\]/m;
 
 export function extractLatestVersion(text) {
   if (typeof text !== "string") return undefined;
