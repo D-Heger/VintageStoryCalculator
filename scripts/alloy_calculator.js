@@ -627,8 +627,8 @@ export default class AlloyCalculator {
     const pctValue = part.pct.toFixed(this.percentPrecision);
 
     row.innerHTML = `
-            <td>${part.metal}</td>
-            <td>
+        <td data-label="Metal">${part.metal}</td>
+        <td data-label="Recipe %">
                 <input
                     class="percent"
                     type="number"
@@ -640,9 +640,9 @@ export default class AlloyCalculator {
                     step="${this.percentStep}"
                 >
             </td>
-            <td class="units">${this.formatQuantity(0)}</td>
-            <td class="pieces">${this.formatQuantity(0)}</td>
-            <td class="sliders">
+        <td class="units" data-label="Units needed">${this.formatQuantity(0)}</td>
+        <td class="pieces" data-label="Pieces">${this.formatQuantity(0)}</td>
+        <td class="sliders" data-label="Adjust">
                 <input
                     class="slider"
                     type="range"
