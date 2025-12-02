@@ -63,6 +63,8 @@
   border: 1px solid var(--border-soft);
   animation: slideInUp 0.5s ease-out;
   --calc-grid: minmax(160px, 1.35fr) minmax(140px, 1fr) minmax(120px, 0.95fr) minmax(120px, 0.95fr) minmax(220px, 1.5fr);
+  /* Allow safe horizontal scroll if content overflows */
+  overflow-x: hidden;
 }
 
 @keyframes slideInUp {
@@ -379,6 +381,8 @@
   
   #calculator {
     padding: var(--spacing-md);
+    /* Slightly tighter grid for tablets/large phones */
+    --calc-grid: minmax(130px, 1.2fr) minmax(120px, 1fr) minmax(110px, 0.95fr) minmax(110px, 0.95fr) minmax(190px, 1.3fr);
   }
   
   #calculator table {
@@ -398,4 +402,68 @@
     font-size: 0.75rem;
     padding: 0 4px;
   }
+}
+
+/* Extra-tight layout for small phones */
+@media (max-width: 480px) {
+  #calculator {
+    padding: var(--spacing-sm);
+    /* Narrower grid while keeping readability; horizontal scroll remains available */
+    --calc-grid: minmax(115px, 1fr) minmax(100px, 0.9fr) minmax(95px, 0.85fr) minmax(95px, 0.85fr) minmax(170px, 1.2fr);
+  }
+  #calculator table { font-size: 0.85rem; }
+}
+
+/* Mobile stacked layout for table rows */
+@media (max-width: 640px) {
+  #calculator { overflow-x: visible; }
+  #calculator thead { display: none; }
+  #calculator table { box-shadow: none; border: none; }
+  #calculator tbody { display: grid; gap: var(--spacing-xs); }
+  #calculator tbody tr {
+    display: block;
+    background: var(--surface-raised);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-sm);
+    box-shadow: 0 2px 8px var(--shadow);
+  }
+  /* Cells behave like labeled rows */
+  #calculator td { 
+    display: flex; 
+    align-items: center; 
+    gap: var(--spacing-sm);
+    border: none; 
+    padding: 8px 0; 
+  }
+  #calculator td + td { 
+    border-top: 1px solid var(--border-soft);
+    padding-top: 10px;
+  }
+  /* Labels (column names) */
+  #calculator td::before { 
+    content: attr(data-label); 
+    flex: 0 0 7.5rem;
+    color: var(--text-secondary); 
+    text-transform: uppercase; 
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    font-size: 0.8rem; 
+  }
+  /* Card header mimics table header */
+  #calculator td:first-child { 
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    color: #fff;
+    border-radius: calc(var(--border-radius) - 2px);
+    padding: 10px 12px;
+    margin: calc(var(--spacing-sm) * -1) calc(var(--spacing-sm) * -1) var(--spacing-sm);
+    font-size: 1rem; 
+    font-weight: 700; 
+  }
+  #calculator td:first-child::before { content: none; }
+  /* Numbers align right like table */
+  #calculator td.units,
+  #calculator td.pieces { justify-content: space-between; }
+  .sliders { width: 100%; justify-content: stretch; }
+  .sliders input[type=range] { width: 100%; max-width: none; }
 }
