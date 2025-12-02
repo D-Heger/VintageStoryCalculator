@@ -9,12 +9,21 @@ header {
   position: sticky;
   top: 0;
   z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
 }
 
 header p {
   margin: var(--spacing-xs) 0 0 0;
   opacity: 0.9;
   font-size: 0.95rem;
+}
+
+header .subtle-link {
+  flex: 1;
+  min-width: 0;
 }
 
 .subtle-link {

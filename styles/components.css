@@ -2,22 +2,26 @@
 
 /* Cards */
 .card {
-  background: var(--surface);
+  background: linear-gradient(135deg, var(--surface) 0%, var(--surface-gradient-end) 100%);
   border-radius: var(--border-radius);
   padding: var(--spacing-lg);
   margin-bottom: var(--spacing-md);
-  box-shadow: 0 2px 4px var(--shadow);
-  transition: box-shadow var(--transition);
+  box-shadow: 0 2px 6px var(--shadow);
+  border: 1px solid var(--border-soft);
+  transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
 }
 
 .card:hover {
-  box-shadow: 0 4px 12px var(--shadow-hover);
+  box-shadow: 0 6px 18px var(--shadow-hover);
+  transform: translateY(-3px);
+  border-color: var(--border-strong);
 }
 
 .card h2 {
   margin-top: 0;
-  border-bottom: 2px solid var(--primary-light);
+  border-bottom: 2px solid var(--border-strong);
   padding-bottom: var(--spacing-xs);
+  color: var(--text-primary);
 }
 
 .card h3 {
@@ -33,23 +37,24 @@
 }
 
 .feature-card {
-  background: var(--surface);
+  background: linear-gradient(135deg, var(--surface) 0%, var(--surface-gradient-end) 100%);
   border-radius: var(--border-radius);
   padding: var(--spacing-md);
-  border: 2px solid var(--border-color);
-  transition: all var(--transition);
+  border: 1px solid var(--border-soft);
+  transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
   display: block;
+  box-shadow: 0 2px 8px var(--shadow);
 }
 
 .feature-card:hover {
-  border-color: var(--primary-color);
+  border-color: var(--border-strong);
   transform: translateY(-4px);
-  box-shadow: 0 6px 16px var(--shadow-hover);
+  box-shadow: 0 8px 20px var(--shadow-hover);
 }
 
 .feature-card h3 {
   margin: 0 0 var(--spacing-xs) 0;
-  color: var(--primary-color);
+  color: var(--text-primary);
 }
 
 .feature-card p {
@@ -58,8 +63,123 @@
   font-size: 0.9rem;
 }
 
+/* Theme Selector */
+.theme-selector {
+  position: relative;
+}
+
+.theme-toggle {
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all var(--transition);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: 0.9rem;
+}
+
+.theme-toggle:hover {
+  background: var(--surface-hover);
+  border-color: var(--border-strong);
+  box-shadow: 0 2px 8px var(--shadow);
+}
+
+.theme-toggle__icon {
+  font-size: 1.1rem;
+}
+
+.theme-toggle__label {
+  font-weight: 500;
+}
+
+.theme-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: var(--spacing-xs);
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--border-radius);
+  box-shadow: 0 4px 16px var(--shadow);
+  z-index: 1000;
+  min-width: 180px;
+  padding: var(--spacing-xs);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.theme-option {
+  background: transparent;
+  border: none;
+  border-radius: calc(var(--border-radius) - 2px);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all var(--transition);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: 0.9rem;
+  text-align: left;
+}
+
+.theme-option:hover {
+  background: var(--surface-hover);
+}
+
+.theme-option.active {
+  background: var(--surface-muted);
+  color: var(--primary-color);
+  font-weight: 500;
+}
+
+.theme-preview {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+
+/* Theme-specific preview colors */
+.theme-option[data-theme="nature-light"] .theme-preview {
+  background: #2c5f2d;
+}
+.theme-option[data-theme="nature-dark"] .theme-preview {
+  background: #335f3b;
+}
+.theme-option[data-theme="ocean-light"] .theme-preview {
+  background: #1e6f9c;
+}
+.theme-option[data-theme="ocean-dark"] .theme-preview {
+  background: #4299e1;
+}
+.theme-option[data-theme="bauxite-light"] .theme-preview {
+  background: #c2410c;
+}
+.theme-option[data-theme="bauxite-dark"] .theme-preview {
+  background: #ea580c;
+}
+.theme-option[data-theme="lavender-light"] .theme-preview {
+  background: #7c3aed;
+}
+.theme-option[data-theme="lavender-dark"] .theme-preview {
+  background: #a78bfa;
+}
+
 @media (max-width: 768px) {
   .feature-grid {
     grid-template-columns: 1fr;
+  }
+  
+  .theme-dropdown {
+    right: 0;
+    left: auto;
+    min-width: 160px;
   }
 }

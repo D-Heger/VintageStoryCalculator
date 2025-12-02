@@ -8,6 +8,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Support for theming via CSS variables
+- Added multiple named themes and theme palettes (Nature, Ocean, Bauxite, Lavender — light/dark variants)
+- Added a theme selector UI including preview swatches and responsive dropdown
+- Persist theme selection to localStorage and respect system color-scheme preference
+- Pipeline for creating new releases using GitHub Actions
+- Changelog link in footer next to version number
+
+### Changed
+
+- Version number in footer is now a link to the releases page
+- Updated dependencies
+
 ## [0.2.0] - 2025-10-15
 
 ### Added

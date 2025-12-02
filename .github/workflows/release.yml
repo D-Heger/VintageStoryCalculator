@@ -1,0 +1,151 @@
+name: Release Pipeline
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g., 0.3.0)'
+        required: true
+        type: string
+      prerelease:
+        description: 'Mark as pre-release'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Validate version format
+        run: |
+          if ! [[ "${{ inputs.version }}" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.]+)?$ ]]; then
+            echo "Error: Version must follow semantic versioning (e.g., 1.0.0 or 1.0.0-beta.1)"
+            exit 1
+          fi
+      
+      - name: Checkout master branch
+        uses: actions/checkout@v4
+        with:
+          ref: master
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run tests
+        run: npm test
+      
+      - name: Build project
+        run: npm run build
+      
+      - name: Update version in package.json
+        run: |
+          npm version ${{ inputs.version }} --no-git-tag-version
+          git add package.json package-lock.json
+      
+      - name: Update CHANGELOG.md
+        run: |
+          DATE=$(date +%Y-%m-%d)
+          VERSION="${{ inputs.version }}"
+          
+          # Create temporary file with updated changelog
+          awk -v version="$VERSION" -v date="$DATE" '
+          /^## \[Unreleased\]/ {
+            print $0
+            print ""
+            print "## [" version "] - " date
+            next
+          }
+          /^\[Unreleased\]:/ {
+            # Update the unreleased link
+            sub(/compare\/.*\.\.\.HEAD/, "compare/" version "...HEAD")
+            print $0
+            # Add new version link
+            print "[" version "]: https://github.com/D-Heger/VintageStoryCalculator/releases/tag/" version
+            next
+          }
+          { print }
+          ' CHANGELOG.md > CHANGELOG.md.tmp
+          
+          mv CHANGELOG.md.tmp CHANGELOG.md
+          git add CHANGELOG.md
+      
+      - name: Commit version bump
+        run: |
+          git commit -m "chore: bump version to ${{ inputs.version }}"
+      
+      - name: Merge master into release branch
+        run: |
+          git fetch origin release:release || git checkout -b release
+          git checkout release
+          git merge master --no-ff -m "chore: merge master for release ${{ inputs.version }}"
+      
+      - name: Push changes
+        run: |
+          git push origin master
+          git push origin release
+      
+      - name: Create and push tag
+        run: |
+          git tag -a "${{ inputs.version }}" -m "Release ${{ inputs.version }}"
+          git push origin "${{ inputs.version }}"
+      
+      - name: Extract changelog for release
+        id: changelog
+        run: |
+          VERSION="${{ inputs.version }}"
+          
+          # Extract changelog section for this version
+          CHANGELOG=$(awk -v version="$VERSION" '
+          /^## \['"$VERSION"'\]/ { found=1; next }
+          found && /^## \[/ { exit }
+          found { print }
+          ' CHANGELOG.md)
+          
+          # Save to file for GitHub release
+          echo "$CHANGELOG" > release-notes.md
+          
+          # Output for use in next step
+          echo "notes<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGELOG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+      
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ inputs.version }}
+          release_name: Release ${{ inputs.version }}
+          body_path: release-notes.md
+          draft: false
+          prerelease: ${{ inputs.prerelease }}
+      
+      - name: Summary
+        run: |
+          echo "## Release Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Successfully created release **${{ inputs.version }}**" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- Master branch: Updated with version bump" >> $GITHUB_STEP_SUMMARY
+          echo "- Release branch: Merged and deployed to Netlify" >> $GITHUB_STEP_SUMMARY
+          echo "- Tag: \`${{ inputs.version }}\` created" >> $GITHUB_STEP_SUMMARY
+          echo "- GitHub Release: Created" >> $GITHUB_STEP_SUMMARY
