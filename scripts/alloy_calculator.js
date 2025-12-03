@@ -32,8 +32,8 @@ export const ALLOY_DEFINITIONS = {
     name: "Black Bronze",
     parts: [
       { metal: "Copper", min: 68, max: 84, default: 80, color: "#b87333" },
-      { metal: "Gold", min: 8, max: 12, default: 10, color: "#ffd700" },
-      { metal: "Silver", min: 8, max: 12, default: 10, color: "#c0c0ff" },
+      { metal: "Gold", min: 8, max: 16, default: 10, color: "#ffd700" },
+      { metal: "Silver", min: 8, max: 16, default: 10, color: "#c0c0ff" },
     ],
   },
   lead_solder: {

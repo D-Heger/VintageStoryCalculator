@@ -8,7 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed a wrong number in the black bronze definition, causing incorrect calculations for that alloy
+
 ## [0.3.0-beta.3] - 2025-12-02
+
+- Experimental "stacked card" layout for alloying calculator on mobile
 
 ## [0.3.0-beta.2] - 2025-12-02
 
@@ -16,7 +22,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Roadmap section to README.md outlining planned features and improvements
 - Favicon in SVG and PNG formats
-- Experimental "stacked card" layout for alloying calculator on mobile
 
 ### Fixed
 
