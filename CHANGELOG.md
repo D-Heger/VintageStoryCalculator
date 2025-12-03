@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0-beta.4] - 2025-12-03
+
 ### Fixed
 
 - Fixed a wrong number in the black bronze definition, causing incorrect calculations for that alloy
@@ -71,7 +73,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release with Alloying Calculator
 
-[Unreleased]: https://github.com/D-Heger/VintageStoryCalculator/compare/0.3.0-beta.3...HEAD
+[Unreleased]: https://github.com/D-Heger/VintageStoryCalculator/compare/0.3.0-beta.4...HEAD
+[0.3.0-beta.4]: https://github.com/D-Heger/VintageStoryCalculator/releases/tag/0.3.0-beta.4
 [0.3.0-beta.3]: https://github.com/D-Heger/VintageStoryCalculator/releases/tag/0.3.0-beta.3
 [0.3.0-beta.2]: https://github.com/D-Heger/VintageStoryCalculator/releases/tag/0.3.0-beta.2
 [0.3.0-beta.1]: https://github.com/D-Heger/VintageStoryCalculator/releases/tag/0.3.0-beta.1
