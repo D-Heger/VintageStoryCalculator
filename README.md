@@ -7,6 +7,8 @@
 
 A modern, Svelte-powered calculator application designed to assist players of Vintage Story with various game calculations, including alloy recipes and resource management.
 
+Visit now at: [vintagecalc.eu](https://vintagecalc.eu)
+
 ## Roadmap
 
 Planned features and improvements include (but are not limited to):

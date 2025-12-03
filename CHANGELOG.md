@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- SEO enhancements and robots.txt sitemap reference for better search engine indexing
+
 ## [0.3.0-beta.4] - 2025-12-03
 
 ### Fixed
@@ -15,6 +19,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed a wrong number in the black bronze definition, causing incorrect calculations for that alloy
 
 ## [0.3.0-beta.3] - 2025-12-02
+
+### Added
 
 - Experimental "stacked card" layout for alloying calculator on mobile
 

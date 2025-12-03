@@ -1,0 +1,5 @@
+# Allow all crawlers to index the site
+User-agent: *
+Allow: /
+
+Sitemap: https://vintagecalc.eu/sitemap.xml

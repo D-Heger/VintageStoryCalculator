@@ -65,6 +65,25 @@
     }
   };
 
+  const updateMetaForRoute = (routeId) => {
+    if (typeof document === "undefined") return;
+    const baseTitle = "Vintage Story Calculator";
+    const titles = {
+      home: `${baseTitle} — Home`,
+      alloying: `${baseTitle} — Alloying Calculator`
+    };
+    const descriptions = {
+      home:
+        "Svelte-powered calculators for Vintage Story. Plan alloys, resources, and smelting with precise, game-accurate math.",
+      alloying:
+        "Calculate exact metal ratios and pieces for Vintage Story alloys like Tin Bronze, Bismuth Bronze, Electrum, and more."
+    };
+
+    document.title = titles[routeId] || baseTitle;
+    const meta = document.querySelector('meta[name="description"]');
+    if (meta) meta.setAttribute("content", descriptions[routeId] || descriptions.home);
+  };
+
   const toggleThemeSelector = () => {
     showThemeSelector = !showThemeSelector;
   };
@@ -100,6 +119,7 @@
 
       const applyHashRoute = () => {
         currentRoute = getRouteFromHash(window.location.hash || "#home");
+        updateMetaForRoute(currentRoute);
       };
 
       applyHashRoute();
@@ -110,6 +130,7 @@
 
       const handleHashChange = () => {
         currentRoute = getRouteFromHash(window.location.hash || "#home");
+        updateMetaForRoute(currentRoute);
       };
 
       window.addEventListener("hashchange", handleHashChange);
