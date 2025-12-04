@@ -19,7 +19,7 @@ body:
       placeholder: |
         As a [user type], I want [goal] so that [benefit].
 
-        Example: As a Vintage Story player, I want to calculate how many pieces of different metals I need for creating an alloy to plan my smelting operations.
+        Example: As a Vintage Story player, I want to calculate how many nuggets of different metals I need for creating an alloy to plan my smelting operations.
     validations:
       required: true
 

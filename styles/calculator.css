@@ -414,6 +414,59 @@
   #calculator table { font-size: 0.85rem; }
 }
 
+/* Metal Info Section */
+.metal-info {
+  margin: var(--spacing-md) 0;
+  padding: var(--spacing-md);
+  background: var(--surface-raised);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-soft);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-xs) 0;
+  gap: var(--spacing-md);
+}
+
+.info-row:not(:last-child) {
+  border-bottom: 1px solid var(--border-soft);
+  padding-bottom: var(--spacing-xs);
+  margin-bottom: var(--spacing-xs);
+}
+
+.info-label {
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.info-value {
+  font-weight: 600;
+  color: var(--text-primary);
+  text-align: right;
+  word-break: break-word;
+}
+
+/* Mobile: stack info rows vertically */
+@media (max-width: 768px) {
+  .info-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-sm) 0;
+  }
+
+  .info-value {
+    text-align: left;
+  }
+}
+
 /* Mobile stacked layout for table rows */
 @media (max-width: 640px) {
   #calculator { overflow-x: visible; }
@@ -463,7 +516,7 @@
   #calculator td:first-child::before { content: none; }
   /* Numbers align right like table */
   #calculator td.units,
-  #calculator td.pieces { justify-content: space-between; }
+  #calculator td.nuggets { justify-content: space-between; }
   .sliders { width: 100%; justify-content: stretch; }
   .sliders input[type=range] { width: 100%; max-width: none; }
 }
