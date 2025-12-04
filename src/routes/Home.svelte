@@ -18,7 +18,7 @@
       </p>
     </a>
 
-    <a href="#metal" class="feature-card">
+    <a href="#casting" class="feature-card">
       <h3>Casting Calculator</h3>
       <p>
         Calculate ore nuggets needed to cast metal ingots. Supports all castable metals

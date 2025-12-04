@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Broken link to Casting Calculator in Home.svelte
+- References to "metal" instead of "casting" in multiple files
+
 ## [0.3.0-beta.6] - 2025-12-04
 
 ### Added
