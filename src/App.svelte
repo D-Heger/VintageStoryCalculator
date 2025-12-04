@@ -8,7 +8,7 @@
   const ROUTES = {
     home: Home,
     alloying: AlloyingCalculator,
-    metal: CastingCalculator
+    casting: CastingCalculator
   };
 
   const NAV_ITEMS = [
@@ -51,7 +51,7 @@
 
   const getRouteFromHash = (hash) => {
     if (hash === "#alloying") return "alloying";
-    if (hash === "#casting") return "metal";
+    if (hash === "#casting") return "casting";
     return "home";
   };
 
@@ -75,14 +75,14 @@
     const titles = {
       home: `${baseTitle} — Home`,
       alloying: `${baseTitle} — Alloying Calculator`,
-      metal: `${baseTitle} — Casting Calculator`
+      casting: `${baseTitle} — Casting Calculator`
     };
     const descriptions = {
       home:
         "Svelte-powered calculators for Vintage Story. Plan alloys, resources, and smelting with precise, game-accurate math.",
       alloying:
         "Calculate exact metal ratios and nuggets for Vintage Story alloys like Tin Bronze, Bismuth Bronze, Electrum, and more.",
-      metal:
+      casting:
         "Calculate ore nuggets needed to cast metal ingots in Vintage Story. Supports all castable metals including Copper, Gold, Silver, and more."
     };
 
