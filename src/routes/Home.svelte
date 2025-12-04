@@ -14,18 +14,21 @@
       <h3>Alloying Calculator</h3>
       <p>
         Calculate precise metal ratios for creating alloys. Adjust percentages and see
-        exactly how many pieces you need.
+        exactly how many nuggets you need. Now includes smelting temperatures!
+      </p>
+    </a>
+
+    <a href="#metal" class="feature-card">
+      <h3>Casting Calculator</h3>
+      <p>
+        Calculate ore nuggets needed to cast metal ingots. Supports all castable metals
+        with smelting temperatures and ore source information.
       </p>
     </a>
 
     <div class="feature-card" style="opacity: 0.6; cursor: not-allowed">
-      <h3>Example Feature</h3>
-      <p>Coming soon!</p>
-    </div>
-
-    <div class="feature-card" style="opacity: 0.6; cursor: not-allowed">
-      <h3>Example Feature 2</h3>
-      <p>Coming soon!</p>
+      <h3>More Coming Soon</h3>
+      <p>Additional calculators and tools are in development!</p>
     </div>
   </div>
 </div>

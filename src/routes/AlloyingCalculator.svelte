@@ -27,7 +27,7 @@
   <p>
     Calculate the exact amounts of metals needed to create your desired alloy. Adjust the
     percentages to match the valid recipe ranges, and the calculator will show you how
-    many pieces of each metal to use.
+    many nuggets of each metal to use.
   </p>
 </div>
 

@@ -8,6 +8,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Casting Calculator: Calculate ore nuggets needed to cast metal ingots for all 8 castable metals (Copper, Gold, Silver, Tin, Zinc, Bismuth, Lead, Nickel)
+- Smelting temperature information displayed in both Alloying Calculator and Casting Calculator
+- Compatible fuel information showing which fuels can be used based on required smelting temperature (Firewood, Peat, Charcoal, Coal types, Coke)
+- Ore source information displayed in Casting Calculator
+- New navigation entry for Casting Calculator
+- Fuel definitions module with temperature data from Vintage Story wiki
+
+### Changed
+
+- Updated Alloying Calculator to display smelting temperatures for all alloys
+- Updated home page to feature the new Casting Calculator
+- Updated README.md with Casting Calculator documentation
+- Replaced the word "pieces" with "nuggets" throughout the project to better reflect Vintage Story terminology
+
 ## [0.3.0-beta.5] - 2025-12-03
 
 ### Added

@@ -1,3 +1,5 @@
+import { getCompatibleFuels, formatFuelList } from "./fuel_definitions.js";
+
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 
 const resolveDocument = (...nodes) => {
@@ -15,6 +17,7 @@ const resolveDocument = (...nodes) => {
 export const ALLOY_DEFINITIONS = {
   tin_bronze: {
     name: "Tin Bronze",
+    smeltTemp: "950°C",
     parts: [
       { metal: "Copper", min: 88, max: 92, color: "#b87333" },
       { metal: "Tin", min: 8, max: 12, color: "#c0c0c0" },
@@ -22,6 +25,7 @@ export const ALLOY_DEFINITIONS = {
   },
   bismuth_bronze: {
     name: "Bismuth Bronze",
+    smeltTemp: "850°C",
     parts: [
       { metal: "Copper", min: 50, max: 70, color: "#b87333" },
       { metal: "Zinc", min: 20, max: 30, color: "#d0d8ff" },
@@ -30,6 +34,7 @@ export const ALLOY_DEFINITIONS = {
   },
   black_bronze: {
     name: "Black Bronze",
+    smeltTemp: "1020°C",
     parts: [
       { metal: "Copper", min: 68, max: 84, default: 80, color: "#b87333" },
       { metal: "Gold", min: 8, max: 16, default: 10, color: "#ffd700" },
@@ -38,6 +43,7 @@ export const ALLOY_DEFINITIONS = {
   },
   lead_solder: {
     name: "Lead Solder",
+    smeltTemp: "327°C",
     parts: [
       { metal: "Lead", min: 45, max: 55, color: "#9aa0a6" },
       { metal: "Tin", min: 45, max: 55, color: "#c0c0c0" },
@@ -45,6 +51,7 @@ export const ALLOY_DEFINITIONS = {
   },
   molybdochalkos: {
     name: "Molybdochalkos",
+    smeltTemp: "902°C",
     parts: [
       { metal: "Lead", min: 88, max: 92, color: "#9aa0a6" },
       { metal: "Copper", min: 8, max: 12, color: "#b87333" },
@@ -52,6 +59,7 @@ export const ALLOY_DEFINITIONS = {
   },
   silver_solder: {
     name: "Silver Solder",
+    smeltTemp: "758°C",
     parts: [
       { metal: "Tin", min: 50, max: 60, color: "#c0c0c0" },
       { metal: "Silver", min: 40, max: 50, color: "#c0c0ff" },
@@ -59,6 +67,7 @@ export const ALLOY_DEFINITIONS = {
   },
   electrum: {
     name: "Electrum",
+    smeltTemp: "1010°C",
     parts: [
       { metal: "Gold", min: 40, max: 60, color: "#ffd700" },
       { metal: "Silver", min: 40, max: 60, color: "#c0c0ff" },
@@ -66,6 +75,7 @@ export const ALLOY_DEFINITIONS = {
   },
   cupronickel: {
     name: "Cupronickel",
+    smeltTemp: "1171°C",
     parts: [
       { metal: "Copper", min: 65, max: 75, color: "#b87333" },
       { metal: "Nickel", min: 25, max: 35, color: "#e6e6e6" },
@@ -168,6 +178,7 @@ export default class AlloyCalculator {
     const html = `
             <p class="status" id="blendStatus"></p>
             <p>Total units needed: <strong id="totalUnits">0</strong></p>
+            <p>Smelting temperature: <strong id="smeltTemp">-</strong> | Compatible fuels: <strong id="compatibleFuels">-</strong></p>
 
             <table aria-label="Alloy recipe">
                 <thead>
@@ -175,7 +186,7 @@ export default class AlloyCalculator {
                         <th>Metal</th>
                         <th>Recipe %</th>
                         <th>Units needed</th>
-                        <th>Pieces </th>
+                        <th>Nuggets</th>
                         <th>Adjust</th>
                     </tr>
                 </thead>
@@ -189,6 +200,8 @@ export default class AlloyCalculator {
     this.rowsEl = this.container.querySelector("#alloyRows");
     this.totalUnitsElm = this.container.querySelector("#totalUnits");
     this.statusElm = this.container.querySelector("#blendStatus");
+    this.smeltTempElm = this.container.querySelector("#smeltTemp");
+    this.compatibleFuelsElm = this.container.querySelector("#compatibleFuels");
     this.barElm = this.container.querySelector("#blendBar");
   }
 
@@ -202,6 +215,17 @@ export default class AlloyCalculator {
     if (!definition) {
       console.warn(`AlloyCalculator: unknown alloy "${key}".`);
       return;
+    }
+
+    // Update temperature and fuel display
+    if (this.smeltTempElm && definition.smeltTemp) {
+      this.smeltTempElm.textContent = definition.smeltTemp;
+      
+      // Get and display compatible fuels
+      if (this.compatibleFuelsElm) {
+        const compatibleFuels = getCompatibleFuels(definition.smeltTemp);
+        this.compatibleFuelsElm.textContent = formatFuelList(compatibleFuels);
+      }
     }
 
     this.state.parts = definition.parts.map((part) => {
@@ -298,13 +322,13 @@ export default class AlloyCalculator {
       const row = this.rowsEl.children[index];
       if (!row) return;
 
-      const allocation = pieceAllocations[index] || { pieces: 0, units: 0 };
-      const { pieces, units } = allocation;
+      const allocation = pieceAllocations[index] || { nuggets: 0, units: 0 };
+      const { nuggets, units } = allocation;
 
       const unitsCell = row.querySelector(".units");
-      const piecesCell = row.querySelector(".pieces");
+      const nuggetsCell = row.querySelector(".nuggets");
       if (unitsCell) unitsCell.textContent = this.formatQuantity(units);
-      if (piecesCell) piecesCell.textContent = this.formatQuantity(pieces);
+      if (nuggetsCell) nuggetsCell.textContent = this.formatQuantity(nuggets);
 
       const numberInput = row.querySelector(".percent");
       const sliderInput = row.querySelector(".slider");
@@ -557,29 +581,29 @@ export default class AlloyCalculator {
     const partsCount = this.state.parts.length;
     if (!partsCount) return [];
 
-    const totalPieces = Math.max(
+    const totalNuggets = Math.max(
       0,
       Math.round(totalUnits / this.UNITS_PER_PIECE)
     );
-    if (totalPieces === 0) {
-      return this.state.parts.map(() => ({ pieces: 0, units: 0 }));
+    if (totalNuggets === 0) {
+      return this.state.parts.map(() => ({ nuggets: 0, units: 0 }));
     }
 
     const allocations = this.state.parts.map((part, idx) => {
-      const exactPieces = totalPieces * (part.pct / 100);
-      const basePieces = Math.floor(exactPieces);
+      const exactNuggets = totalNuggets * (part.pct / 100);
+      const baseNuggets = Math.floor(exactNuggets);
       return {
         idx,
-        pieces: basePieces,
-        remainder: exactPieces - basePieces,
+        nuggets: baseNuggets,
+        remainder: exactNuggets - baseNuggets,
       };
     });
 
-    let assignedPieces = allocations.reduce(
-      (sum, entry) => sum + entry.pieces,
+    let assignedNuggets = allocations.reduce(
+      (sum, entry) => sum + entry.nuggets,
       0
     );
-    let remaining = totalPieces - assignedPieces;
+    let remaining = totalNuggets - assignedNuggets;
 
     if (remaining > 0) {
       const byRemainderDesc = [...allocations].sort((a, b) => {
@@ -589,7 +613,7 @@ export default class AlloyCalculator {
 
       for (const entry of byRemainderDesc) {
         if (remaining <= 0) break;
-        entry.pieces += 1;
+        entry.nuggets += 1;
         remaining -= 1;
       }
     } else if (remaining < 0) {
@@ -600,8 +624,8 @@ export default class AlloyCalculator {
 
       for (const entry of byRemainderAsc) {
         if (remaining >= 0) break;
-        if (entry.pieces === 0) continue;
-        entry.pieces -= 1;
+        if (entry.nuggets === 0) continue;
+        entry.nuggets -= 1;
         remaining += 1;
       }
     }
@@ -609,8 +633,8 @@ export default class AlloyCalculator {
     return allocations
       .sort((a, b) => a.idx - b.idx)
       .map((entry) => ({
-        pieces: entry.pieces,
-        units: entry.pieces * this.UNITS_PER_PIECE,
+        nuggets: entry.nuggets,
+        units: entry.nuggets * this.UNITS_PER_PIECE,
       }));
   }
 
@@ -641,7 +665,7 @@ export default class AlloyCalculator {
                 >
             </td>
         <td class="units" data-label="Units needed">${this.formatQuantity(0)}</td>
-        <td class="pieces" data-label="Pieces">${this.formatQuantity(0)}</td>
+        <td class="nuggets" data-label="Nuggets">${this.formatQuantity(0)}</td>
         <td class="sliders" data-label="Adjust">
                 <input
                     class="slider"
