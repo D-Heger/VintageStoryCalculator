@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0-beta.8] - 2025-12-14
+
 ## Added
 
 - Casting and Alloying Calculators now display the layout of the stacks for each smelting process
@@ -110,7 +112,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release with Alloying Calculator
 
-[Unreleased]: https://github.com/D-Heger/VintageStoryCalculator/compare/0.3.0-beta.7...HEAD
+[Unreleased]: https://github.com/D-Heger/VintageStoryCalculator/compare/0.3.0-beta.8...HEAD
+[0.3.0-beta.8]: https://github.com/D-Heger/VintageStoryCalculator/releases/tag/0.3.0-beta.8
 [0.3.0-beta.7]: https://github.com/D-Heger/VintageStoryCalculator/releases/tag/0.3.0-beta.7
 [0.3.0-beta.6]: https://github.com/D-Heger/VintageStoryCalculator/releases/tag/0.3.0-beta.6
 [0.3.0-beta.5]: https://github.com/D-Heger/VintageStoryCalculator/releases/tag/0.3.0-beta.5
