@@ -82,6 +82,8 @@ export default class MetalCalculator {
     this.UNITS_PER_INGOT = 100;
     this.UNITS_PER_NUGGET = 5;
     this.NUGGETS_PER_INGOT = this.UNITS_PER_INGOT / this.UNITS_PER_NUGGET; // 20
+    this.STACK_SIZE = 128;
+    this.MAX_STACKS_PER_PROCESS = 4;
 
     this.container =
       container ||
@@ -158,6 +160,14 @@ export default class MetalCalculator {
       </div>
       
       <div class="bar" id="metalBar" aria-label="Metal color preview"></div>
+
+      <div class="stack-summary" id="stackSummary">
+        <div class="stack-header">
+          <p class="stack-headline" id="stackHeadline">Stacks needed: 0</p>
+          <p class="stack-note" id="stackNote">Up to four stacks fit into one smelt.</p>
+        </div>
+        <div class="process-list" id="processList"></div>
+      </div>
     `;
 
     this.container.innerHTML = html;
@@ -167,6 +177,9 @@ export default class MetalCalculator {
     this.compatibleFuelsElm = this.container.querySelector("#compatibleFuels");
     this.oreSourcesElm = this.container.querySelector("#oreSources");
     this.barElm = this.container.querySelector("#metalBar");
+    this.stackHeadlineEl = this.container.querySelector("#stackHeadline");
+    this.stackNoteEl = this.container.querySelector("#stackNote");
+    this.processListEl = this.container.querySelector("#processList");
   }
 
   bindEvents() {
@@ -207,6 +220,194 @@ export default class MetalCalculator {
     const nuggetsNeeded = ingots * this.NUGGETS_PER_INGOT;
 
     this.nuggetsNeededElm.textContent = this.integerFormatter.format(nuggetsNeeded);
+    this.renderStackPlan(nuggetsNeeded);
+  }
+
+  renderStackPlan(nuggetsNeeded) {
+    if (!this.currentMetal) return;
+
+    if (!nuggetsNeeded) {
+      this.stackHeadlineEl.textContent = "Stacks needed: 0";
+      this.stackNoteEl.textContent = "Add ingots to see stack and smelt breakdown.";
+      this.processListEl.innerHTML = "";
+      return;
+    }
+
+    const plan = this.computeStackPlan([
+      {
+        metal: this.currentMetal.name,
+        color: this.currentMetal.color,
+        nuggets: nuggetsNeeded,
+      },
+    ]);
+
+    this.stackHeadlineEl.textContent = `Stacks needed: ${this.integerFormatter.format(
+      plan.totalStacks
+    )}`;
+    const processCount = plan.processes.length || (plan.totalStacks ? 1 : 0);
+    this.stackNoteEl.textContent = plan.requiresMultipleProcesses
+      ? `More than four stacks means ${processCount} smelting processes (4-stack limit).`
+      : "Fits in one smelting process (4-stack limit).";
+
+    this.processListEl.innerHTML = plan.processes
+      .map((process, idx) => this.renderProcess(process, idx))
+      .join("");
+  }
+
+  renderProcess(process, index) {
+    if (!process || !Array.isArray(process.stacks)) return "";
+    const pairs = process.stacks
+      .map(
+        (stack) => `
+          <div class="stack-pair" aria-label="${stack.metal} stack">
+            <span class="stack-chip">${this.integerFormatter.format(stack.amount)}</span>
+            <span class="stack-label" style="--stack-color:${stack.color || "var(--primary-color)"}">${
+              stack.metal
+            }</span>
+          </div>
+        `
+      )
+      .join("");
+
+    return `
+      <div class="process-card" aria-label="Process ${index + 1} stack layout">
+        <div class="process-title">Process ${index + 1}</div>
+        <div class="stack-row pairs">${pairs || "-"}</div>
+      </div>
+    `;
+  }
+
+  computeStackPlan(planInputs) {
+    const remaining = planInputs.map((entry) => ({ ...entry }));
+    const processes = [];
+    let totalStacks = 0;
+
+    const remainingTotal = () =>
+      remaining.reduce((sum, entry) => sum + (entry.nuggets || 0), 0);
+
+    while (remainingTotal() > 0) {
+      const targetSize = Math.min(
+        remainingTotal(),
+        this.STACK_SIZE * this.MAX_STACKS_PER_PROCESS
+      );
+
+      const processAllocations = this.allocateProcess(remaining, targetSize);
+      if (!processAllocations.some((value) => value > 0)) {
+        break;
+      }
+
+      const stacks = [];
+      processAllocations.forEach((amount, idx) => {
+        if (amount <= 0) return;
+        const entry = remaining[idx];
+        this.splitIntoStacks(amount).forEach((chunk) => {
+          stacks.push({
+            metal: entry.metal,
+            color: entry.color,
+            amount: chunk,
+          });
+        });
+        entry.nuggets = Math.max(0, entry.nuggets - amount);
+      });
+
+      totalStacks += stacks.length;
+      processes.push({ stacks });
+    }
+
+    return {
+      totalStacks,
+      processes,
+      requiresMultipleProcesses: processes.length > 1,
+    };
+  }
+
+  allocateProcess(remaining, targetSize) {
+    const totalRemaining = remaining.reduce(
+      (sum, entry) => sum + (entry.nuggets || 0),
+      0
+    );
+    if (totalRemaining === 0) return remaining.map(() => 0);
+
+    let size = Math.min(targetSize, totalRemaining);
+    while (size > 0) {
+      const allocation = this.distributeByRatio(size, remaining);
+      const stackCount = allocation.reduce((sum, amount) => {
+        if (amount <= 0) return sum;
+        return sum + Math.ceil(amount / this.STACK_SIZE);
+      }, 0);
+
+      if (stackCount <= this.MAX_STACKS_PER_PROCESS && allocation.some((v) => v > 0)) {
+        return allocation;
+      }
+
+      size -= 1;
+    }
+
+    const fallback = remaining.map(() => 0);
+    let stacksLeft = this.MAX_STACKS_PER_PROCESS;
+    for (let i = 0; i < remaining.length && stacksLeft > 0; i++) {
+      const cap = Math.min(remaining[i].nuggets, this.STACK_SIZE);
+      if (cap <= 0) continue;
+      fallback[i] = cap;
+      stacksLeft -= 1;
+    }
+    return fallback;
+  }
+
+  distributeByRatio(size, remaining) {
+    const total = remaining.reduce((sum, entry) => sum + (entry.nuggets || 0), 0);
+    if (total === 0) return remaining.map(() => 0);
+
+    const exactShares = remaining.map((entry) => ((entry.nuggets || 0) * size) / total);
+    const base = exactShares.map((share, idx) =>
+      Math.min(remaining[idx].nuggets, Math.floor(share))
+    );
+
+    let allocated = base.reduce((sum, value) => sum + value, 0);
+    let leftover = Math.min(size, total) - allocated;
+
+    const order = exactShares
+      .map((share, idx) => ({ idx, remainder: share - Math.floor(share) }))
+      .sort((a, b) => {
+        if (b.remainder === a.remainder) return a.idx - b.idx;
+        return b.remainder - a.remainder;
+      });
+
+    while (leftover > 0) {
+      let placed = false;
+      for (const entry of order) {
+        const idx = entry.idx;
+        if (base[idx] >= remaining[idx].nuggets) continue;
+        base[idx] += 1;
+        leftover -= 1;
+        placed = true;
+        if (leftover <= 0) break;
+      }
+      if (!placed) break;
+    }
+
+    if (leftover > 0) {
+      for (let i = 0; i < remaining.length && leftover > 0; i++) {
+        const room = remaining[i].nuggets - base[i];
+        if (room <= 0) continue;
+        const add = Math.min(room, leftover);
+        base[i] += add;
+        leftover -= add;
+      }
+    }
+
+    return base;
+  }
+
+  splitIntoStacks(amount) {
+    const stacks = [];
+    const fullStacks = Math.floor(amount / this.STACK_SIZE);
+    for (let i = 0; i < fullStacks; i++) {
+      stacks.push(this.STACK_SIZE);
+    }
+    const remainder = amount % this.STACK_SIZE;
+    if (remainder > 0) stacks.push(remainder);
+    return stacks;
   }
 
   renderBar() {
