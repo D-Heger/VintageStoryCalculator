@@ -15,6 +15,14 @@ const resolveDocument = (...nodes) => {
 };
 
 export const ALLOY_DEFINITIONS = {
+  brass: {
+    name: "Brass",
+    smeltTemp: "920°C",
+    parts: [
+      { metal: "Copper", min: 60, max: 70, color: "#b87333" },
+      { metal: "Zinc", min: 30, max: 40, color: "#d0d8ff" },
+    ],
+  },
   tin_bronze: {
     name: "Tin Bronze",
     smeltTemp: "950°C",
