@@ -8,9 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Added missing brass alloy definition to alloy_calculator.js
+
 ## [0.3.0-beta.8] - 2025-12-14
 
-## Added
+### Added
 
 - Casting and Alloying Calculators now display the layout of the stacks for each smelting process
 
