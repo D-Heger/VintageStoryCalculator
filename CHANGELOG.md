@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-01-26
+
 ### Fixed
 
 - Added missing brass alloy definition to alloy_calculator.js
@@ -116,7 +118,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release with Alloying Calculator
 
-[Unreleased]: https://github.com/D-Heger/VintageStoryCalculator/compare/0.3.0-beta.8...HEAD
+[Unreleased]: https://github.com/D-Heger/VintageStoryCalculator/compare/0.4.0...HEAD
+[0.4.0]: https://github.com/D-Heger/VintageStoryCalculator/releases/tag/0.4.0
 [0.3.0-beta.8]: https://github.com/D-Heger/VintageStoryCalculator/releases/tag/0.3.0-beta.8
 [0.3.0-beta.7]: https://github.com/D-Heger/VintageStoryCalculator/releases/tag/0.3.0-beta.7
 [0.3.0-beta.6]: https://github.com/D-Heger/VintageStoryCalculator/releases/tag/0.3.0-beta.6
