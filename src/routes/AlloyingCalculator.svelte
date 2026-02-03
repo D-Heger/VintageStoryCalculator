@@ -35,6 +35,7 @@
   <div class="control">
     <label for="alloySelect">Choose alloy</label>
     <select id="alloySelect" bind:this={alloySelectEl}>
+      <option value="brass">Brass</option>
       <option value="tin_bronze">Tin Bronze</option>
       <option value="bismuth_bronze">Bismuth Bronze</option>
       <option value="black_bronze">Black Bronze</option>
