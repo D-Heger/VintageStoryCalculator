@@ -1,3 +1,5 @@
+import { parseTemperature } from '../src/lib/utils.js';
+
 // Legacy export for backward compatibility
 // Data is now loaded from /data/fuels.json
 export const FUEL_TYPES = null; // Will be loaded dynamically
@@ -9,7 +11,7 @@ export const FUEL_TYPES = null; // Will be loaded dynamically
  * @returns {Array} Array of compatible fuel objects
  */
 export function getCompatibleFuels(smeltTemp, fuelTypes = {}) {
-  const tempValue = parseInt(smeltTemp);
+  const tempValue = parseTemperature(smeltTemp);
   return Object.values(fuelTypes)
     .filter(fuel => fuel.temp >= tempValue)
     .sort((a, b) => a.temp - b.temp); // Sort by temperature, lowest first

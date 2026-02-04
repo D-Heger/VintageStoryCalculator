@@ -14,6 +14,7 @@
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^3.0.4",
+    "decimal.js": "^10.6.0",
     "vite": "^5.4.21"
   }
 }
