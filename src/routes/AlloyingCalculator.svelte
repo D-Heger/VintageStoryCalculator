@@ -1,18 +1,39 @@
 <script>
   import { onMount } from "svelte";
   import AlloyCalculator from "../../scripts/alloy_calculator.js";
+  import { loadAlloys, loadFuels } from "../lib/dataLoader.js";
 
   let alloySelectEl;
   let ingotsInputEl;
   let calculatorContainer;
   let calculator;
+  let alloys = {};
+  let fuels = {};
+  let loading = true;
+  let error = null;
 
-  onMount(() => {
-    calculator = new AlloyCalculator({
-      container: calculatorContainer,
-      alloySelect: alloySelectEl,
-      ingotsInput: ingotsInputEl
-    });
+  onMount(async () => {
+    try {
+      // Load data
+      [alloys, fuels] = await Promise.all([loadAlloys(), loadFuels()]);
+      
+      // Wait for next tick to ensure DOM is ready
+      await new Promise(resolve => setTimeout(resolve, 0));
+      
+      calculator = new AlloyCalculator({
+        container: calculatorContainer,
+        alloySelect: alloySelectEl,
+        ingotsInput: ingotsInputEl,
+        alloys,
+        fuels
+      });
+      
+      loading = false;
+    } catch (err) {
+      console.error("Failed to load alloy data:", err);
+      error = "Failed to load data. Please refresh the page.";
+      loading = false;
+    }
 
     return () => {
       calculator?.destroy?.();
@@ -31,26 +52,30 @@
   </p>
 </div>
 
-<div class="controls">
-  <div class="control">
-    <label for="alloySelect">Choose alloy</label>
-    <select id="alloySelect" bind:this={alloySelectEl}>
-      <option value="brass">Brass</option>
-      <option value="tin_bronze">Tin Bronze</option>
-      <option value="bismuth_bronze">Bismuth Bronze</option>
-      <option value="black_bronze">Black Bronze</option>
-      <option value="lead_solder">Lead Solder</option>
-      <option value="molybdochalkos">Molybdochalkos</option>
-      <option value="silver_solder">Silver Solder</option>
-      <option value="electrum">Electrum</option>
-      <option value="cupronickel">Cupronickel</option>
-    </select>
+{#if loading}
+  <div class="card">
+    <p>Loading alloy data...</p>
+  </div>
+{:else if error}
+  <div class="card">
+    <p class="error">{error}</p>
+  </div>
+{:else}
+  <div class="controls">
+    <div class="control">
+      <label for="alloySelect">Choose alloy</label>
+      <select id="alloySelect" bind:this={alloySelectEl}>
+        {#each Object.entries(alloys) as [key, alloy]}
+          <option value={key}>{alloy.name}</option>
+        {/each}
+      </select>
+    </div>
+
+    <div class="control">
+      <label for="targetIngots">Target ingots</label>
+      <input id="targetIngots" bind:this={ingotsInputEl} type="number" value="10" min="0" step="1" />
+    </div>
   </div>
 
-  <div class="control">
-    <label for="targetIngots">Target ingots</label>
-    <input id="targetIngots" bind:this={ingotsInputEl} type="number" value="10" min="0" step="1" />
-  </div>
-</div>
-
-<div id="calculator" bind:this={calculatorContainer}></div>
+  <div id="calculator" bind:this={calculatorContainer}></div>
+{/if}

@@ -4,6 +4,7 @@
   import AlloyingCalculator from "./routes/AlloyingCalculator.svelte";
   import CastingCalculator from "./routes/CastingCalculator.svelte";
   import { getProjectVersion } from "./lib/version.js";
+  import { loadThemes } from "./lib/dataLoader.js";
 
   const ROUTES = {
     home: Home,
@@ -17,21 +18,11 @@
     { id: "casting", label: "Casting Calculator", hash: "#casting" }
   ];
 
-  const THEMES = {
-    "nature-light": "Nature Light",
-    "nature-dark": "Nature Dark",
-    "ocean-light": "Ocean Light",
-    "ocean-dark": "Ocean Dark",
-    "bauxite-light": "Bauxite Light",
-    "bauxite-dark": "Bauxite Dark",
-    "lavender-light": "Lavender Light",
-    "lavender-dark": "Lavender Dark"
-  };
-
   const THEME_STORAGE_KEY = "vsc-theme";
 
   let currentRoute = "home";
   let theme = "nature-light";
+  let THEMES = {}; // Will be loaded from JSON
   let version = "Loading...";
   let showThemeSelector = false;
 
@@ -97,8 +88,26 @@
 
   $: currentThemeName = THEMES[theme] || "Nature Light";
 
-  onMount(() => {
+  onMount(async () => {
     let isActive = true;
+
+    // Load themes from JSON
+    try {
+      THEMES = await loadThemes();
+    } catch (err) {
+      console.error("Failed to load themes, using defaults:", err);
+      // Fallback to hardcoded themes if loading fails
+      THEMES = {
+        "nature-light": "Nature Light",
+        "nature-dark": "Nature Dark",
+        "ocean-light": "Ocean Light",
+        "ocean-dark": "Ocean Dark",
+        "bauxite-light": "Bauxite Light",
+        "bauxite-dark": "Bauxite Dark",
+        "lavender-light": "Lavender Light",
+        "lavender-dark": "Lavender Dark"
+      };
+    }
 
     getProjectVersion().then((value) => {
       if (isActive) version = value;

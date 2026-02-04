@@ -14,56 +14,9 @@ const resolveDocument = (...nodes) => {
   return null;
 };
 
-export const METAL_DEFINITIONS = {
-  copper: {
-    name: "Copper",
-    ores: ["Native copper", "Malachite"],
-    smeltTemp: "1084°C",
-    color: "#b87333",
-  },
-  gold: {
-    name: "Gold",
-    ores: ["Native gold"],
-    smeltTemp: "1063°C",
-    color: "#ffd700",
-  },
-  silver: {
-    name: "Silver",
-    ores: ["Native silver"],
-    smeltTemp: "961°C",
-    color: "#c0c0ff",
-  },
-  tin: {
-    name: "Tin",
-    ores: ["Cassiterite"],
-    smeltTemp: "232°C",
-    color: "#c0c0c0",
-  },
-  zinc: {
-    name: "Zinc",
-    ores: ["Sphalerite"],
-    smeltTemp: "419°C",
-    color: "#d0d8ff",
-  },
-  bismuth: {
-    name: "Bismuth",
-    ores: ["Bismuthinite"],
-    smeltTemp: "271°C",
-    color: "#f5f0e1",
-  },
-  lead: {
-    name: "Lead",
-    ores: ["Galena"],
-    smeltTemp: "327°C",
-    color: "#9aa0a6",
-  },
-  nickel: {
-    name: "Nickel",
-    ores: ["Pentlandite"],
-    smeltTemp: "1325°C",
-    color: "#e6e6e6",
-  },
-};
+// Legacy export for backward compatibility
+// Data is now loaded from /data/metals.json
+export const METAL_DEFINITIONS = null; // Will be loaded dynamically
 
 export default class MetalCalculator {
   constructor(
@@ -72,11 +25,13 @@ export default class MetalCalculator {
       container,
       metalSelect,
       ingotsInput,
-      metals = METAL_DEFINITIONS,
+      metals = {},
+      fuels = {},
     } = {}
   ) {
     this.root = root;
     this.metals = metals;
+    this.fuels = fuels;
 
     // Game constants for metal smelting
     this.UNITS_PER_INGOT = 100;
@@ -206,7 +161,7 @@ export default class MetalCalculator {
     this.smeltTempElm.textContent = this.currentMetal.smeltTemp;
     
     // Get and display compatible fuels
-    const compatibleFuels = getCompatibleFuels(this.currentMetal.smeltTemp);
+    const compatibleFuels = getCompatibleFuels(this.currentMetal.smeltTemp, this.fuels);
     this.compatibleFuelsElm.textContent = formatFuelList(compatibleFuels);
     
     this.oreSourcesElm.textContent = this.currentMetal.ores.join(", ");

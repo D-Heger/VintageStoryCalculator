@@ -1,0 +1,76 @@
+{
+  "brass": {
+    "name": "Brass",
+    "smeltTemp": "920°C",
+    "parts": [
+      { "metal": "Copper", "min": 60, "max": 70, "color": "#b87333" },
+      { "metal": "Zinc", "min": 30, "max": 40, "color": "#d0d8ff" }
+    ]
+  },
+  "tin_bronze": {
+    "name": "Tin Bronze",
+    "smeltTemp": "950°C",
+    "parts": [
+      { "metal": "Copper", "min": 88, "max": 92, "color": "#b87333" },
+      { "metal": "Tin", "min": 8, "max": 12, "color": "#c0c0c0" }
+    ]
+  },
+  "bismuth_bronze": {
+    "name": "Bismuth Bronze",
+    "smeltTemp": "850°C",
+    "parts": [
+      { "metal": "Copper", "min": 50, "max": 70, "color": "#b87333" },
+      { "metal": "Zinc", "min": 20, "max": 30, "color": "#d0d8ff" },
+      { "metal": "Bismuth", "min": 10, "max": 20, "color": "#f5f0e1" }
+    ]
+  },
+  "black_bronze": {
+    "name": "Black Bronze",
+    "smeltTemp": "1020°C",
+    "parts": [
+      { "metal": "Copper", "min": 68, "max": 84, "default": 80, "color": "#b87333" },
+      { "metal": "Gold", "min": 8, "max": 16, "default": 10, "color": "#ffd700" },
+      { "metal": "Silver", "min": 8, "max": 16, "default": 10, "color": "#c0c0ff" }
+    ]
+  },
+  "lead_solder": {
+    "name": "Lead Solder",
+    "smeltTemp": "327°C",
+    "parts": [
+      { "metal": "Lead", "min": 45, "max": 55, "color": "#9aa0a6" },
+      { "metal": "Tin", "min": 45, "max": 55, "color": "#c0c0c0" }
+    ]
+  },
+  "molybdochalkos": {
+    "name": "Molybdochalkos",
+    "smeltTemp": "902°C",
+    "parts": [
+      { "metal": "Lead", "min": 88, "max": 92, "color": "#9aa0a6" },
+      { "metal": "Copper", "min": 8, "max": 12, "color": "#b87333" }
+    ]
+  },
+  "silver_solder": {
+    "name": "Silver Solder",
+    "smeltTemp": "758°C",
+    "parts": [
+      { "metal": "Tin", "min": 50, "max": 60, "color": "#c0c0c0" },
+      { "metal": "Silver", "min": 40, "max": 50, "color": "#c0c0ff" }
+    ]
+  },
+  "electrum": {
+    "name": "Electrum",
+    "smeltTemp": "1010°C",
+    "parts": [
+      { "metal": "Gold", "min": 40, "max": 60, "color": "#ffd700" },
+      { "metal": "Silver", "min": 40, "max": 60, "color": "#c0c0ff" }
+    ]
+  },
+  "cupronickel": {
+    "name": "Cupronickel",
+    "smeltTemp": "1171°C",
+    "parts": [
+      { "metal": "Copper", "min": 65, "max": 75, "color": "#b87333" },
+      { "metal": "Nickel", "min": 25, "max": 35, "color": "#e6e6e6" }
+    ]
+  }
+}

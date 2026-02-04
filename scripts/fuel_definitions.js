@@ -1,49 +1,16 @@
-export const FUEL_TYPES = { //TODO expand by wooden items and other burnables
-  firewood: {
-    name: "Firewood",
-    temp: 700,
-    duration: 24,
-  },
-  peat: {
-    name: "Peat",
-    temp: 900,
-    duration: 25,
-  },
-  brown_coal: {
-    name: "Brown coal",
-    temp: 1100,
-    duration: 77,
-  },
-  black_coal: {
-    name: "Black coal",
-    temp: 1200,
-    duration: 84,
-  },
-  anthracite: {
-    name: "Anthracite",
-    temp: 1200,
-    duration: 196,
-  },
-  charcoal: {
-    name: "Charcoal",
-    temp: 1300,
-    duration: 40,
-  },
-  coke: {
-    name: "Coke",
-    temp: 1340,
-    duration: 40,
-  },
-};
+// Legacy export for backward compatibility
+// Data is now loaded from /data/fuels.json
+export const FUEL_TYPES = null; // Will be loaded dynamically
 
 /**
  * Get compatible fuels for a given smelting temperature
- * @param {number} smeltTemp - Smelting temperature in Celsius (e.g., 1084)
+ * @param {string|number} smeltTemp - Smelting temperature in Celsius (e.g., "1084°C" or 1084)
+ * @param {Object} fuelTypes - Fuel definitions object
  * @returns {Array} Array of compatible fuel objects
  */
-export function getCompatibleFuels(smeltTemp) {
+export function getCompatibleFuels(smeltTemp, fuelTypes = {}) {
   const tempValue = parseInt(smeltTemp);
-  return Object.values(FUEL_TYPES)
+  return Object.values(fuelTypes)
     .filter(fuel => fuel.temp >= tempValue)
     .sort((a, b) => a.temp - b.temp); // Sort by temperature, lowest first
 }
