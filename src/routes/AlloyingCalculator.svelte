@@ -1,5 +1,5 @@
 <script>
-  import { onMount } from "svelte";
+  import { onMount, tick } from "svelte";
   import AlloyCalculator from "../../scripts/alloy_calculator.js";
   import { loadAlloys, loadFuels } from "../lib/dataLoader.js";
 
@@ -12,14 +12,16 @@
   let loading = true;
   let error = null;
 
-  onMount(async () => {
-    try {
-      // Load data
-      [alloys, fuels] = await Promise.all([loadAlloys(), loadFuels()]);
-      
-      // Wait for next tick to ensure DOM is ready
-      await new Promise(resolve => setTimeout(resolve, 0));
-      
+  // Initialize calculator after data loads and DOM updates
+  $: if (!loading && alloySelectEl && ingotsInputEl && calculatorContainer && Object.keys(alloys).length > 0) {
+    initCalculator();
+  }
+
+  async function initCalculator() {
+    // Wait for DOM to be fully ready
+    await tick();
+    
+    if (!calculator) {
       calculator = new AlloyCalculator({
         container: calculatorContainer,
         alloySelect: alloySelectEl,
@@ -27,7 +29,13 @@
         alloys,
         fuels
       });
-      
+    }
+  }
+
+  onMount(async () => {
+    try {
+      // Load data
+      [alloys, fuels] = await Promise.all([loadAlloys(), loadFuels()]);
       loading = false;
     } catch (err) {
       console.error("Failed to load alloy data:", err);
