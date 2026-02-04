@@ -51,14 +51,24 @@ Calculate the number of ore nuggets needed to cast metal ingots in a crucible. S
 ```shell
 VintageStoryCalculator/         # Root directory
 ├── .github/                    # Issue templates and repo automation
+├── docs/                       # Documentation
+│   └── ARCHITECTURE.md         # Data-driven architecture guide
 ├── index.html                  # Vite entry point
 ├── package.json                # Project configuration and scripts
+├── public/                     # Static assets
+│   └── data/                   # Game data (JSON files)
+│       ├── alloys.json         # Alloy recipes
+│       ├── fuels.json          # Fuel definitions
+│       ├── metals.json         # Metal definitions
+│       └── themes.json         # UI themes
 ├── scripts/                    # Framework-agnostic logic
 │   ├── alloy_calculator.js     # Alloy calculator engine
+│   ├── fuel_definitions.js     # Fuel helper functions
 │   └── metal_calculator.js     # Casting calculator engine
 ├── src/                        # Svelte application source
 │   ├── App.svelte              # Root layout and navigation
 │   ├── lib/                    # Shared utilities
+│   │   ├── dataLoader.js       # Data loading module
 │   │   └── version.js          # Changelog parser
 │   ├── main.js                 # Application bootstrap
 │   └── routes/                 # Route-aligned components
@@ -66,11 +76,19 @@ VintageStoryCalculator/         # Root directory
 │       ├── CastingCalculator.svelte
 │       └── Home.svelte
 ├── styles/                     # Shared styling
-│   └── styles.css
 ├── CHANGELOG.md                # Release notes
 ├── LICENSE                     # MIT License
 └── README.md                   # Project overview
 ```
+
+## Architecture
+
+The application uses a **data-driven architecture** where game data (metals, alloys, fuels, themes) is stored in JSON files and loaded dynamically. This makes it easy to add or update game content without modifying code.
+
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for detailed information about:
+- How data is structured and loaded
+- How to add new metals, alloys, fuels, or themes
+- Architecture benefits and future enhancements
 
 ## Browser Support
 
