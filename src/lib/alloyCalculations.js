@@ -256,31 +256,67 @@ function allocateSingleProcess(remaining, stackSize, maxStacks) {
 }
 
 /**
- * Memoization helper for expensive calculations
+ * Memoization cache for expensive calculations
+ * Stores calculation results to avoid redundant computations
+ * 
+ * @example
+ * const cache = new CalculationCache(50);
+ * const key = CalculationCache.createKey(parts, ingots);
+ * 
+ * let result = cache.get(key);
+ * if (!result) {
+ *   result = calculateAlloyComposition(parts, ingots, constants);
+ *   cache.set(key, result);
+ * }
+ * 
+ * @class CalculationCache
  */
 export class CalculationCache {
+  /**
+   * Create a new calculation cache
+   * @param {number} maxSize - Maximum number of entries to cache (default: 100)
+   */
   constructor(maxSize = 100) {
     this.cache = new Map();
     this.maxSize = maxSize;
   }
   
+  /**
+   * Get cached calculation result
+   * @param {string} key - Cache key
+   * @returns {*} Cached value or undefined
+   */
   get(key) {
     return this.cache.get(key);
   }
   
+  /**
+   * Store calculation result in cache
+   * Automatically evicts oldest entry if cache is full
+   * @param {string} key - Cache key
+   * @param {*} value - Value to cache
+   */
   set(key, value) {
     if (this.cache.size >= this.maxSize) {
-      // Remove oldest entry
+      // Remove oldest entry (first key)
       const firstKey = this.cache.keys().next().value;
       this.cache.delete(firstKey);
     }
     this.cache.set(key, value);
   }
   
+  /**
+   * Clear all cached entries
+   */
   clear() {
     this.cache.clear();
   }
   
+  /**
+   * Create a cache key from arguments
+   * @param {...*} args - Arguments to stringify
+   * @returns {string} JSON-stringified cache key
+   */
   static createKey(...args) {
     return JSON.stringify(args);
   }
