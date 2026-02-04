@@ -13,7 +13,7 @@
   let error = null;
 
   // Initialize calculator after data loads and DOM updates
-  $: if (!loading && metalSelectEl && ingotsInputEl && calculatorContainer && Object.keys(metals).length > 0) {
+  $: if (!loading && !calculator && metalSelectEl && ingotsInputEl && calculatorContainer && Object.keys(metals).length > 0) {
     initCalculator();
   }
 
