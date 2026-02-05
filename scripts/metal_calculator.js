@@ -1,4 +1,5 @@
 import { getCompatibleFuels, formatFuelList } from "./fuel_definitions.js";
+import metalDefinitions from "../src/data/metals.json";
 
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 
@@ -14,56 +15,7 @@ const resolveDocument = (...nodes) => {
   return null;
 };
 
-export const METAL_DEFINITIONS = {
-  copper: {
-    name: "Copper",
-    ores: ["Native copper", "Malachite"],
-    smeltTemp: "1084°C",
-    color: "#b87333",
-  },
-  gold: {
-    name: "Gold",
-    ores: ["Native gold"],
-    smeltTemp: "1063°C",
-    color: "#ffd700",
-  },
-  silver: {
-    name: "Silver",
-    ores: ["Native silver"],
-    smeltTemp: "961°C",
-    color: "#c0c0ff",
-  },
-  tin: {
-    name: "Tin",
-    ores: ["Cassiterite"],
-    smeltTemp: "232°C",
-    color: "#c0c0c0",
-  },
-  zinc: {
-    name: "Zinc",
-    ores: ["Sphalerite"],
-    smeltTemp: "419°C",
-    color: "#d0d8ff",
-  },
-  bismuth: {
-    name: "Bismuth",
-    ores: ["Bismuthinite"],
-    smeltTemp: "271°C",
-    color: "#f5f0e1",
-  },
-  lead: {
-    name: "Lead",
-    ores: ["Galena"],
-    smeltTemp: "327°C",
-    color: "#9aa0a6",
-  },
-  nickel: {
-    name: "Nickel",
-    ores: ["Pentlandite"],
-    smeltTemp: "1325°C",
-    color: "#e6e6e6",
-  },
-};
+export const METAL_DEFINITIONS = metalDefinitions;
 
 export default class MetalCalculator {
   constructor(

@@ -1,17 +1,20 @@
 <script>
   import { onMount } from "svelte";
   import MetalCalculator from "../../scripts/metal_calculator.js";
+  import metalDefinitions from "../data/metals.json";
 
   let metalSelectEl;
   let ingotsInputEl;
   let calculatorContainer;
   let calculator;
+  const metalEntries = Object.entries(metalDefinitions);
 
   onMount(() => {
     calculator = new MetalCalculator({
       container: calculatorContainer,
       metalSelect: metalSelectEl,
-      ingotsInput: ingotsInputEl
+      ingotsInput: ingotsInputEl,
+      metals: metalDefinitions
     });
 
     return () => {
@@ -35,14 +38,9 @@
   <div class="control">
     <label for="metalSelect">Choose metal</label>
     <select id="metalSelect" bind:this={metalSelectEl}>
-      <option value="copper">Copper</option>
-      <option value="gold">Gold</option>
-      <option value="silver">Silver</option>
-      <option value="tin">Tin</option>
-      <option value="zinc">Zinc</option>
-      <option value="bismuth">Bismuth</option>
-      <option value="lead">Lead</option>
-      <option value="nickel">Nickel</option>
+      {#each metalEntries as [key, metal]}
+        <option value={key}>{metal.name}</option>
+      {/each}
     </select>
   </div>
 

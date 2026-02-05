@@ -59,7 +59,8 @@ VintageStoryCalculator/         # Root directory
 ├── src/                        # Svelte application source
 │   ├── App.svelte              # Root layout and navigation
 │   ├── data/                   # Game data files
-│   │   └── alloys.json         # Alloy recipes and definitions
+│   │   ├── alloys.json         # Alloy recipes and definitions
+│   │   └── metals.json         # Metal definitions
 │   ├── lib/                    # Shared utilities
 │   │   └── version.js          # Changelog parser
 │   ├── main.js                 # Application bootstrap
