@@ -1,17 +1,20 @@
 <script>
   import { onMount } from "svelte";
   import AlloyCalculator from "../../scripts/alloy_calculator.js";
+  import alloys from "../data/alloys.json";
 
   let alloySelectEl;
   let ingotsInputEl;
   let calculatorContainer;
   let calculator;
+  let alloyKeys = Object.keys(alloys);
 
   onMount(() => {
     calculator = new AlloyCalculator({
       container: calculatorContainer,
       alloySelect: alloySelectEl,
-      ingotsInput: ingotsInputEl
+      ingotsInput: ingotsInputEl,
+      alloys: alloys
     });
 
     return () => {
@@ -35,15 +38,9 @@
   <div class="control">
     <label for="alloySelect">Choose alloy</label>
     <select id="alloySelect" bind:this={alloySelectEl}>
-      <option value="brass">Brass</option>
-      <option value="tin_bronze">Tin Bronze</option>
-      <option value="bismuth_bronze">Bismuth Bronze</option>
-      <option value="black_bronze">Black Bronze</option>
-      <option value="lead_solder">Lead Solder</option>
-      <option value="molybdochalkos">Molybdochalkos</option>
-      <option value="silver_solder">Silver Solder</option>
-      <option value="electrum">Electrum</option>
-      <option value="cupronickel">Cupronickel</option>
+      {#each alloyKeys as key (key)}
+        <option value={key}>{alloys[key].name}</option>
+      {/each}
     </select>
   </div>
 

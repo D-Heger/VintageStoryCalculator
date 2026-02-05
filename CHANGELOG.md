@@ -8,7 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Extracted alloy definitions to `src/data/alloys.json` for improved maintainability and reusability across components
+- Updated `alloy_calculator.js` to dynamically load alloys from JSON instead of hardcoded definitions
+- Updated `AlloyingCalculator.svelte` to use dynamically generated select options from JSON data
+
 ## [0.4.1] - 2026-02-03
+
+### Fixed
+
+- Added missing brass alloy definition to AlloyingCalculator.svelte
 
 ## [0.4.0] - 2026-01-26
 
