@@ -1,0 +1,21 @@
+{
+  "unitsPerIngot": 100,
+  "unitsPerNugget": 5,
+  "nuggetsPerIngot": 20,
+  "stackSize": 128,
+  "maxStacksPerProcess": 4,
+  "renderingTemperatures": {
+    "unit": "°C",
+    "fallback": "-"
+  },
+  "metalColors": {
+    "copper": "#b87333",
+    "gold": "#ffd700",
+    "silver": "#c0c0ff",
+    "tin": "#c0c0c0",
+    "zinc": "#d0d8ff",
+    "bismuth": "#f5f0e1",
+    "lead": "#9aa0a6",
+    "nickel": "#e6e6e6"
+  }
+}

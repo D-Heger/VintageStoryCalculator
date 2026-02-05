@@ -55,13 +55,18 @@ VintageStoryCalculator/         # Root directory
 ├── package.json                # Project configuration and scripts
 ├── scripts/                    # Framework-agnostic logic
 │   ├── alloy_calculator.js     # Alloy calculator engine
+│   ├── fuel_definitions.js     # Fuel compatibility data
 │   └── metal_calculator.js     # Casting calculator engine
 ├── src/                        # Svelte application source
 │   ├── App.svelte              # Root layout and navigation
 │   ├── data/                   # Game data files
 │   │   ├── alloys.json         # Alloy recipes and definitions
+│   │   ├── constants.json      # Shared game constants and fuel data
+│   │   ├── fuels.json          # Fuel definitions and burn times
 │   │   └── metals.json         # Metal definitions
 │   ├── lib/                    # Shared utilities
+│   │   ├── constants.ts         # Typed constants exports
+│   │   ├── fuels.ts             # Typed fuel definitions
 │   │   └── version.js          # Changelog parser
 │   ├── main.js                 # Application bootstrap
 │   └── routes/                 # Route-aligned components

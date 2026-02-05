@@ -1,40 +1,6 @@
-export const FUEL_TYPES = { //TODO expand by wooden items and other burnables
-  firewood: {
-    name: "Firewood",
-    temp: 700,
-    duration: 24,
-  },
-  peat: {
-    name: "Peat",
-    temp: 900,
-    duration: 25,
-  },
-  brown_coal: {
-    name: "Brown coal",
-    temp: 1100,
-    duration: 77,
-  },
-  black_coal: {
-    name: "Black coal",
-    temp: 1200,
-    duration: 84,
-  },
-  anthracite: {
-    name: "Anthracite",
-    temp: 1200,
-    duration: 196,
-  },
-  charcoal: {
-    name: "Charcoal",
-    temp: 1300,
-    duration: 40,
-  },
-  coke: {
-    name: "Coke",
-    temp: 1340,
-    duration: 40,
-  },
-};
+import { FUEL_TYPES } from "../src/lib/fuels.ts";
+
+export { FUEL_TYPES };
 
 /**
  * Get compatible fuels for a given smelting temperature

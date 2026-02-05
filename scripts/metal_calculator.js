@@ -1,4 +1,13 @@
 import { getCompatibleFuels, formatFuelList } from "./fuel_definitions.js";
+import {
+  formatTemperature,
+  getMetalColor,
+  MAX_STACKS_PER_PROCESS,
+  NUGGETS_PER_INGOT,
+  STACK_SIZE,
+  UNITS_PER_INGOT,
+  UNITS_PER_NUGGET,
+} from "../src/lib/constants.ts";
 import metalDefinitions from "../src/data/metals.json";
 
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
@@ -31,11 +40,11 @@ export default class MetalCalculator {
     this.metals = metals;
 
     // Game constants for metal smelting
-    this.UNITS_PER_INGOT = 100;
-    this.UNITS_PER_NUGGET = 5;
-    this.NUGGETS_PER_INGOT = this.UNITS_PER_INGOT / this.UNITS_PER_NUGGET; // 20
-    this.STACK_SIZE = 128;
-    this.MAX_STACKS_PER_PROCESS = 4;
+    this.UNITS_PER_INGOT = UNITS_PER_INGOT;
+    this.UNITS_PER_NUGGET = UNITS_PER_NUGGET;
+    this.NUGGETS_PER_INGOT = NUGGETS_PER_INGOT;
+    this.STACK_SIZE = STACK_SIZE;
+    this.MAX_STACKS_PER_PROCESS = MAX_STACKS_PER_PROCESS;
 
     this.container =
       container ||
@@ -146,7 +155,10 @@ export default class MetalCalculator {
       return;
     }
 
-    this.currentMetal = definition;
+    this.currentMetal = {
+      ...definition,
+      color: definition.color || getMetalColor(key || definition.name),
+    };
     this.updateMetalInfo();
     this.update();
   }
@@ -155,7 +167,7 @@ export default class MetalCalculator {
     if (!this.currentMetal) return;
 
     this.metalNameElm.textContent = this.currentMetal.name;
-    this.smeltTempElm.textContent = this.currentMetal.smeltTemp;
+    this.smeltTempElm.textContent = formatTemperature(this.currentMetal.smeltTemp);
     
     // Get and display compatible fuels
     const compatibleFuels = getCompatibleFuels(this.currentMetal.smeltTemp);

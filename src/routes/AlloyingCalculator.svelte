@@ -2,6 +2,7 @@
   import { onMount } from "svelte";
   import AlloyCalculator from "../../scripts/alloy_calculator.js";
   import alloys from "../data/alloys.json";
+  import { NUGGETS_PER_INGOT } from "../lib/constants.ts";
 
   let alloySelectEl;
   let ingotsInputEl;
@@ -30,7 +31,7 @@
   <p>
     Calculate the exact amounts of metals needed to create your desired alloy. Adjust the
     percentages to match the valid recipe ranges, and the calculator will show you how
-    many nuggets of each metal to use.
+    many nuggets of each metal to use. One ingot equals {NUGGETS_PER_INGOT} nuggets.
   </p>
 </div>
 

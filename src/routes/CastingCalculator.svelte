@@ -2,6 +2,7 @@
   import { onMount } from "svelte";
   import MetalCalculator from "../../scripts/metal_calculator.js";
   import metalDefinitions from "../data/metals.json";
+  import { NUGGETS_PER_INGOT, UNITS_PER_INGOT } from "../lib/constants.ts";
 
   let metalSelectEl;
   let ingotsInputEl;
@@ -29,7 +30,7 @@
   <h2>Casting Calculator</h2>
   <p>
     Calculate the number of ore nuggets needed to cast your desired amount of metal ingots.
-    Each metal ingot requires 20 nuggets (100 units) to create in a crucible. Select your metal
+    Each metal ingot requires {NUGGETS_PER_INGOT} nuggets ({UNITS_PER_INGOT} units) to create in a crucible. Select your metal
     and target number of ingots to see the nuggets required and smelting information.
   </p>
 </div>

@@ -1,76 +1,76 @@
 {
   "brass": {
     "name": "Brass",
-    "smeltTemp": "920°C",
+    "smeltTemp": 920,
     "parts": [
-      { "metal": "Copper", "min": 60, "max": 70, "color": "#b87333" },
-      { "metal": "Zinc", "min": 30, "max": 40, "color": "#d0d8ff" }
+      { "metal": "Copper", "min": 60, "max": 70 },
+      { "metal": "Zinc", "min": 30, "max": 40 }
     ]
   },
   "tin_bronze": {
     "name": "Tin Bronze",
-    "smeltTemp": "950°C",
+    "smeltTemp": 950,
     "parts": [
-      { "metal": "Copper", "min": 88, "max": 92, "color": "#b87333" },
-      { "metal": "Tin", "min": 8, "max": 12, "color": "#c0c0c0" }
+      { "metal": "Copper", "min": 88, "max": 92 },
+      { "metal": "Tin", "min": 8, "max": 12 }
     ]
   },
   "bismuth_bronze": {
     "name": "Bismuth Bronze",
-    "smeltTemp": "850°C",
+    "smeltTemp": 850,
     "parts": [
-      { "metal": "Copper", "min": 50, "max": 70, "color": "#b87333" },
-      { "metal": "Zinc", "min": 20, "max": 30, "color": "#d0d8ff" },
-      { "metal": "Bismuth", "min": 10, "max": 20, "color": "#f5f0e1" }
+      { "metal": "Copper", "min": 50, "max": 70 },
+      { "metal": "Zinc", "min": 20, "max": 30 },
+      { "metal": "Bismuth", "min": 10, "max": 20 }
     ]
   },
   "black_bronze": {
     "name": "Black Bronze",
-    "smeltTemp": "1020°C",
+    "smeltTemp": 1020,
     "parts": [
-      { "metal": "Copper", "min": 68, "max": 84, "default": 80, "color": "#b87333" },
-      { "metal": "Gold", "min": 8, "max": 16, "default": 10, "color": "#ffd700" },
-      { "metal": "Silver", "min": 8, "max": 16, "default": 10, "color": "#c0c0ff" }
+      { "metal": "Copper", "min": 68, "max": 84, "default": 80 },
+      { "metal": "Gold", "min": 8, "max": 16, "default": 10 },
+      { "metal": "Silver", "min": 8, "max": 16, "default": 10 }
     ]
   },
   "lead_solder": {
     "name": "Lead Solder",
-    "smeltTemp": "327°C",
+    "smeltTemp": 327,
     "parts": [
-      { "metal": "Lead", "min": 45, "max": 55, "color": "#9aa0a6" },
-      { "metal": "Tin", "min": 45, "max": 55, "color": "#c0c0c0" }
+      { "metal": "Lead", "min": 45, "max": 55 },
+      { "metal": "Tin", "min": 45, "max": 55 }
     ]
   },
   "molybdochalkos": {
     "name": "Molybdochalkos",
-    "smeltTemp": "902°C",
+    "smeltTemp": 902,
     "parts": [
-      { "metal": "Lead", "min": 88, "max": 92, "color": "#9aa0a6" },
-      { "metal": "Copper", "min": 8, "max": 12, "color": "#b87333" }
+      { "metal": "Lead", "min": 88, "max": 92 },
+      { "metal": "Copper", "min": 8, "max": 12 }
     ]
   },
   "silver_solder": {
     "name": "Silver Solder",
-    "smeltTemp": "758°C",
+    "smeltTemp": 758,
     "parts": [
-      { "metal": "Tin", "min": 50, "max": 60, "color": "#c0c0c0" },
-      { "metal": "Silver", "min": 40, "max": 50, "color": "#c0c0ff" }
+      { "metal": "Tin", "min": 50, "max": 60 },
+      { "metal": "Silver", "min": 40, "max": 50 }
     ]
   },
   "electrum": {
     "name": "Electrum",
-    "smeltTemp": "1010°C",
+    "smeltTemp": 1010,
     "parts": [
-      { "metal": "Gold", "min": 40, "max": 60, "color": "#ffd700" },
-      { "metal": "Silver", "min": 40, "max": 60, "color": "#c0c0ff" }
+      { "metal": "Gold", "min": 40, "max": 60 },
+      { "metal": "Silver", "min": 40, "max": 60 }
     ]
   },
   "cupronickel": {
     "name": "Cupronickel",
-    "smeltTemp": "1171°C",
+    "smeltTemp": 1171,
     "parts": [
-      { "metal": "Copper", "min": 65, "max": 75, "color": "#b87333" },
-      { "metal": "Nickel", "min": 25, "max": 35, "color": "#e6e6e6" }
+      { "metal": "Copper", "min": 65, "max": 75 },
+      { "metal": "Nickel", "min": 25, "max": 35 }
     ]
   }
 }

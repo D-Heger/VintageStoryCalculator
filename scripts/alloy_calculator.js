@@ -1,4 +1,12 @@
 import { getCompatibleFuels, formatFuelList } from "./fuel_definitions.js";
+import {
+  formatTemperature,
+  getMetalColor,
+  MAX_STACKS_PER_PROCESS,
+  STACK_SIZE,
+  UNITS_PER_INGOT,
+  UNITS_PER_NUGGET,
+} from "../src/lib/constants.ts";
 import alloyData from "../src/data/alloys.json";
 
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
@@ -30,10 +38,10 @@ export default class AlloyCalculator {
     this.root = root;
     this.alloys = alloys;
 
-    this.UNITS_PER_INGOT = 100;
-    this.UNITS_PER_PIECE = 5;
-    this.STACK_SIZE = 128;
-    this.MAX_STACKS_PER_PROCESS = 4;
+    this.UNITS_PER_INGOT = UNITS_PER_INGOT;
+    this.UNITS_PER_PIECE = UNITS_PER_NUGGET;
+    this.STACK_SIZE = STACK_SIZE;
+    this.MAX_STACKS_PER_PROCESS = MAX_STACKS_PER_PROCESS;
 
     this.container =
       container ||
@@ -166,8 +174,8 @@ export default class AlloyCalculator {
     }
 
     // Update temperature and fuel display
-    if (this.smeltTempElm && definition.smeltTemp) {
-      this.smeltTempElm.textContent = definition.smeltTemp;
+    if (this.smeltTempElm && definition.smeltTemp !== undefined) {
+      this.smeltTempElm.textContent = formatTemperature(definition.smeltTemp);
       
       // Get and display compatible fuels
       if (this.compatibleFuelsElm) {
@@ -186,7 +194,7 @@ export default class AlloyCalculator {
       const base = Number.isFinite(part.default) ? part.default : midpoint;
       return {
         metal: part.metal,
-        color: part.color,
+        color: part.color || getMetalColor(part.metal),
         min,
         max,
         pct: clamp(base, min, max),
