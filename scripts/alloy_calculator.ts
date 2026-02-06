@@ -1,20 +1,64 @@
-import { getCompatibleFuels, formatFuelList } from "./fuel_definitions.js";
+import { getCompatibleFuels, formatFuelList } from "./fuel_definitions";
 import {
   formatTemperature,
   getMetalColor,
   MAX_STACKS_PER_PROCESS,
   STACK_SIZE,
   UNITS_PER_INGOT,
-  UNITS_PER_NUGGET,
-} from "../src/lib/constants.ts";
-import alloyData from "../src/data/alloys.json";
+  UNITS_PER_NUGGET
+} from "../src/lib/constants";
+import alloyDataRaw from "../src/data/alloys.json";
+import type { Alloy, Calculation } from "../src/types/index";
 
-const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+type AlloyDefinitions = Record<string, Alloy>;
 
-const resolveDocument = (...nodes) => {
+type AlloyPartState = {
+  metal: string;
+  color?: string;
+  min: number;
+  max: number;
+  pct: number;
+};
+
+type PieceAllocation = {
+  nuggets: number;
+  units: number;
+};
+
+type AllocationEntry = {
+  idx: number;
+  nuggets: number;
+  remainder: number;
+};
+
+type StackInput = {
+  metal: string;
+  color?: string;
+  nuggets: number;
+};
+
+type StackAllocation = {
+  metal: string;
+  color?: string;
+  amount: number;
+};
+
+type StackProcess = {
+  stacks: StackAllocation[];
+};
+
+const clamp = (value: number, min: number, max: number) =>
+  Math.min(Math.max(value, min), max);
+
+const resolveDocument = (
+  ...nodes: Array<Document | { ownerDocument?: Document | null } | null | undefined>
+) => {
   for (const node of nodes) {
-    if (node && node.ownerDocument) {
+    if (node && "ownerDocument" in node && node.ownerDocument) {
       return node.ownerDocument;
+    }
+    if (typeof Document !== "undefined" && node instanceof Document) {
+      return node;
     }
   }
   if (typeof document !== "undefined") {
@@ -23,25 +67,64 @@ const resolveDocument = (...nodes) => {
   return null;
 };
 
-export const ALLOY_DEFINITIONS = alloyData;
+export const ALLOY_DEFINITIONS = alloyDataRaw as AlloyDefinitions;
+
+interface AlloyCalculatorOptions {
+  root?: Document | null;
+  container?: HTMLElement | null;
+  alloySelect?: HTMLSelectElement | null;
+  ingotsInput?: HTMLInputElement | null;
+  alloys?: AlloyDefinitions;
+}
 
 export default class AlloyCalculator {
-  constructor(
-    {
-      root = typeof document !== "undefined" ? document : null,
-      container,
-      alloySelect,
-      ingotsInput,
-      alloys = ALLOY_DEFINITIONS,
-    } = {}
-  ) {
+  root: Document | null;
+  alloys: AlloyDefinitions;
+
+  UNITS_PER_INGOT = UNITS_PER_INGOT;
+  UNITS_PER_PIECE = UNITS_PER_NUGGET;
+  STACK_SIZE = STACK_SIZE;
+  MAX_STACKS_PER_PROCESS = MAX_STACKS_PER_PROCESS;
+
+  container: HTMLElement | null = null;
+  alloySelect: HTMLSelectElement | null = null;
+  ingotsInput: HTMLInputElement | null = null;
+  document: Document | null = null;
+
+  rowsEl: HTMLTableSectionElement | null = null;
+  totalUnitsElm: HTMLElement | null = null;
+  statusElm: HTMLElement | null = null;
+  smeltTempElm: HTMLElement | null = null;
+  compatibleFuelsElm: HTMLElement | null = null;
+  barElm: HTMLDivElement | null = null;
+  stackSummaryEl: HTMLElement | null = null;
+  stackHeadlineEl: HTMLElement | null = null;
+  stackNoteEl: HTMLElement | null = null;
+  processListEl: HTMLElement | null = null;
+
+  state: { parts: AlloyPartState[] } = { parts: [] };
+
+  percentPrecision = 1;
+  percentStep = Math.pow(10, -this.percentPrecision);
+  integerFormatter: Intl.NumberFormat;
+
+  isReady = false;
+
+  handleSelectChange!: (event: Event) => void;
+  handleIngotsInput!: () => void;
+  handlePercentInput!: (event: Event) => void;
+  handlePercentBlur!: (event: Event) => void;
+  handleSliderInput!: (event: Event) => void;
+
+  constructor({
+    root = typeof document !== "undefined" ? document : null,
+    container,
+    alloySelect,
+    ingotsInput,
+    alloys = ALLOY_DEFINITIONS
+  }: AlloyCalculatorOptions = {}) {
     this.root = root;
     this.alloys = alloys;
-
-    this.UNITS_PER_INGOT = UNITS_PER_INGOT;
-    this.UNITS_PER_PIECE = UNITS_PER_NUGGET;
-    this.STACK_SIZE = STACK_SIZE;
-    this.MAX_STACKS_PER_PROCESS = MAX_STACKS_PER_PROCESS;
 
     this.container =
       container ||
@@ -66,13 +149,9 @@ export default class AlloyCalculator {
       this.root
     );
 
-    this.state = { parts: [] };
-
-    this.percentPrecision = 1;
-    this.percentStep = Math.pow(10, -this.percentPrecision);
     this.integerFormatter = new Intl.NumberFormat("en-US", {
       maximumFractionDigits: 0,
-      useGrouping: false,
+      useGrouping: false
     });
 
     this.isReady = Boolean(
@@ -90,16 +169,20 @@ export default class AlloyCalculator {
   init() {
     this.renderStructure();
     this.bindEvents();
-    this.selectAlloy(this.alloySelect.value);
+    this.selectAlloy(this.alloySelect?.value ?? "");
   }
 
   bindHandlers() {
-    this.handleSelectChange = (event) => this.selectAlloy(event.target.value);
+    this.handleSelectChange = (event) => {
+      const target = event.target as HTMLSelectElement | null;
+      this.selectAlloy(target?.value ?? "");
+    };
     this.handleIngotsInput = () => this.update();
     this.handlePercentInput = (event) => {
       const context = this.extractRowContext(event);
       if (!context) return;
-      const value = parseFloat(event.target.value);
+      const target = event.target as HTMLInputElement | null;
+      const value = Number.parseFloat(target?.value ?? "");
       if (!Number.isFinite(value)) return;
       this.setPartPercent(context.index, value);
     };
@@ -107,18 +190,24 @@ export default class AlloyCalculator {
       const context = this.extractRowContext(event);
       if (!context) return;
       const part = this.state.parts[context.index];
-      event.target.value = part ? part.pct.toFixed(this.percentPrecision) : "";
+      const target = event.target as HTMLInputElement | null;
+      if (target) {
+        target.value = part ? part.pct.toFixed(this.percentPrecision) : "";
+      }
     };
     this.handleSliderInput = (event) => {
       const context = this.extractRowContext(event);
       if (!context) return;
-      const value = parseFloat(event.target.value);
+      const target = event.target as HTMLInputElement | null;
+      const value = Number.parseFloat(target?.value ?? "");
       if (!Number.isFinite(value)) return;
       this.setPartPercent(context.index, value);
     };
   }
 
   renderStructure() {
+    if (!this.container) return;
+
     const html = `
             <p class="status" id="blendStatus"></p>
             <p>Total units needed: <strong id="totalUnits">0</strong></p>
@@ -162,22 +251,21 @@ export default class AlloyCalculator {
   }
 
   bindEvents() {
+    if (!this.alloySelect || !this.ingotsInput) return;
     this.alloySelect.addEventListener("change", this.handleSelectChange);
     this.ingotsInput.addEventListener("input", this.handleIngotsInput);
   }
 
-  selectAlloy(key) {
+  selectAlloy(key: string) {
     const definition = this.alloys[key];
     if (!definition) {
       console.warn(`AlloyCalculator: unknown alloy "${key}".`);
       return;
     }
 
-    // Update temperature and fuel display
     if (this.smeltTempElm && definition.smeltTemp !== undefined) {
       this.smeltTempElm.textContent = formatTemperature(definition.smeltTemp);
-      
-      // Get and display compatible fuels
+
       if (this.compatibleFuelsElm) {
         const compatibleFuels = getCompatibleFuels(definition.smeltTemp);
         this.compatibleFuelsElm.textContent = formatFuelList(compatibleFuels);
@@ -191,13 +279,16 @@ export default class AlloyCalculator {
           ? part.max
           : Math.max(min, 100);
       const midpoint = (min + max) / 2;
-      const base = Number.isFinite(part.default) ? part.default : midpoint;
+      const base =
+        typeof part.default === "number" && Number.isFinite(part.default)
+          ? part.default
+          : midpoint;
       return {
         metal: part.metal,
         color: part.color || getMetalColor(part.metal),
         min,
         max,
-        pct: clamp(base, min, max),
+        pct: clamp(base, min, max)
       };
     });
 
@@ -211,11 +302,11 @@ export default class AlloyCalculator {
     this.rowsEl.innerHTML = "";
     this.state.parts.forEach((part, index) => {
       const row = this.createRow(part, index);
-      this.rowsEl.appendChild(row);
+      this.rowsEl?.appendChild(row);
     });
   }
 
-  setPartPercent(index, value) {
+  setPartPercent(index: number, value: number) {
     const parts = this.state.parts;
     if (!parts[index]) return;
 
@@ -235,14 +326,15 @@ export default class AlloyCalculator {
   }
 
   syncInputs() {
-    const rows = Array.from(this.rowsEl.children);
+    if (!this.rowsEl) return;
+    const rows = Array.from(this.rowsEl.children) as HTMLTableRowElement[];
     const activeElement = this.getActiveElement();
     rows.forEach((tr, idx) => {
       const part = this.state.parts[idx];
       if (!part) return;
       const pct = part.pct;
-      const numberInput = tr.querySelector(".percent");
-      const sliderInput = tr.querySelector(".slider");
+      const numberInput = tr.querySelector<HTMLInputElement>(".percent");
+      const sliderInput = tr.querySelector<HTMLInputElement>(".slider");
       if (numberInput && activeElement !== numberInput) {
         numberInput.value = pct.toFixed(this.percentPrecision);
       }
@@ -253,14 +345,16 @@ export default class AlloyCalculator {
   }
 
   getTotalUnits() {
-    const ingots = Math.max(0, parseFloat(this.ingotsInput.value) || 0);
+    const ingots = Math.max(0, Number.parseFloat(this.ingotsInput?.value ?? "") || 0);
     return ingots * this.UNITS_PER_INGOT;
   }
 
   update() {
     if (!this.isReady) return;
     const totalUnits = this.getTotalUnits();
-    this.totalUnitsElm.textContent = this.integerFormatter.format(totalUnits);
+    if (this.totalUnitsElm) {
+      this.totalUnitsElm.textContent = this.integerFormatter.format(totalUnits);
+    }
 
     const pieceAllocations = this.calculatePieceAllocations(totalUnits);
     const totalPercent = this.updateRows(totalUnits, pieceAllocations);
@@ -269,26 +363,27 @@ export default class AlloyCalculator {
     this.renderStackPlan(pieceAllocations);
   }
 
-  updateRows(totalUnits, pieceAllocations) {
+  updateRows(totalUnits: number, pieceAllocations: PieceAllocation[]) {
+    if (!this.rowsEl) return 0;
     let percentTotal = 0;
 
     const activeElement = this.getActiveElement();
 
     this.state.parts.forEach((part, index) => {
       percentTotal += part.pct;
-      const row = this.rowsEl.children[index];
+      const row = this.rowsEl?.children[index] as HTMLTableRowElement | undefined;
       if (!row) return;
 
       const allocation = pieceAllocations[index] || { nuggets: 0, units: 0 };
       const { nuggets, units } = allocation;
 
-      const unitsCell = row.querySelector(".units");
-      const nuggetsCell = row.querySelector(".nuggets");
+      const unitsCell = row.querySelector<HTMLElement>(".units");
+      const nuggetsCell = row.querySelector<HTMLElement>(".nuggets");
       if (unitsCell) unitsCell.textContent = this.formatQuantity(units);
       if (nuggetsCell) nuggetsCell.textContent = this.formatQuantity(nuggets);
 
-      const numberInput = row.querySelector(".percent");
-      const sliderInput = row.querySelector(".slider");
+      const numberInput = row.querySelector<HTMLInputElement>(".percent");
+      const sliderInput = row.querySelector<HTMLInputElement>(".slider");
       if (numberInput && activeElement !== numberInput) {
         numberInput.value = part.pct.toFixed(this.percentPrecision);
       }
@@ -300,11 +395,12 @@ export default class AlloyCalculator {
     return percentTotal;
   }
 
-  updateStatus(totalPercent) {
+  updateStatus(totalPercent: number) {
+    if (!this.statusElm) return;
     const diff = Math.abs(totalPercent - 100);
     const message =
       diff < 0.01
-        ? `Blend total: 100%`
+        ? "Blend total: 100%"
         : `Blend total: ${totalPercent.toFixed(2)}% (adjusted to 100%)`;
     this.statusElm.textContent = message;
     this.statusElm.classList.toggle("warning", diff >= 0.01);
@@ -312,15 +408,18 @@ export default class AlloyCalculator {
 
   renderBar() {
     if (!this.barElm) return;
+    const doc = this.document || (typeof document !== "undefined" ? document : null);
+    if (!doc) return;
+
     this.barElm.innerHTML = "";
     const totalPercent = this.state.parts.reduce(
       (sum, part) => sum + part.pct,
       0
     );
     if (totalPercent <= 0) {
-      const emptySegment = document.createElement("div");
+      const emptySegment = doc.createElement("div");
       emptySegment.className = "segment";
-      emptySegment.style.flex = 1;
+      emptySegment.style.flex = "1";
       emptySegment.style.background = "#eee";
       emptySegment.textContent = "No metals";
       this.barElm.appendChild(emptySegment);
@@ -329,12 +428,12 @@ export default class AlloyCalculator {
 
     this.state.parts.forEach((part) => {
       if (part.pct <= 0) return;
-      const segment = document.createElement("div");
+      const segment = doc.createElement("div");
       segment.className = "segment";
-      segment.style.flex = part.pct;
+      segment.style.flex = String(part.pct);
       segment.style.background = part.color || "#ccc";
       segment.textContent = `${part.metal} ${part.pct.toFixed(1)}%`;
-      this.barElm.appendChild(segment);
+      this.barElm?.appendChild(segment);
     });
   }
 
@@ -370,7 +469,7 @@ export default class AlloyCalculator {
 
     clampAll();
 
-    let diff = 100 - parts.reduce((sum, part) => sum + part.pct, 0);
+    const diff = 100 - parts.reduce((sum, part) => sum + part.pct, 0);
     if (Math.abs(diff) <= 1e-6) return;
 
     const direction = diff > 0 ? 1 : -1;
@@ -379,7 +478,7 @@ export default class AlloyCalculator {
       .map((part, idx) => ({ part, idx }))
       .filter((entry) => entry.idx !== anchorIndex);
 
-    const capacity = (entry) =>
+    const capacity = (entry: { part: AlloyPartState }) =>
       direction > 0
         ? entry.part.max - entry.part.pct
         : entry.part.pct - entry.part.min;
@@ -441,7 +540,7 @@ export default class AlloyCalculator {
       );
     });
 
-    let diff = Number(
+    const diff = Number(
       (100 - parts.reduce((sum, part) => sum + part.pct, 0)).toFixed(
         this.percentPrecision
       )
@@ -460,13 +559,14 @@ export default class AlloyCalculator {
         return capB - capA;
       });
 
-    const target = candidates.find((entry) => {
-      const cap =
-        direction > 0
-          ? entry.part.max - entry.part.pct
-          : entry.part.pct - entry.part.min;
-      return cap > 0;
-    }) || { part: parts[anchorIndex], idx: anchorIndex };
+    const target =
+      candidates.find((entry) => {
+        const cap =
+          direction > 0
+            ? entry.part.max - entry.part.pct
+            : entry.part.pct - entry.part.min;
+        return cap > 0;
+      }) || { part: parts[anchorIndex], idx: anchorIndex };
 
     if (!target.part) return;
     const capacity =
@@ -522,9 +622,7 @@ export default class AlloyCalculator {
             const anchorAdjustment =
               adjustDirection * Math.min(Math.abs(finalDiff), anchorCap);
             anchor.pct = clamp(
-              Number(
-                (anchor.pct + anchorAdjustment).toFixed(this.percentPrecision)
-              ),
+              Number((anchor.pct + anchorAdjustment).toFixed(this.percentPrecision)),
               anchor.min,
               anchor.max
             );
@@ -534,7 +632,7 @@ export default class AlloyCalculator {
     }
   }
 
-  calculatePieceAllocations(totalUnits) {
+  calculatePieceAllocations(totalUnits: number): PieceAllocation[] {
     const partsCount = this.state.parts.length;
     if (!partsCount) return [];
 
@@ -546,17 +644,17 @@ export default class AlloyCalculator {
       return this.state.parts.map(() => ({ nuggets: 0, units: 0 }));
     }
 
-    const allocations = this.state.parts.map((part, idx) => {
+    const allocations: AllocationEntry[] = this.state.parts.map((part, idx) => {
       const exactNuggets = totalNuggets * (part.pct / 100);
       const baseNuggets = Math.floor(exactNuggets);
       return {
         idx,
         nuggets: baseNuggets,
-        remainder: exactNuggets - baseNuggets,
+        remainder: exactNuggets - baseNuggets
       };
     });
 
-    let assignedNuggets = allocations.reduce(
+    const assignedNuggets = allocations.reduce(
       (sum, entry) => sum + entry.nuggets,
       0
     );
@@ -591,11 +689,11 @@ export default class AlloyCalculator {
       .sort((a, b) => a.idx - b.idx)
       .map((entry) => ({
         nuggets: entry.nuggets,
-        units: entry.nuggets * this.UNITS_PER_PIECE,
+        units: entry.nuggets * this.UNITS_PER_PIECE
       }));
   }
 
-  createRow(part, index) {
+  createRow(part: AlloyPartState, index: number) {
     const doc = this.document || (typeof document !== "undefined" ? document : null);
     if (!doc) {
       throw new Error("AlloyCalculator: cannot create table row without document context.");
@@ -636,8 +734,8 @@ export default class AlloyCalculator {
             </td>
         `;
 
-    const percentInput = row.querySelector(".percent");
-    const sliderInput = row.querySelector(".slider");
+    const percentInput = row.querySelector<HTMLInputElement>(".percent");
+    const sliderInput = row.querySelector<HTMLInputElement>(".slider");
     if (percentInput) {
       percentInput.addEventListener("input", this.handlePercentInput);
       percentInput.addEventListener("change", this.handlePercentBlur);
@@ -649,9 +747,9 @@ export default class AlloyCalculator {
     return row;
   }
 
-  extractRowContext(event) {
-    const target = event.target;
-    if (!(target instanceof HTMLElement)) return null;
+  extractRowContext(event: Event) {
+    const target = event.target as HTMLElement | null;
+    if (!target) return null;
     const row = target.closest("tr");
     if (!row) return null;
     const index = Number.parseInt(row.dataset.index || "", 10);
@@ -659,7 +757,7 @@ export default class AlloyCalculator {
     return { row, index };
   }
 
-  formatQuantity(value) {
+  formatQuantity(value: number) {
     return this.integerFormatter.format(Number.isFinite(value) ? value : 0);
   }
 
@@ -668,37 +766,47 @@ export default class AlloyCalculator {
     return doc ? doc.activeElement : null;
   }
 
-  renderStackPlan(pieceAllocations) {
+  renderStackPlan(pieceAllocations: PieceAllocation[]) {
     if (!this.stackSummaryEl || !Array.isArray(pieceAllocations)) return;
 
-    const planInputs = pieceAllocations
+    const planInputs: StackInput[] = pieceAllocations
       .map((allocation, idx) => ({
         metal: this.state.parts[idx]?.metal || `Metal ${idx + 1}`,
         color: this.state.parts[idx]?.color,
-        nuggets: allocation?.nuggets || 0,
+        nuggets: allocation?.nuggets || 0
       }))
       .filter((entry) => entry.nuggets > 0);
 
     if (!planInputs.length) {
-      this.stackHeadlineEl.textContent = "Stacks needed: 0";
-      this.stackNoteEl.textContent = "Add ingots to see stack and smelt breakdown.";
-      this.processListEl.innerHTML = "";
+      if (this.stackHeadlineEl) this.stackHeadlineEl.textContent = "Stacks needed: 0";
+      if (this.stackNoteEl) {
+        this.stackNoteEl.textContent = "Add ingots to see stack and smelt breakdown.";
+      }
+      if (this.processListEl) this.processListEl.innerHTML = "";
       return;
     }
 
     const plan = this.computeStackPlan(planInputs);
-    this.stackHeadlineEl.textContent = `Stacks needed: ${this.formatQuantity(plan.totalStacks)}`;
-    const processCount = plan.processes.length || (plan.totalStacks ? 1 : 0);
-    this.stackNoteEl.textContent = plan.requiresMultipleProcesses
-      ? `More than four stacks means ${processCount} smelting processes (4-stack limit).`
-      : "Fits in one smelting process (4-stack limit).";
+    if (this.stackHeadlineEl) {
+      this.stackHeadlineEl.textContent = `Stacks needed: ${this.formatQuantity(
+        plan.totalStacks ?? 0
+      )}`;
+    }
+    const processCount = plan.processes?.length || (plan.totalStacks ? 1 : 0);
+    if (this.stackNoteEl) {
+      this.stackNoteEl.textContent = plan.requiresMultipleProcesses
+        ? `More than four stacks means ${processCount} smelting processes (4-stack limit).`
+        : "Fits in one smelting process (4-stack limit).";
+    }
 
-    this.processListEl.innerHTML = plan.processes
-      .map((process, idx) => this.renderProcess(process, idx))
-      .join("");
+    if (this.processListEl) {
+      this.processListEl.innerHTML = (plan.processes || [])
+        .map((process, idx) => this.renderProcess(process as StackProcess, idx))
+        .join("");
+    }
   }
 
-  renderProcess(process, index) {
+  renderProcess(process: StackProcess, index: number) {
     if (!process || !Array.isArray(process.stacks)) return "";
     const pairs = process.stacks
       .map(
@@ -721,9 +829,9 @@ export default class AlloyCalculator {
     `;
   }
 
-  computeStackPlan(planInputs) {
+  computeStackPlan(planInputs: StackInput[]): Calculation {
     const remaining = planInputs.map((entry) => ({ ...entry }));
-    const processes = [];
+    const processes: StackProcess[] = [];
     let totalStacks = 0;
 
     const remainingTotal = () =>
@@ -740,15 +848,16 @@ export default class AlloyCalculator {
         break;
       }
 
-      const stacks = [];
+      const stacks: StackAllocation[] = [];
       processAllocations.forEach((amount, idx) => {
         if (amount <= 0) return;
         const entry = remaining[idx];
+        if (!entry) return;
         this.splitIntoStacks(amount).forEach((chunk) => {
           stacks.push({
             metal: entry.metal,
             color: entry.color,
-            amount: chunk,
+            amount: chunk
           });
         });
         entry.nuggets = Math.max(0, entry.nuggets - amount);
@@ -761,11 +870,11 @@ export default class AlloyCalculator {
     return {
       totalStacks,
       processes,
-      requiresMultipleProcesses: processes.length > 1,
+      requiresMultipleProcesses: processes.length > 1
     };
   }
 
-  allocateProcess(remaining, targetSize) {
+  allocateProcess(remaining: StackInput[], targetSize: number) {
     const totalRemaining = remaining.reduce(
       (sum, entry) => sum + (entry.nuggets || 0),
       0
@@ -780,7 +889,10 @@ export default class AlloyCalculator {
         return sum + Math.ceil(amount / this.STACK_SIZE);
       }, 0);
 
-      if (stackCount <= this.MAX_STACKS_PER_PROCESS && allocation.some((v) => v > 0)) {
+      if (
+        stackCount <= this.MAX_STACKS_PER_PROCESS &&
+        allocation.some((v) => v > 0)
+      ) {
         return allocation;
       }
 
@@ -790,7 +902,9 @@ export default class AlloyCalculator {
     const fallback = remaining.map(() => 0);
     let stacksLeft = this.MAX_STACKS_PER_PROCESS;
     for (let i = 0; i < remaining.length && stacksLeft > 0; i++) {
-      const cap = Math.min(remaining[i].nuggets, this.STACK_SIZE);
+      const entry = remaining[i];
+      if (!entry) continue;
+      const cap = Math.min(entry.nuggets, this.STACK_SIZE);
       if (cap <= 0) continue;
       fallback[i] = cap;
       stacksLeft -= 1;
@@ -798,16 +912,17 @@ export default class AlloyCalculator {
     return fallback;
   }
 
-  distributeByRatio(size, remaining) {
+  distributeByRatio(size: number, remaining: StackInput[]) {
     const total = remaining.reduce((sum, entry) => sum + (entry.nuggets || 0), 0);
     if (total === 0) return remaining.map(() => 0);
 
     const exactShares = remaining.map((entry) => ((entry.nuggets || 0) * size) / total);
-    const base = exactShares.map((share, idx) =>
-      Math.min(remaining[idx].nuggets, Math.floor(share))
-    );
+    const base = exactShares.map((share, idx) => {
+      const entry = remaining[idx];
+      return entry ? Math.min(entry.nuggets, Math.floor(share)) : 0;
+    });
 
-    let allocated = base.reduce((sum, value) => sum + value, 0);
+    const allocated = base.reduce((sum, value) => sum + value, 0);
     let leftover = Math.min(size, total) - allocated;
 
     const order = exactShares
@@ -819,10 +934,13 @@ export default class AlloyCalculator {
 
     while (leftover > 0) {
       let placed = false;
-      for (const entry of order) {
-        const idx = entry.idx;
-        if (base[idx] >= remaining[idx].nuggets) continue;
-        base[idx] += 1;
+      for (const orderEntry of order) {
+        const idx = orderEntry.idx;
+        const entry = remaining[idx];
+        if (!entry) continue;
+        const baseValue = base[idx] ?? 0;
+        if (baseValue >= entry.nuggets) continue;
+        base[idx] = baseValue + 1;
         leftover -= 1;
         placed = true;
         if (leftover <= 0) break;
@@ -832,10 +950,13 @@ export default class AlloyCalculator {
 
     if (leftover > 0) {
       for (let i = 0; i < remaining.length && leftover > 0; i++) {
-        const room = remaining[i].nuggets - base[i];
+        const entry = remaining[i];
+        if (!entry) continue;
+        const baseValue = base[i] ?? 0;
+        const room = entry.nuggets - baseValue;
         if (room <= 0) continue;
         const add = Math.min(room, leftover);
-        base[i] += add;
+        base[i] = baseValue + add;
         leftover -= add;
       }
     }
@@ -843,8 +964,8 @@ export default class AlloyCalculator {
     return base;
   }
 
-  splitIntoStacks(amount) {
-    const stacks = [];
+  splitIntoStacks(amount: number) {
+    const stacks: number[] = [];
     const fullStacks = Math.floor(amount / this.STACK_SIZE);
     for (let i = 0; i < fullStacks; i++) {
       stacks.push(this.STACK_SIZE);
@@ -856,15 +977,15 @@ export default class AlloyCalculator {
 
   destroy() {
     if (!this.isReady) return;
-    this.alloySelect.removeEventListener("change", this.handleSelectChange);
-    this.ingotsInput.removeEventListener("input", this.handleIngotsInput);
+    this.alloySelect?.removeEventListener("change", this.handleSelectChange);
+    this.ingotsInput?.removeEventListener("input", this.handleIngotsInput);
     if (this.rowsEl) {
-      const percentInputs = this.rowsEl.querySelectorAll(".percent");
+      const percentInputs = this.rowsEl.querySelectorAll<HTMLInputElement>(".percent");
       percentInputs.forEach((input) => {
         input.removeEventListener("input", this.handlePercentInput);
         input.removeEventListener("change", this.handlePercentBlur);
       });
-      const sliderInputs = this.rowsEl.querySelectorAll(".slider");
+      const sliderInputs = this.rowsEl.querySelectorAll<HTMLInputElement>(".slider");
       sliderInputs.forEach((input) => {
         input.removeEventListener("input", this.handleSliderInput);
       });

@@ -1,13 +1,15 @@
-<script>
+<script lang="ts">
   import { onMount } from "svelte";
-  import AlloyCalculator from "../../scripts/alloy_calculator.js";
-  import alloys from "../data/alloys.json";
-  import { NUGGETS_PER_INGOT } from "../lib/constants.ts";
+  import AlloyCalculator, { ALLOY_DEFINITIONS } from "../../scripts/alloy_calculator";
+  import { NUGGETS_PER_INGOT } from "../lib/constants";
+  import type { Alloy } from "../types/index";
 
-  let alloySelectEl;
-  let ingotsInputEl;
-  let calculatorContainer;
-  let calculator;
+  const alloys = ALLOY_DEFINITIONS as Record<string, Alloy>;
+
+  let alloySelectEl: HTMLSelectElement | null = null;
+  let ingotsInputEl: HTMLInputElement | null = null;
+  let calculatorContainer: HTMLDivElement | null = null;
+  let calculator: AlloyCalculator | undefined;
   let alloyKeys = Object.keys(alloys);
 
   onMount(() => {
@@ -40,7 +42,7 @@
     <label for="alloySelect">Choose alloy</label>
     <select id="alloySelect" bind:this={alloySelectEl}>
       {#each alloyKeys as key (key)}
-        <option value={key}>{alloys[key].name}</option>
+        <option value={key}>{alloys[key]?.name ?? key}</option>
       {/each}
     </select>
   </div>

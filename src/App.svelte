@@ -1,21 +1,26 @@
-<script>
+<script lang="ts">
   import { onMount } from "svelte";
+  import type { SvelteComponent } from "svelte";
   import Home from "./routes/Home.svelte";
   import AlloyingCalculator from "./routes/AlloyingCalculator.svelte";
   import CastingCalculator from "./routes/CastingCalculator.svelte";
-  import { getProjectVersion } from "./lib/version.js";
-
-  const ROUTES = {
-    home: Home,
-    alloying: AlloyingCalculator,
-    casting: CastingCalculator
-  };
+  import { getProjectVersion } from "./lib/version";
 
   const NAV_ITEMS = [
     { id: "home", label: "Home", hash: "#home" },
     { id: "alloying", label: "Alloying Calculator", hash: "#alloying" },
     { id: "casting", label: "Casting Calculator", hash: "#casting" }
-  ];
+  ] as const;
+
+  type RouteId = (typeof NAV_ITEMS)[number]["id"];
+  type RouteHash = (typeof NAV_ITEMS)[number]["hash"];
+  type RouteComponent = new (...args: any[]) => SvelteComponent;
+
+  const ROUTES: Record<RouteId, RouteComponent> = {
+    home: Home,
+    alloying: AlloyingCalculator,
+    casting: CastingCalculator
+  };
 
   const THEMES = {
     "nature-light": "Nature Light",
@@ -26,21 +31,24 @@
     "bauxite-dark": "Bauxite Dark",
     "lavender-light": "Lavender Light",
     "lavender-dark": "Lavender Dark"
-  };
+  } as const;
+
+  type ThemeKey = keyof typeof THEMES;
+  const themeEntries = Object.entries(THEMES) as Array<[ThemeKey, string]>;
 
   const THEME_STORAGE_KEY = "vsc-theme";
 
-  let currentRoute = "home";
-  let theme = "nature-light";
+  let currentRoute: RouteId = "home";
+  let theme: ThemeKey = "nature-light";
   let version = "Loading...";
   let showThemeSelector = false;
 
-  const applyTheme = (value) => {
+  const applyTheme = (value: ThemeKey) => {
     if (typeof document === "undefined") return;
     document.documentElement.dataset.theme = value;
   };
 
-  const setTheme = (value, persist = false) => {
+  const setTheme = (value: ThemeKey, persist = false) => {
     theme = value;
     applyTheme(value);
     if (persist && typeof window !== "undefined") {
@@ -49,18 +57,20 @@
     showThemeSelector = false;
   };
 
-  const getRouteFromHash = (hash) => {
+  const getRouteFromHash = (hash: string): RouteId => {
     if (hash === "#alloying") return "alloying";
     if (hash === "#casting") return "casting";
     return "home";
   };
 
-  const navigate = (routeId) => {
+  const navigate = (routeId: RouteId) => {
     if (typeof window === "undefined") {
       currentRoute = routeId;
       return;
     }
-    const targetHash = NAV_ITEMS.find((item) => item.id === routeId)?.hash;
+    const targetHash = NAV_ITEMS.find((item) => item.id === routeId)?.hash as
+      | RouteHash
+      | undefined;
     if (!targetHash) return;
     if (window.location.hash !== targetHash) {
       window.location.hash = targetHash;
@@ -69,7 +79,7 @@
     }
   };
 
-  const updateMetaForRoute = (routeId) => {
+  const updateMetaForRoute = (routeId: RouteId) => {
     if (typeof document === "undefined") return;
     const baseTitle = "Vintage Story Calculator";
     const titles = {
@@ -88,7 +98,9 @@
 
     document.title = titles[routeId] || baseTitle;
     const meta = document.querySelector('meta[name="description"]');
-    if (meta) meta.setAttribute("content", descriptions[routeId] || descriptions.home);
+    if (meta) {
+      meta.setAttribute("content", descriptions[routeId] || descriptions.home);
+    }
   };
 
   const toggleThemeSelector = () => {
@@ -107,17 +119,17 @@
     if (typeof window !== "undefined") {
       const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
       const storedTheme = window.localStorage.getItem(THEME_STORAGE_KEY);
-      const hasStoredTheme = Object.keys(THEMES).includes(storedTheme);
+      const hasStoredTheme = storedTheme !== null && storedTheme in THEMES;
 
-      const resolvedTheme = hasStoredTheme
-        ? storedTheme
+      const resolvedTheme: ThemeKey = hasStoredTheme
+        ? (storedTheme as ThemeKey)
         : mediaQuery.matches
           ? "nature-dark"
           : "nature-light";
 
       setTheme(resolvedTheme);
 
-      const handleMediaPreference = (event) => {
+      const handleMediaPreference = (event: MediaQueryListEvent) => {
         if (window.localStorage.getItem(THEME_STORAGE_KEY)) return;
         setTheme(event.matches ? "nature-dark" : "nature-light");
       };
@@ -154,6 +166,7 @@
     };
   });
 
+  let ActiveComponent: RouteComponent = Home;
   $: ActiveComponent = ROUTES[currentRoute] ?? Home;
 </script>
 
@@ -175,7 +188,7 @@
     </button>
     {#if showThemeSelector}
       <div class="theme-dropdown" role="menu">
-        {#each Object.entries(THEMES) as [themeKey, themeName]}
+        {#each themeEntries as [themeKey, themeName]}
           <button
             class="theme-option {theme === themeKey ? 'active' : ''}"
             type="button"

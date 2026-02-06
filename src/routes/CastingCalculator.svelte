@@ -1,22 +1,26 @@
-<script>
+<script lang="ts">
   import { onMount } from "svelte";
-  import MetalCalculator from "../../scripts/metal_calculator.js";
-  import metalDefinitions from "../data/metals.json";
-  import { NUGGETS_PER_INGOT, UNITS_PER_INGOT } from "../lib/constants.ts";
+  import MetalCalculator, { METAL_DEFINITIONS } from "../../scripts/metal_calculator";
+  import { NUGGETS_PER_INGOT, UNITS_PER_INGOT } from "../lib/constants";
+  import type { Metal } from "../types/index";
 
-  let metalSelectEl;
-  let ingotsInputEl;
-  let calculatorContainer;
-  let calculator;
-  const metalEntries = Object.entries(metalDefinitions);
+  const metalDefinitions = METAL_DEFINITIONS as Record<string, Metal>;
+
+  let metalSelectEl: HTMLSelectElement | null = null;
+  let ingotsInputEl: HTMLInputElement | null = null;
+  let calculatorContainer: HTMLDivElement | null = null;
+  let calculator: MetalCalculator | undefined;
+  const metalEntries = Object.entries(metalDefinitions) as Array<[string, Metal]>;
 
   onMount(() => {
-    calculator = new MetalCalculator({
+    const calculatorOptions = {
       container: calculatorContainer,
       metalSelect: metalSelectEl,
       ingotsInput: ingotsInputEl,
       metals: metalDefinitions
-    });
+    };
+
+    calculator = new MetalCalculator(calculatorOptions);
 
     return () => {
       calculator?.destroy?.();

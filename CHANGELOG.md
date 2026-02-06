@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Extracted metal definitions to `src/data/metals.json` for improved maintainability and reusability across components
 - Updated `metal_calculator.js` and `CastingCalculator.svelte` to load metals from JSON data
 - Centralized temperature formatting and game constants in `src/data/constants.json` and `src/lib/constants.ts`, with fuels split into `src/data/fuels.json`
+- Migrated the codebase to TypeScript with strict settings, shared types, and ESLint TypeScript checks
 
 ## [0.4.1] - 2026-02-03
 
