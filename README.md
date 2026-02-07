@@ -60,6 +60,12 @@ VintageStoryCalculator/         # Root directory
 │   └── metal_calculator.ts     # Casting calculator engine
 ├── src/                        # Svelte application source
 │   ├── App.svelte              # Root layout and navigation
+│   ├── components/             # Reusable UI components
+│   │   ├── calculator-card.svelte
+│   │   ├── number-input.svelte
+│   │   ├── result-display.svelte
+│   │   ├── select-input.svelte
+│   │   └── temperature-display.svelte
 │   ├── data/                   # Game data files
 │   │   ├── alloys.json         # Alloy recipes and definitions
 │   │   ├── constants.json      # Shared game constants and fuel data
@@ -71,6 +77,7 @@ VintageStoryCalculator/         # Root directory
 │   │   └── version.ts          # Changelog parser
 │   ├── main.ts                 # Application bootstrap
 │   ├── types/                  # Shared TypeScript interfaces
+│   │   ├── components.ts       # Component prop and event contracts
 │   │   └── index.ts            # Data and calculation types
 │   └── routes/                 # Route-aligned components
 │       ├── AlloyingCalculator.svelte

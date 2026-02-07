@@ -44,3 +44,5 @@ export interface Fuel {
   temp: number;
   duration: number;
 }
+
+export * from "./components";

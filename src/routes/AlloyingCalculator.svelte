@@ -1,8 +1,12 @@
 <script lang="ts">
   import { onMount } from "svelte";
+  import CalculatorCard from "../components/calculator-card.svelte";
+  import NumberInput from "../components/number-input.svelte";
+  import SelectInput from "../components/select-input.svelte";
   import AlloyCalculator, { ALLOY_DEFINITIONS } from "../../scripts/alloy_calculator";
   import { NUGGETS_PER_INGOT } from "../lib/constants";
   import type { Alloy } from "../types/index";
+  import type { SelectOption } from "../types/components";
 
   const alloys = ALLOY_DEFINITIONS as Record<string, Alloy>;
 
@@ -11,6 +15,10 @@
   let calculatorContainer: HTMLDivElement | null = null;
   let calculator: AlloyCalculator | undefined;
   let alloyKeys = Object.keys(alloys);
+  const alloyOptions: Array<SelectOption<string>> = alloyKeys.map((key) => ({
+    value: key,
+    label: alloys[key]?.name ?? key
+  }));
 
   onMount(() => {
     calculator = new AlloyCalculator({
@@ -28,29 +36,30 @@
 
 </script>
 
-<div class="card">
-  <h2>Alloying Calculator</h2>
+<CalculatorCard title="Alloying Calculator">
   <p>
     Calculate the exact amounts of metals needed to create your desired alloy. Adjust the
     percentages to match the valid recipe ranges, and the calculator will show you how
     many nuggets of each metal to use. One ingot equals {NUGGETS_PER_INGOT} nuggets.
   </p>
-</div>
+</CalculatorCard>
 
 <div class="controls">
-  <div class="control">
-    <label for="alloySelect">Choose alloy</label>
-    <select id="alloySelect" bind:this={alloySelectEl}>
-      {#each alloyKeys as key (key)}
-        <option value={key}>{alloys[key]?.name ?? key}</option>
-      {/each}
-    </select>
-  </div>
+  <SelectInput
+    id="alloySelect"
+    label="Choose alloy"
+    options={alloyOptions}
+    bind:selectEl={alloySelectEl}
+  />
 
-  <div class="control">
-    <label for="targetIngots">Target ingots</label>
-    <input id="targetIngots" bind:this={ingotsInputEl} type="number" value="10" min="0" step="1" />
-  </div>
+  <NumberInput
+    id="targetIngots"
+    label="Target ingots"
+    value="10"
+    min={0}
+    step={1}
+    bind:inputEl={ingotsInputEl}
+  />
 </div>
 
 <div id="calculator" bind:this={calculatorContainer}></div>
