@@ -54,10 +54,6 @@ VintageStoryCalculator/         # Root directory
 ├── .github/                    # Issue templates and repo automation
 ├── index.html                  # Vite entry point
 ├── package.json                # Project configuration and scripts
-├── scripts/                    # Framework-agnostic logic
-│   ├── alloy_calculator.ts     # Alloy calculator engine
-│   ├── fuel_definitions.ts     # Fuel compatibility data
-│   └── metal_calculator.ts     # Casting calculator engine
 ├── src/                        # Svelte application source
 │   ├── App.svelte              # Root layout and navigation
 │   ├── components/             # Reusable UI components
@@ -72,10 +68,16 @@ VintageStoryCalculator/         # Root directory
 │   │   ├── fuels.json          # Fuel definitions and burn times
 │   │   └── metals.json         # Metal definitions
 │   ├── lib/                    # Shared utilities
-│   │   ├── constants.ts         # Typed constants exports
-│   │   ├── fuels.ts             # Typed fuel definitions
+│   │   ├── calculations.ts     # Pure calculator helpers
+│   │   ├── constants.ts        # Typed constants exports
+│   │   ├── fuels.ts            # Typed fuel definitions
+│   │   ├── stack-plan.ts       # Stack breakdown helper
 │   │   └── version.ts          # Changelog parser
 │   ├── main.ts                 # Application bootstrap
+│   ├── stores/                 # Svelte stores
+│   │   ├── alloyCalculator.ts  # Alloying calculator store
+│   │   ├── metalCalculator.ts  # Casting calculator store
+│   │   └── theme.ts            # Theme store
 │   ├── types/                  # Shared TypeScript interfaces
 │   │   ├── components.ts       # Component prop and event contracts
 │   │   └── index.ts            # Data and calculation types
@@ -86,7 +88,11 @@ VintageStoryCalculator/         # Root directory
 ├── tsconfig.json               # TypeScript configuration
 ├── .eslintrc.cjs               # ESLint configuration
 ├── styles/                     # Shared styling
-│   └── styles.css
+│   ├── base.css
+│   ├── calculator.css
+│   ├── components.css
+│   ├── layout.css
+│   └── themes.css
 ├── CHANGELOG.md                # Release notes
 ├── LICENSE                     # MIT License
 └── README.md                   # Project overview

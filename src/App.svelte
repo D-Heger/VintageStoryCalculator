@@ -5,6 +5,14 @@
   import AlloyingCalculator from "./routes/AlloyingCalculator.svelte";
   import CastingCalculator from "./routes/CastingCalculator.svelte";
   import { getProjectVersion } from "./lib/version";
+  import {
+    initTheme,
+    setTheme,
+    theme,
+    themeEntries,
+    themeName,
+    type ThemeKey
+  } from "./stores/theme";
 
   const NAV_ITEMS = [
     { id: "home", label: "Home", hash: "#home" },
@@ -22,40 +30,9 @@
     casting: CastingCalculator
   };
 
-  const THEMES = {
-    "nature-light": "Nature Light",
-    "nature-dark": "Nature Dark",
-    "ocean-light": "Ocean Light",
-    "ocean-dark": "Ocean Dark",
-    "bauxite-light": "Bauxite Light",
-    "bauxite-dark": "Bauxite Dark",
-    "lavender-light": "Lavender Light",
-    "lavender-dark": "Lavender Dark"
-  } as const;
-
-  type ThemeKey = keyof typeof THEMES;
-  const themeEntries = Object.entries(THEMES) as Array<[ThemeKey, string]>;
-
-  const THEME_STORAGE_KEY = "vsc-theme";
-
   let currentRoute: RouteId = "home";
-  let theme: ThemeKey = "nature-light";
   let version = "Loading...";
   let showThemeSelector = false;
-
-  const applyTheme = (value: ThemeKey) => {
-    if (typeof document === "undefined") return;
-    document.documentElement.dataset.theme = value;
-  };
-
-  const setTheme = (value: ThemeKey, persist = false) => {
-    theme = value;
-    applyTheme(value);
-    if (persist && typeof window !== "undefined") {
-      window.localStorage.setItem(THEME_STORAGE_KEY, value);
-    }
-    showThemeSelector = false;
-  };
 
   const getRouteFromHash = (hash: string): RouteId => {
     if (hash === "#alloying") return "alloying";
@@ -107,35 +84,20 @@
     showThemeSelector = !showThemeSelector;
   };
 
-  $: currentThemeName = THEMES[theme] || "Nature Light";
+  const applyThemeSelection = (themeKey: ThemeKey) => {
+    setTheme(themeKey, true);
+    showThemeSelector = false;
+  };
 
   onMount(() => {
     let isActive = true;
+    const cleanupTheme = initTheme();
 
     getProjectVersion().then((value) => {
       if (isActive) version = value;
     });
 
     if (typeof window !== "undefined") {
-      const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-      const storedTheme = window.localStorage.getItem(THEME_STORAGE_KEY);
-      const hasStoredTheme = storedTheme !== null && storedTheme in THEMES;
-
-      const resolvedTheme: ThemeKey = hasStoredTheme
-        ? (storedTheme as ThemeKey)
-        : mediaQuery.matches
-          ? "nature-dark"
-          : "nature-light";
-
-      setTheme(resolvedTheme);
-
-      const handleMediaPreference = (event: MediaQueryListEvent) => {
-        if (window.localStorage.getItem(THEME_STORAGE_KEY)) return;
-        setTheme(event.matches ? "nature-dark" : "nature-light");
-      };
-
-      mediaQuery.addEventListener("change", handleMediaPreference);
-
       const applyHashRoute = () => {
         currentRoute = getRouteFromHash(window.location.hash || "#home");
         updateMetaForRoute(currentRoute);
@@ -157,12 +119,13 @@
       return () => {
         isActive = false;
         window.removeEventListener("hashchange", handleHashChange);
-        mediaQuery.removeEventListener("change", handleMediaPreference);
+        cleanupTheme();
       };
     }
 
     return () => {
       isActive = false;
+      cleanupTheme();
     };
   });
 
@@ -184,16 +147,16 @@
       aria-label="Theme selector"
     >
       <span class="theme-toggle__icon" aria-hidden="true">🎨</span>
-      <span class="theme-toggle__label">{currentThemeName}</span>
+      <span class="theme-toggle__label">{$themeName}</span>
     </button>
     {#if showThemeSelector}
       <div class="theme-dropdown" role="menu">
         {#each themeEntries as [themeKey, themeName]}
           <button
-            class="theme-option {theme === themeKey ? 'active' : ''}"
+            class="theme-option {$theme === themeKey ? 'active' : ''}"
             type="button"
             role="menuitem"
-            on:click={() => setTheme(themeKey, true)}
+            on:click={() => applyThemeSelection(themeKey)}
             data-theme={themeKey}
           >
             <span class="theme-preview"></span>

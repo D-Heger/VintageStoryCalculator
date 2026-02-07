@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Removed unused DOM-based calculator class modules after migrating to store-driven rendering
+- Extracted reusable calculator helpers (`calculateNuggets`, `validateAlloyRatios`) to keep store-driven logic composable
+- Migrated calculator and theme state to Svelte stores with reactive outputs replacing DOM-driven updates
 - Extracted alloy definitions to `src/data/alloys.json` for improved maintainability and reusability across components
 - Updated `alloy_calculator.js` to dynamically load alloys from JSON instead of hardcoded definitions
 - Updated `AlloyingCalculator.svelte` to use dynamically generated select options from JSON data
