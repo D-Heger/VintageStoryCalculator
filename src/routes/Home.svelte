@@ -1,14 +1,16 @@
-<div class="card">
-  <h2>Welcome to Vintage Story Calculator</h2>
+<script lang="ts">
+  import CalculatorCard from "../components/calculator-card.svelte";
+</script>
+
+<CalculatorCard title="Welcome to Vintage Story Calculator">
   <p>
     This web application provides various calculators and tools to help you with your
     Vintage Story gameplay. Whether you're planning alloys, managing resources, or
     optimizing your builds, we've got you covered.
   </p>
-</div>
+</CalculatorCard>
 
-<div class="card">
-  <h2>Available Tools</h2>
+<CalculatorCard title="Available Tools">
   <div class="feature-grid">
     <a href="#alloying" class="feature-card">
       <h3>Alloying Calculator</h3>
@@ -31,10 +33,9 @@
       <p>Additional calculators and tools are in development!</p>
     </div>
   </div>
-</div>
+</CalculatorCard>
 
-<div class="card">
-  <h2>Getting Started</h2>
+<CalculatorCard title="Getting Started">
   <p>
     Select a calculator from the navigation menu or feature cards above to begin. Each
     tool is designed to be intuitive and provides real-time calculations as you adjust
@@ -48,4 +49,4 @@
     <li>No registration or installation required</li>
     <li>Open source and community-driven</li>
   </ul>
-</div>
+</CalculatorCard>

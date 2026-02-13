@@ -7,13 +7,19 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "vite build --mode production"
+    "test": "vite build --mode production",
+    "lint": "eslint . --ext .ts"
   },
   "dependencies": {
     "svelte": "^4.2.8"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^3.0.4",
+    "@typescript-eslint/eslint-plugin": "^7.12.0",
+    "@typescript-eslint/parser": "^7.12.0",
+    "eslint": "^8.57.0",
+    "svelte-preprocess": "^5.1.4",
+    "typescript": "^5.5.4",
     "vite": "^5.4.21"
   }
 }
