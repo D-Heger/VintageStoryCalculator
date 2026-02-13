@@ -4,11 +4,6 @@ export type AlloyRatioValidation = {
   statusWarning: boolean;
 };
 
-export const calculateNuggets = (targetIngots: number, nuggetsPerIngot: number) => {
-  const ingots = Math.max(0, Number.isFinite(targetIngots) ? targetIngots : 0);
-  return ingots * nuggetsPerIngot;
-};
-
 export const validateAlloyRatios = (parts: Array<{ pct: number }>): AlloyRatioValidation => {
   const totalPercent = parts.reduce((sum, part) => sum + (Number.isFinite(part.pct) ? part.pct : 0), 0);
   const diff = Math.abs(totalPercent - 100);

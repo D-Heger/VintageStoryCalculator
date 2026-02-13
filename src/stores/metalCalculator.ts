@@ -1,13 +1,13 @@
 import { derived, writable } from "svelte/store";
 import metalDefinitionsRaw from "../data/metals.json";
 import {
-  NUGGETS_PER_INGOT,
+  UNITS_PER_INGOT,
   formatTemperature,
   getMetalColor
 } from "../lib/constants";
-import { calculateNuggets } from "../lib/calculations";
-import { computeStackPlan } from "../lib/stack-plan";
+import { computeIngotStackPlan } from "../lib/stack-plan";
 import { formatFuelList, getCompatibleFuels } from "../lib/fuels";
+import { calculatePureMetalAllocation } from "../lib/smelting";
 import type { Metal } from "../types/index";
 
 export type MetalCalculatorState = {
@@ -57,15 +57,21 @@ export const metalCalculation = derived(metalCalculator, (state) => {
       oreSources: "-",
       nuggetsNeeded: 0,
       hasStackInputs: false,
-      stackPlan: computeStackPlan([])
+      stackPlan: computeIngotStackPlan([])
     };
   }
 
   const metalColor = definition.color || getMetalColor(state.selectedMetal || definition.name);
-  const nuggetsNeeded = calculateNuggets(state.targetIngots, NUGGETS_PER_INGOT);
+  const requiredUnits = Math.max(0, state.targetIngots) * UNITS_PER_INGOT;
+  const casting = calculatePureMetalAllocation(requiredUnits, definition.name, metalColor);
+  const nuggetsNeeded = casting.requiredNuggets;
   const compatibleFuels = formatFuelList(getCompatibleFuels(definition.smeltTemp));
   const stackInputs = nuggetsNeeded
-    ? [{ metal: definition.name, color: metalColor, nuggets: nuggetsNeeded }]
+    ? casting.metals.map((entry) => ({
+      metal: entry.metal,
+      color: entry.color,
+      nuggets: entry.nuggets
+    }))
     : [];
 
   return {
@@ -76,6 +82,6 @@ export const metalCalculation = derived(metalCalculator, (state) => {
     oreSources: definition.ores.join(", "),
     nuggetsNeeded,
     hasStackInputs: stackInputs.length > 0,
-    stackPlan: computeStackPlan(stackInputs)
+    stackPlan: computeIngotStackPlan(stackInputs)
   };
 });

@@ -24,6 +24,10 @@ export interface Calculation {
   totalNuggets?: number;
   totalStacks?: number;
   processes?: Array<{
+    nuggetsTotal?: number;
+    unitsTotal?: number;
+    ingotsTotal?: number;
+    isIngotStepValid?: boolean;
     stacks: Array<{
       metal: string;
       amount: number;

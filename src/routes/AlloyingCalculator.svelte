@@ -5,6 +5,11 @@
   import alloyDefinitionsRaw from "../data/alloys.json";
   import { NUGGETS_PER_INGOT } from "../lib/constants";
   import {
+    getProcessLine,
+    getProcessStepLabel,
+    getStackNote
+  } from "../lib/stack-display";
+  import {
     ALLOY_PERCENT_PRECISION,
     ALLOY_PERCENT_STEP,
     alloyCalculation,
@@ -45,17 +50,6 @@
     const value = Number.parseFloat(target?.value ?? "");
     if (!Number.isFinite(value)) return;
     setMetalPercentage(metal, value);
-  };
-
-  const getStackNote = (hasStackInputs: boolean, stackPlan: { processes?: Array<{ stacks: Array<{ metal: string; amount: number; color?: string }> }>; totalStacks?: number; requiresMultipleProcesses?: boolean }) => {
-    if (!hasStackInputs) {
-      return "Add ingots to see stack and smelt breakdown.";
-    }
-
-    const processCount = stackPlan.processes?.length || (stackPlan.totalStacks ? 1 : 0);
-    return stackPlan.requiresMultipleProcesses
-      ? `More than four stacks means ${processCount} smelting processes (4-stack limit).`
-      : "Fits in one smelting process (4-stack limit).";
   };
 </script>
 
@@ -169,6 +163,12 @@
       {#each $alloyCalculation.stackPlan.processes ?? [] as process, idx}
         <div class="process-card" aria-label={`Process ${idx + 1} stack layout`}>
           <div class="process-title">Process {idx + 1}</div>
+          <div class="process-meta">
+            <span>{getProcessLine(process, formatQuantity)}</span>
+            <span class:process-valid={process.isIngotStepValid !== false} class:process-invalid={process.isIngotStepValid === false}>
+              {getProcessStepLabel(process)}
+            </span>
+          </div>
           <div class="stack-row pairs">
             {#if process.stacks.length}
               {#each process.stacks as stack}

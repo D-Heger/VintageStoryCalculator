@@ -2,13 +2,17 @@ import { derived, writable } from "svelte/store";
 import alloyDefinitionsRaw from "../data/alloys.json";
 import {
   UNITS_PER_INGOT,
-  UNITS_PER_NUGGET,
   formatTemperature,
   getMetalColor
 } from "../lib/constants";
 import { validateAlloyRatios } from "../lib/calculations";
-import { computeStackPlan, type StackInput } from "../lib/stack-plan";
+import {
+  computeAlloyStackPlan,
+  computeStackPlan,
+  type StackInput
+} from "../lib/stack-plan";
 import { formatFuelList, getCompatibleFuels } from "../lib/fuels";
+import { calculateAlloyAllocation } from "../lib/smelting";
 import type { Alloy } from "../types/index";
 
 export type AlloyCalculatorState = {
@@ -23,17 +27,6 @@ type AlloyPartState = {
   min: number;
   max: number;
   pct: number;
-};
-
-type PieceAllocation = {
-  nuggets: number;
-  units: number;
-};
-
-type AllocationEntry = {
-  idx: number;
-  nuggets: number;
-  remainder: number;
 };
 
 export const ALLOY_PERCENT_PRECISION = 1;
@@ -285,64 +278,6 @@ const roundParts = (parts: AlloyPartState[], anchorIndex = 0) => {
   }
 };
 
-const calculatePieceAllocations = (
-  totalUnits: number,
-  parts: AlloyPartState[]
-): PieceAllocation[] => {
-  const partsCount = parts.length;
-  if (!partsCount) return [];
-
-  const totalNuggets = Math.max(0, Math.round(totalUnits / UNITS_PER_NUGGET));
-  if (totalNuggets === 0) {
-    return parts.map(() => ({ nuggets: 0, units: 0 }));
-  }
-
-  const allocations: AllocationEntry[] = parts.map((part, idx) => {
-    const exactNuggets = totalNuggets * (part.pct / 100);
-    const baseNuggets = Math.floor(exactNuggets);
-    return {
-      idx,
-      nuggets: baseNuggets,
-      remainder: exactNuggets - baseNuggets
-    };
-  });
-
-  const assignedNuggets = allocations.reduce((sum, entry) => sum + entry.nuggets, 0);
-  let remaining = totalNuggets - assignedNuggets;
-
-  if (remaining > 0) {
-    const byRemainderDesc = [...allocations].sort((a, b) => {
-      if (b.remainder === a.remainder) return a.idx - b.idx;
-      return b.remainder - a.remainder;
-    });
-
-    for (const entry of byRemainderDesc) {
-      if (remaining <= 0) break;
-      entry.nuggets += 1;
-      remaining -= 1;
-    }
-  } else if (remaining < 0) {
-    const byRemainderAsc = [...allocations].sort((a, b) => {
-      if (a.remainder === b.remainder) return b.idx - a.idx;
-      return a.remainder - b.remainder;
-    });
-
-    for (const entry of byRemainderAsc) {
-      if (remaining >= 0) break;
-      if (entry.nuggets === 0) continue;
-      entry.nuggets -= 1;
-      remaining += 1;
-    }
-  }
-
-  return allocations
-    .sort((a, b) => a.idx - b.idx)
-    .map((entry) => ({
-      nuggets: entry.nuggets,
-      units: entry.nuggets * UNITS_PER_NUGGET
-    }));
-};
-
 const partsToPercentages = (parts: AlloyPartState[]) => {
   const percentages: Record<string, number> = {};
   parts.forEach((part) => {
@@ -427,12 +362,24 @@ export const alloyCalculation = derived(alloyCalculator, (state) => {
 
   const parts = buildPartsFromState(definition, state.metalPercentages);
   const totalUnits = Math.max(0, state.targetIngots) * UNITS_PER_INGOT;
-  const pieceAllocations = calculatePieceAllocations(totalUnits, parts);
+  const alloyAllocation = calculateAlloyAllocation(
+    totalUnits,
+    parts.map((part) => ({
+      metal: part.metal,
+      color: part.color,
+      min: part.min,
+      max: part.max,
+      pct: part.pct
+    }))
+  );
+  const allocationByMetal = new Map(
+    alloyAllocation.parts.map((entry) => [entry.metal, entry])
+  );
 
-  const partsWithAllocations = parts.map((part, idx) => ({
+  const partsWithAllocations = parts.map((part) => ({
     ...part,
-    units: pieceAllocations[idx]?.units ?? 0,
-    nuggets: pieceAllocations[idx]?.nuggets ?? 0
+    units: allocationByMetal.get(part.metal)?.units ?? 0,
+    nuggets: allocationByMetal.get(part.metal)?.nuggets ?? 0
   }));
 
   const { totalPercent, statusMessage, statusWarning } = validateAlloyRatios(parts);
@@ -470,7 +417,18 @@ export const alloyCalculation = derived(alloyCalculator, (state) => {
     compatibleFuels,
     barSegments,
     stackInputs,
-    stackPlan: stackInputs.length ? computeStackPlan(stackInputs) : computeStackPlan([]),
+    stackPlan: stackInputs.length
+      ? computeAlloyStackPlan(
+        stackInputs,
+        parts.map((part) => ({
+          metal: part.metal,
+          color: part.color,
+          min: part.min,
+          max: part.max,
+          pct: part.pct
+        }))
+      )
+      : computeStackPlan([]),
     hasStackInputs: stackInputs.length > 0
   };
 });
