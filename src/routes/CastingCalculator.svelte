@@ -57,6 +57,7 @@
     label="Choose metal"
     options={metalOptions}
     value={$metalCalculator.selectedMetal}
+    helpText="Pick the metal you want to cast."
     on:change={handleMetalChange}
   />
 
@@ -66,6 +67,7 @@
     value={$metalCalculator.targetIngots}
     min={0}
     step={1}
+    helpText="Total ingots to cast."
     on:input={handleIngotsInput}
   />
 </div>
@@ -115,10 +117,17 @@
     <div class="process-list">
       {#each $metalCalculation.stackPlan.processes ?? [] as process, idx}
         <div class="process-card" aria-label={`Process ${idx + 1} stack layout`}>
-          <div class="process-title">Process {idx + 1}</div>
-          <div class="process-meta">
-            <span>{getProcessLine(process, formatQuantity)}</span>
-            <span class:process-valid={process.isIngotStepValid !== false} class:process-invalid={process.isIngotStepValid === false}>
+          <div class="process-header">
+            <span class="process-title">Process {idx + 1}</span>
+            <span class="process-line">{getProcessLine(process, formatQuantity)}</span>
+            <span
+              class="process-step"
+              class:process-valid={process.isIngotStepValid !== false}
+              class:process-invalid={process.isIngotStepValid === false}
+              title={process.isIngotStepValid === false
+                ? "Batch size should be a multiple of 100 units (20 nuggets)."
+                : "Batch size matches the 100-unit (20 nugget) step."}
+            >
               {getProcessStepLabel(process)}
             </span>
           </div>

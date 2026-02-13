@@ -46,6 +46,7 @@
     required={required}
     disabled={disabled}
     inputmode={inputMode}
+    title={helpText || undefined}
     aria-describedby={helpText ? `${id}-help` : undefined}
     on:input={handleInput}
     on:change={handleChange}

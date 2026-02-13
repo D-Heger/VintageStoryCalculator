@@ -191,7 +191,7 @@
 
 <footer>
   <p>
-    2025 | Vintage Story Calculator | Version:
+    2026 | Vintage Story Calculator | Version:
     <span id="version"><a href="https://github.com/D-Heger/VintageStoryCalculator/releases">{version}</a> | <a href="https://github.com/D-Heger/VintageStoryCalculator/blob/release/CHANGELOG.md">Changelog</a></span>
   </p>
   <p>&copy; Developed by David Heger | Licensed under MIT</p>

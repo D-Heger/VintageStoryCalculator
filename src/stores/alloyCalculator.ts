@@ -349,8 +349,6 @@ export const alloyCalculation = derived(alloyCalculator, (state) => {
       parts: [],
       totalUnits: 0,
       totalPercent: 0,
-      statusMessage: "Blend total: 0%",
-      statusWarning: false,
       smeltTemp: formatTemperature(undefined),
       compatibleFuels: formatFuelList(undefined),
       barSegments: [{ label: "No metals", color: "#eee", flex: 1 }],
@@ -382,7 +380,7 @@ export const alloyCalculation = derived(alloyCalculator, (state) => {
     nuggets: allocationByMetal.get(part.metal)?.nuggets ?? 0
   }));
 
-  const { totalPercent, statusMessage, statusWarning } = validateAlloyRatios(parts);
+  const { totalPercent } = validateAlloyRatios(parts);
 
   const compatibleFuels = definition.smeltTemp !== undefined
     ? formatFuelList(getCompatibleFuels(definition.smeltTemp))
@@ -411,8 +409,6 @@ export const alloyCalculation = derived(alloyCalculator, (state) => {
     parts: partsWithAllocations,
     totalUnits,
     totalPercent,
-    statusMessage,
-    statusWarning,
     smeltTemp: formatTemperature(definition.smeltTemp),
     compatibleFuels,
     barSegments,

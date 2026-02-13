@@ -8,6 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Year reference in footer updated to 2026
+
+### Changed
+
+- Simplified alloy output by removing the blend total status line and aligning process summaries with clearer step validity labels
+- Simplified calculator surfaces with reduced gradients, stronger section borders, and updated navigation contrast
+- Added hover help text on controls and process badges for clearer batch guidance
+
 ## [0.5.0-beta.1] - 2026-02-13
 
 ### Changed

@@ -67,6 +67,7 @@
     label="Choose alloy"
     options={alloyOptions}
     value={$alloyCalculator.selectedAlloy}
+    helpText="Pick the alloy recipe to calculate."
     on:change={handleAlloyChange}
   />
 
@@ -76,14 +77,12 @@
     value={$alloyCalculator.targetIngots}
     min={0}
     step={1}
+    helpText="Total ingots to produce."
     on:input={handleIngotsInput}
   />
 </div>
 
 <div id="calculator">
-  <p class="status" class:warning={$alloyCalculation.statusWarning}>
-    {$alloyCalculation.statusMessage}
-  </p>
   <p>
     Total units needed: <strong>{formatQuantity($alloyCalculation.totalUnits)}</strong>
   </p>
@@ -96,10 +95,10 @@
     <thead>
       <tr>
         <th>Metal</th>
-        <th>Recipe %</th>
-        <th>Units needed</th>
-        <th>Nuggets</th>
-        <th>Adjust</th>
+        <th title="Target percent range for each metal.">Recipe %</th>
+        <th title="Units required to hit the target ingots.">Units needed</th>
+        <th title="Total nuggets required for each metal.">Nuggets</th>
+        <th title="Fine-tune the percent with a slider.">Adjust</th>
       </tr>
     </thead>
     <tbody>
@@ -112,6 +111,7 @@
               type="number"
               inputmode="decimal"
               aria-label={`${part.metal} percent`}
+              title={`Target ${part.metal} percent (${part.min}-${part.max}%).`}
               value={part.pct.toFixed(ALLOY_PERCENT_PRECISION)}
               min={part.min}
               max={part.max}
@@ -131,6 +131,7 @@
               step={ALLOY_PERCENT_STEP}
               value={part.pct}
               aria-label={`${part.metal} percent slider`}
+              title={`Adjust ${part.metal} percent (${part.min}-${part.max}%).`}
               on:input={(event) => handlePercentInput(part.metal, event)}
             />
           </td>
@@ -162,10 +163,17 @@
     <div class="process-list">
       {#each $alloyCalculation.stackPlan.processes ?? [] as process, idx}
         <div class="process-card" aria-label={`Process ${idx + 1} stack layout`}>
-          <div class="process-title">Process {idx + 1}</div>
-          <div class="process-meta">
-            <span>{getProcessLine(process, formatQuantity)}</span>
-            <span class:process-valid={process.isIngotStepValid !== false} class:process-invalid={process.isIngotStepValid === false}>
+          <div class="process-header">
+            <span class="process-title">Process {idx + 1}</span>
+            <span class="process-line">{getProcessLine(process, formatQuantity)}</span>
+            <span
+              class="process-step"
+              class:process-valid={process.isIngotStepValid !== false}
+              class:process-invalid={process.isIngotStepValid === false}
+              title={process.isIngotStepValid === false
+                ? "Batch size should be a multiple of 100 units (20 nuggets)."
+                : "Batch size matches the 100-unit (20 nugget) step."}
+            >
               {getProcessStepLabel(process)}
             </span>
           </div>
