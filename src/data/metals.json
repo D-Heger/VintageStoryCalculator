@@ -1,0 +1,42 @@
+{
+  "copper": {
+    "name": "Copper",
+    "ores": ["Native copper", "Malachite"],
+    "smeltTemp": 1084
+  },
+  "gold": {
+    "name": "Gold",
+    "ores": ["Native gold"],
+    "smeltTemp": 1063
+  },
+  "silver": {
+    "name": "Silver",
+    "ores": ["Native silver"],
+    "smeltTemp": 961
+  },
+  "tin": {
+    "name": "Tin",
+    "ores": ["Cassiterite"],
+    "smeltTemp": 232
+  },
+  "zinc": {
+    "name": "Zinc",
+    "ores": ["Sphalerite"],
+    "smeltTemp": 419
+  },
+  "bismuth": {
+    "name": "Bismuth",
+    "ores": ["Bismuthinite"],
+    "smeltTemp": 271
+  },
+  "lead": {
+    "name": "Lead",
+    "ores": ["Galena"],
+    "smeltTemp": 327
+  },
+  "nickel": {
+    "name": "Nickel",
+    "ores": ["Pentlandite"],
+    "smeltTemp": 1325
+  }
+}

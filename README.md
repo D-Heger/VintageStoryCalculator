@@ -45,6 +45,7 @@ Calculate the number of ore nuggets needed to cast metal ingots in a crucible. S
 - `npm run dev`: start a hot-reloading development server (default port 5173)
 - `npm run build`: generate an optimized production build
 - `npm run preview`: serve the production build locally for verification
+- `npm run lint`: run ESLint checks for TypeScript sources
 
 ## Project Structure
 
@@ -53,20 +54,45 @@ VintageStoryCalculator/         # Root directory
 ├── .github/                    # Issue templates and repo automation
 ├── index.html                  # Vite entry point
 ├── package.json                # Project configuration and scripts
-├── scripts/                    # Framework-agnostic logic
-│   ├── alloy_calculator.js     # Alloy calculator engine
-│   └── metal_calculator.js     # Casting calculator engine
 ├── src/                        # Svelte application source
 │   ├── App.svelte              # Root layout and navigation
+│   ├── components/             # Reusable UI components
+│   │   ├── calculator-card.svelte
+│   │   ├── number-input.svelte
+│   │   ├── result-display.svelte
+│   │   ├── select-input.svelte
+│   │   └── temperature-display.svelte
+│   ├── data/                   # Game data files
+│   │   ├── alloys.json         # Alloy recipes and definitions
+│   │   ├── constants.json      # Shared game constants and fuel data
+│   │   ├── fuels.json          # Fuel definitions and burn times
+│   │   └── metals.json         # Metal definitions
 │   ├── lib/                    # Shared utilities
-│   │   └── version.js          # Changelog parser
-│   ├── main.js                 # Application bootstrap
+│   │   ├── calculations.ts     # Pure calculator helpers
+│   │   ├── constants.ts        # Typed constants exports
+│   │   ├── fuels.ts            # Typed fuel definitions
+│   │   ├── stack-plan.ts       # Stack breakdown helper
+│   │   └── version.ts          # Changelog parser
+│   ├── main.ts                 # Application bootstrap
+│   ├── stores/                 # Svelte stores
+│   │   ├── alloyCalculator.ts  # Alloying calculator store
+│   │   ├── metalCalculator.ts  # Casting calculator store
+│   │   └── theme.ts            # Theme store
+│   ├── types/                  # Shared TypeScript interfaces
+│   │   ├── components.ts       # Component prop and event contracts
+│   │   └── index.ts            # Data and calculation types
 │   └── routes/                 # Route-aligned components
 │       ├── AlloyingCalculator.svelte
 │       ├── CastingCalculator.svelte
 │       └── Home.svelte
+├── tsconfig.json               # TypeScript configuration
+├── .eslintrc.cjs               # ESLint configuration
 ├── styles/                     # Shared styling
-│   └── styles.css
+│   ├── base.css
+│   ├── calculator.css
+│   ├── components.css
+│   ├── layout.css
+│   └── themes.css
 ├── CHANGELOG.md                # Release notes
 ├── LICENSE                     # MIT License
 └── README.md                   # Project overview

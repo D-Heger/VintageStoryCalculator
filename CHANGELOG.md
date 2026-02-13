@@ -8,7 +8,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Removed unused DOM-based calculator class modules after migrating to store-driven rendering
+- Consolidated calculator helpers for store-driven flows and removed unused helper paths
+- Migrated calculator and theme state to Svelte stores with reactive outputs replacing DOM-driven updates
+- Extracted alloy definitions to `src/data/alloys.json` for improved maintainability and reusability across components
+- Updated `alloy_calculator.js` to dynamically load alloys from JSON instead of hardcoded definitions
+- Updated `AlloyingCalculator.svelte` to use dynamically generated select options from JSON data
+- Extracted metal definitions to `src/data/metals.json` for improved maintainability and reusability across components
+- Updated `metal_calculator.js` and `CastingCalculator.svelte` to load metals from JSON data
+- Centralized temperature formatting and game constants in `src/data/constants.json` and `src/lib/constants.ts`, with fuels split into `src/data/fuels.json`
+- Migrated the codebase to TypeScript with strict settings, shared types, and ESLint TypeScript checks
+- Added reusable Svelte input/card components with typed prop and event contracts, and refactored calculator pages to use them
+- Moved casting/alloy allocation and process planning into `src/lib/smelting/` with explicit pure/alloy planning boundaries
+- Updated alloy nugget allocation to find the smallest feasible ingot-step total that satisfies min/max constraints
+- Updated process planning to support alloy constraints, balanced multi-process splits, and 20-nugget (100-unit) batch steps
+- Added per-process metadata (`nuggetsTotal`, `unitsTotal`, `ingotsTotal`, `isIngotStepValid`) for clearer stack breakdown output
+- Extracted shared stack/process display helpers to `src/lib/stack-display.ts` to keep calculator routes focused on UI binding
+
 ## [0.4.1] - 2026-02-03
+
+### Fixed
+
+- Added missing brass alloy definition to AlloyingCalculator.svelte
 
 ## [0.4.0] - 2026-01-26
 

@@ -1,55 +1,146 @@
-<script>
-  import { onMount } from "svelte";
-  import MetalCalculator from "../../scripts/metal_calculator.js";
+<script lang="ts">
+  import CalculatorCard from "../components/calculator-card.svelte";
+  import NumberInput from "../components/number-input.svelte";
+  import SelectInput from "../components/select-input.svelte";
+  import metalDefinitionsRaw from "../data/metals.json";
+  import { NUGGETS_PER_INGOT, UNITS_PER_INGOT } from "../lib/constants";
+  import {
+    getProcessLine,
+    getProcessStepLabel,
+    getStackNote
+  } from "../lib/stack-display";
+  import {
+    metalCalculation,
+    metalCalculator,
+    setSelectedMetal,
+    setTargetIngots
+  } from "../stores/metalCalculator";
+  import type { Metal } from "../types/index";
+  import type { SelectOption } from "../types/components";
 
-  let metalSelectEl;
-  let ingotsInputEl;
-  let calculatorContainer;
-  let calculator;
+  const metalDefinitions = metalDefinitionsRaw as Record<string, Metal>;
 
-  onMount(() => {
-    calculator = new MetalCalculator({
-      container: calculatorContainer,
-      metalSelect: metalSelectEl,
-      ingotsInput: ingotsInputEl
-    });
+  const metalEntries = Object.entries(metalDefinitions) as Array<[string, Metal]>;
+  const metalOptions: Array<SelectOption<string>> = metalEntries.map(([key, metal]) => ({
+    value: key,
+    label: metal.name
+  }));
 
-    return () => {
-      calculator?.destroy?.();
-      calculator = undefined;
-    };
+  const integerFormatter = new Intl.NumberFormat("en-US", {
+    maximumFractionDigits: 0,
+    useGrouping: false
   });
 
+  const formatQuantity = (value: number) =>
+    integerFormatter.format(Number.isFinite(value) ? value : 0);
+
+  const handleMetalChange = (event: CustomEvent<{ value: string }>) => {
+    setSelectedMetal(event.detail.value);
+  };
+
+  const handleIngotsInput = (event: CustomEvent<{ value: number | null }>) => {
+    setTargetIngots(event.detail.value);
+  };
 </script>
 
-<div class="card">
-  <h2>Casting Calculator</h2>
+<CalculatorCard title="Casting Calculator">
   <p>
     Calculate the number of ore nuggets needed to cast your desired amount of metal ingots.
-    Each metal ingot requires 20 nuggets (100 units) to create in a crucible. Select your metal
+    Each metal ingot requires {NUGGETS_PER_INGOT} nuggets ({UNITS_PER_INGOT} units) to create in a crucible. Select your metal
     and target number of ingots to see the nuggets required and smelting information.
   </p>
-</div>
+</CalculatorCard>
 
 <div class="controls">
-  <div class="control">
-    <label for="metalSelect">Choose metal</label>
-    <select id="metalSelect" bind:this={metalSelectEl}>
-      <option value="copper">Copper</option>
-      <option value="gold">Gold</option>
-      <option value="silver">Silver</option>
-      <option value="tin">Tin</option>
-      <option value="zinc">Zinc</option>
-      <option value="bismuth">Bismuth</option>
-      <option value="lead">Lead</option>
-      <option value="nickel">Nickel</option>
-    </select>
-  </div>
+  <SelectInput
+    id="metalSelect"
+    label="Choose metal"
+    options={metalOptions}
+    value={$metalCalculator.selectedMetal}
+    on:change={handleMetalChange}
+  />
 
-  <div class="control">
-    <label for="targetIngots">Target ingots</label>
-    <input id="targetIngots" bind:this={ingotsInputEl} type="number" value="10" min="0" step="1" />
-  </div>
+  <NumberInput
+    id="targetIngots"
+    label="Target ingots"
+    value={$metalCalculator.targetIngots}
+    min={0}
+    step={1}
+    on:input={handleIngotsInput}
+  />
 </div>
 
-<div id="calculator" bind:this={calculatorContainer}></div>
+<div id="calculator">
+  <p>
+    Nuggets needed: <strong>{formatQuantity($metalCalculation.nuggetsNeeded)}</strong>
+  </p>
+
+  <div class="metal-info" id="metalInfo">
+    <div class="info-row">
+      <span class="info-label">Metal:</span>
+      <span class="info-value">{$metalCalculation.metalName || "-"}</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Smelting Temperature:</span>
+      <span class="info-value">{$metalCalculation.smeltTemp}</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Compatible Fuels:</span>
+      <span class="info-value">{$metalCalculation.compatibleFuels}</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Ore Sources:</span>
+      <span class="info-value">{$metalCalculation.oreSources}</span>
+    </div>
+  </div>
+
+  <div class="bar" aria-label="Metal color preview">
+    <div
+      class="segment"
+      style={`flex:1;background:${$metalCalculation.metalColor};`}
+    >
+      {$metalCalculation.metalName || "-"}
+    </div>
+  </div>
+
+  <div class="stack-summary">
+    <div class="stack-header">
+      <p class="stack-headline">
+        Stacks needed: {formatQuantity($metalCalculation.stackPlan.totalStacks ?? 0)}
+      </p>
+      <p class="stack-note">
+        {getStackNote($metalCalculation.hasStackInputs, $metalCalculation.stackPlan)}
+      </p>
+    </div>
+    <div class="process-list">
+      {#each $metalCalculation.stackPlan.processes ?? [] as process, idx}
+        <div class="process-card" aria-label={`Process ${idx + 1} stack layout`}>
+          <div class="process-title">Process {idx + 1}</div>
+          <div class="process-meta">
+            <span>{getProcessLine(process, formatQuantity)}</span>
+            <span class:process-valid={process.isIngotStepValid !== false} class:process-invalid={process.isIngotStepValid === false}>
+              {getProcessStepLabel(process)}
+            </span>
+          </div>
+          <div class="stack-row pairs">
+            {#if process.stacks.length}
+              {#each process.stacks as stack}
+                <div class="stack-pair" aria-label={`${stack.metal} stack`}>
+                  <span class="stack-chip">{formatQuantity(stack.amount)}</span>
+                  <span
+                    class="stack-label"
+                    style={`--stack-color:${stack.color || "var(--primary-color)"}`}
+                  >
+                    {stack.metal}
+                  </span>
+                </div>
+              {/each}
+            {:else}
+              -
+            {/if}
+          </div>
+        </div>
+      {/each}
+    </div>
+  </div>
+</div>
