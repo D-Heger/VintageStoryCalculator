@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0-beta.2] - 2026-02-20
+
 ### Added
 
 - Settings modal with controls for theme, font family, UI scale, and help-text visibility
@@ -163,7 +165,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release with Alloying Calculator
 
-[Unreleased]: https://github.com/D-Heger/VintageStoryCalculator/compare/0.5.0-beta.1...HEAD
+[Unreleased]: https://github.com/D-Heger/VintageStoryCalculator/compare/0.5.0-beta.2...HEAD
+[0.5.0-beta.2]: https://github.com/D-Heger/VintageStoryCalculator/releases/tag/0.5.0-beta.2
 [0.5.0-beta.1]: https://github.com/D-Heger/VintageStoryCalculator/releases/tag/0.5.0-beta.1
 [0.4.1]: https://github.com/D-Heger/VintageStoryCalculator/releases/tag/0.4.1
 [0.4.0]: https://github.com/D-Heger/VintageStoryCalculator/releases/tag/0.4.0
