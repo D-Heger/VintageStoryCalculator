@@ -37,8 +37,9 @@ Calculate the number of ore nuggets needed to cast metal ingots in a crucible. S
 2. Start the development server with `npm run dev`
 3. Open the provided local URL in your browser
 4. Navigate to the desired calculator using the in-app navigation
-5. For alloys: select your alloy type and adjust percentages to see exact nuggets needed
-6. For metals: select your metal and target ingots to see nuggets required
+5. Optionally open settings from the header to customize theme, font family, UI scale, and help-text visibility
+6. For alloys: select your alloy type and adjust percentages to see exact nuggets needed
+7. For metals: select your metal and target ingots to see nuggets required
 
 ## Development
 
@@ -61,6 +62,7 @@ VintageStoryCalculator/         # Root directory
 │   │   ├── number-input.svelte
 │   │   ├── result-display.svelte
 │   │   ├── select-input.svelte
+│   │   ├── settings-modal.svelte
 │   │   └── temperature-display.svelte
 │   ├── data/                   # Game data files
 │   │   ├── alloys.json         # Alloy recipes and definitions
@@ -71,12 +73,19 @@ VintageStoryCalculator/         # Root directory
 │   │   ├── calculations.ts     # Pure calculator helpers
 │   │   ├── constants.ts        # Typed constants exports
 │   │   ├── fuels.ts            # Typed fuel definitions
+│   │   ├── stack-display.ts    # Process and stack display labels
 │   │   ├── stack-plan.ts       # Stack breakdown helper
+│   │   ├── smelting/           # Smelting planning and allocation helpers
+│   │   │   ├── allocation.ts
+│   │   │   ├── index.ts
+│   │   │   ├── planner.ts
+│   │   │   └── types.ts
 │   │   └── version.ts          # Changelog parser
 │   ├── main.ts                 # Application bootstrap
 │   ├── stores/                 # Svelte stores
 │   │   ├── alloyCalculator.ts  # Alloying calculator store
 │   │   ├── metalCalculator.ts  # Casting calculator store
+│   │   ├── settings.ts         # Persistent UI settings store
 │   │   └── theme.ts            # Theme store
 │   ├── types/                  # Shared TypeScript interfaces
 │   │   ├── components.ts       # Component prop and event contracts

@@ -8,12 +8,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Settings modal with controls for theme, font family, UI scale, and help-text visibility
+- `public/humans.txt` metadata file with author/site information
+
 ### Fixed
 
 - Year reference in footer updated to 2026
 
 ### Changed
 
+- Centralized UI preference handling in `src/stores/settings.ts` with localStorage persistence and legacy theme migration
+- Help text rendering can now be toggled globally from settings
+- App shell now initializes theme and settings together, and applies UI scale/font settings via CSS variables
 - Simplified alloy output by removing the blend total status line and aligning process summaries with clearer step validity labels
 - Simplified calculator surfaces with reduced gradients, stronger section borders, and updated navigation contrast
 - Added hover help text on controls and process badges for clearer batch guidance
