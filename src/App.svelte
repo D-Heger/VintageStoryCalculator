@@ -7,7 +7,7 @@
   import SettingsModal from "./components/settings-modal.svelte";
   import { getProjectVersion } from "./lib/version";
   import { initTheme, setTheme } from "./stores/theme";
-  import { initSettings, settings, updateSetting } from "./stores/settings";
+  import { initSettings, settings } from "./stores/settings";
 
   const NAV_ITEMS = [
     { id: "home", label: "Home", hash: "#home" },
@@ -28,6 +28,7 @@
   let currentRoute: RouteId = "home";
   let version = "Loading...";
   let showSettings = false;
+  let lastAppliedTheme: string | null = null;
 
   const getRouteFromHash = (hash: string): RouteId => {
     if (hash === "#alloying") return "alloying";
@@ -83,18 +84,16 @@
     showSettings = false;
   };
 
-  // Sync theme setting with theme store
-  $: if ($settings.theme) {
+  // Sync theme setting with theme store only when the theme changes
+  $: if ($settings.theme && $settings.theme !== lastAppliedTheme) {
+    lastAppliedTheme = $settings.theme;
     setTheme($settings.theme, false); // Don't persist again, settings store handles it
   }
 
   onMount(() => {
     let isActive = true;
-    const cleanupTheme = initTheme();
     const cleanupSettings = initSettings();
-
-    // Load initial theme from settings
-    setTheme($settings.theme, false);
+    const cleanupTheme = initTheme($settings.theme);
 
     getProjectVersion().then((value) => {
       if (isActive) version = value;

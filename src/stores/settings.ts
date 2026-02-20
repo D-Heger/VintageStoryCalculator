@@ -119,7 +119,12 @@ const saveSettings = (settings: Settings): void => {
 export const settings = writable<Settings>(loadSettings());
 
 // Subscribe to persist changes automatically
+let hasInitializedPersistence = false;
 settings.subscribe((value) => {
+  if (!hasInitializedPersistence) {
+    hasInitializedPersistence = true;
+    return;
+  }
   saveSettings(value);
 });
 
