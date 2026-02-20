@@ -33,4 +33,4 @@ export const getProcessLine = (
 };
 
 export const getProcessStepLabel = (process: ProcessView): string =>
-  process.isIngotStepValid === false ? "Off 100-unit step" : "100-unit step";
+  process.isIngotStepValid === false ? "Invalid!" : "Valid";

@@ -4,15 +4,10 @@
   import Home from "./routes/Home.svelte";
   import AlloyingCalculator from "./routes/AlloyingCalculator.svelte";
   import CastingCalculator from "./routes/CastingCalculator.svelte";
+  import SettingsModal from "./components/settings-modal.svelte";
   import { getProjectVersion } from "./lib/version";
-  import {
-    initTheme,
-    setTheme,
-    theme,
-    themeEntries,
-    themeName,
-    type ThemeKey
-  } from "./stores/theme";
+  import { initTheme, setTheme } from "./stores/theme";
+  import { initSettings, settings } from "./stores/settings";
 
   const NAV_ITEMS = [
     { id: "home", label: "Home", hash: "#home" },
@@ -32,7 +27,8 @@
 
   let currentRoute: RouteId = "home";
   let version = "Loading...";
-  let showThemeSelector = false;
+  let showSettings = false;
+  let lastAppliedTheme: string | null = null;
 
   const getRouteFromHash = (hash: string): RouteId => {
     if (hash === "#alloying") return "alloying";
@@ -80,18 +76,24 @@
     }
   };
 
-  const toggleThemeSelector = () => {
-    showThemeSelector = !showThemeSelector;
+  const toggleSettings = () => {
+    showSettings = !showSettings;
   };
 
-  const applyThemeSelection = (themeKey: ThemeKey) => {
-    setTheme(themeKey, true);
-    showThemeSelector = false;
+  const closeSettings = () => {
+    showSettings = false;
   };
+
+  // Sync theme setting with theme store only when the theme changes
+  $: if ($settings.theme && $settings.theme !== lastAppliedTheme) {
+    lastAppliedTheme = $settings.theme;
+    setTheme($settings.theme, false); // Don't persist again, settings store handles it
+  }
 
   onMount(() => {
     let isActive = true;
-    const cleanupTheme = initTheme();
+    const cleanupSettings = initSettings();
+    const cleanupTheme = initTheme($settings.theme);
 
     getProjectVersion().then((value) => {
       if (isActive) version = value;
@@ -120,12 +122,14 @@
         isActive = false;
         window.removeEventListener("hashchange", handleHashChange);
         cleanupTheme();
+        cleanupSettings();
       };
     }
 
     return () => {
       isActive = false;
       cleanupTheme();
+      cleanupSettings();
     };
   });
 
@@ -138,35 +142,18 @@
     <h1>Vintage Story Calculator</h1>
     <p>Your companion for game calculations</p>
   </a>
-  <div class="theme-selector">
-    <button
-      class="theme-toggle"
-      type="button"
-      on:click={toggleThemeSelector}
-      aria-expanded={showThemeSelector}
-      aria-label="Theme selector"
-    >
-      <span class="theme-toggle__icon" aria-hidden="true">🎨</span>
-      <span class="theme-toggle__label">{$themeName}</span>
-    </button>
-    {#if showThemeSelector}
-      <div class="theme-dropdown" role="menu">
-        {#each themeEntries as [themeKey, themeName]}
-          <button
-            class="theme-option {$theme === themeKey ? 'active' : ''}"
-            type="button"
-            role="menuitem"
-            on:click={() => applyThemeSelection(themeKey)}
-            data-theme={themeKey}
-          >
-            <span class="theme-preview"></span>
-            {themeName}
-          </button>
-        {/each}
-      </div>
-    {/if}
-  </div>
+  <button
+    class="settings-button"
+    type="button"
+    on:click={toggleSettings}
+    aria-label="Open settings"
+    title="Settings"
+  >
+    <span class="settings-icon" aria-hidden="true">⚙️</span>
+  </button>
 </header>
+
+<SettingsModal isOpen={showSettings} onClose={closeSettings} />
 
 <main>
   <nav aria-label="Main navigation">
@@ -191,7 +178,7 @@
 
 <footer>
   <p>
-    2025 | Vintage Story Calculator | Version:
+    2026 | Vintage Story Calculator | Version:
     <span id="version"><a href="https://github.com/D-Heger/VintageStoryCalculator/releases">{version}</a> | <a href="https://github.com/D-Heger/VintageStoryCalculator/blob/release/CHANGELOG.md">Changelog</a></span>
   </p>
   <p>&copy; Developed by David Heger | Licensed under MIT</p>

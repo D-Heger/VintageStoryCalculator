@@ -1,6 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
   import type { NumberInputEvents, NumberInputProps } from "../types/components";
+  import { showHelpText } from "../stores/settings";
 
   export let id: NumberInputProps["id"];
   export let label: NumberInputProps["label"];
@@ -30,6 +31,8 @@
   const handleChange = (event: Event) => {
     dispatch("change", { value: parseValue(event), rawEvent: event });
   };
+  
+  $: shouldShowHelp = $showHelpText && helpText;
 </script>
 
 <div class="control">
@@ -46,11 +49,12 @@
     required={required}
     disabled={disabled}
     inputmode={inputMode}
-    aria-describedby={helpText ? `${id}-help` : undefined}
+    title={shouldShowHelp ? helpText : undefined}
+    aria-describedby={shouldShowHelp ? `${id}-help` : undefined}
     on:input={handleInput}
     on:change={handleChange}
   />
-  {#if helpText}
+  {#if shouldShowHelp}
     <p class="control-help" id={`${id}-help`}>{helpText}</p>
   {/if}
 </div>

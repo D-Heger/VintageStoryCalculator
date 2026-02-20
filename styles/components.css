@@ -2,18 +2,18 @@
 
 /* Cards */
 .card {
-  background: linear-gradient(135deg, var(--surface) 0%, var(--surface-gradient-end) 100%);
+  background: var(--surface);
   border-radius: var(--border-radius);
   padding: var(--spacing-lg);
   margin-bottom: var(--spacing-md);
-  box-shadow: 0 2px 6px var(--shadow);
-  border: 1px solid var(--border-soft);
+  box-shadow: 0 2px 8px var(--shadow);
+  border: 1px solid var(--border-strong);
   transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
 }
 
 .card:hover {
-  box-shadow: 0 6px 18px var(--shadow-hover);
-  transform: translateY(-3px);
+  box-shadow: 0 4px 14px var(--shadow-hover);
+  transform: translateY(-2px);
   border-color: var(--border-strong);
 }
 
@@ -37,7 +37,7 @@
 }
 
 .feature-card {
-  background: linear-gradient(135deg, var(--surface) 0%, var(--surface-gradient-end) 100%);
+  background: var(--surface);
   border-radius: var(--border-radius);
   padding: var(--spacing-md);
   border: 1px solid var(--border-soft);
@@ -48,8 +48,8 @@
 
 .feature-card:hover {
   border-color: var(--border-strong);
-  transform: translateY(-4px);
-  box-shadow: 0 8px 20px var(--shadow-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px var(--shadow-hover);
 }
 
 .feature-card h3 {

@@ -35,18 +35,20 @@ export const setTheme = (value: ThemeKey, persist = false) => {
   }
 };
 
-export const initTheme = () => {
+export const initTheme = (initialTheme?: ThemeKey) => {
   if (typeof window === "undefined") return () => undefined;
 
   const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
   const storedTheme = window.localStorage.getItem(THEME_STORAGE_KEY);
   const hasStoredTheme = storedTheme !== null && storedTheme in THEMES;
 
-  const resolvedTheme: ThemeKey = hasStoredTheme
-    ? (storedTheme as ThemeKey)
-    : mediaQuery.matches
-      ? "nature-dark"
-      : "nature-light";
+  const resolvedTheme: ThemeKey = initialTheme
+    ? initialTheme
+    : hasStoredTheme
+      ? (storedTheme as ThemeKey)
+      : mediaQuery.matches
+        ? "nature-dark"
+        : "nature-light";
 
   setTheme(resolvedTheme);
 
