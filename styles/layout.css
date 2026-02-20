@@ -36,6 +36,36 @@ header .subtle-link {
   outline-offset: 4px;
 }
 
+.settings-button {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  color: white;
+  cursor: pointer;
+  transition: all var(--transition);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: 1rem;
+}
+
+.settings-button:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.settings-button:active {
+  transform: translateY(0);
+}
+
+.settings-icon {
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
 /* Main Content */
 main {
   flex: 1;

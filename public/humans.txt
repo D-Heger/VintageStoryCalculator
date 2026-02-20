@@ -1,0 +1,16 @@
+/* TEAM */
+Name: David
+Role: Developer
+Location: Germany
+
+/* THANKS */
+Name: Vintage Story Developers
+Reason: Creating and maintaining this awesome game <3
+Name: Vintage Story Community
+Reason: Testing and feedback
+
+/* SITE */
+Last update: 2026/02/20
+Standards: HTML5, CSS3
+Components: Node.js, svelte
+Software: VS Code

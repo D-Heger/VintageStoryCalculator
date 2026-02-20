@@ -2,6 +2,23 @@
 :root {
   color-scheme: light;
 
+  /* UI Scale (applied by settings store) */
+  --ui-scale: 1;
+  
+  /* Base spacing values (multiplied by --ui-scale for responsive scaling) */
+  --spacing-base-xs: 0.5rem;
+  --spacing-base-sm: 1rem;
+  --spacing-base-md: 1.5rem;
+  --spacing-base-lg: 2rem;
+  --spacing-base-xl: 3rem;
+  
+  /* Computed spacing (scales with UI scale setting) */
+  --spacing-xs: calc(var(--spacing-base-xs) * var(--ui-scale));
+  --spacing-sm: calc(var(--spacing-base-sm) * var(--ui-scale));
+  --spacing-md: calc(var(--spacing-base-md) * var(--ui-scale));
+  --spacing-lg: calc(var(--spacing-base-lg) * var(--ui-scale));
+  --spacing-xl: calc(var(--spacing-base-xl) * var(--ui-scale));
+
   /* Colors */
   --primary-color: #2c5f2d;
   --primary-dark: #1e4620;
@@ -24,13 +41,6 @@
   --border-strong: rgba(44, 95, 45, 0.2);
   --shadow: rgba(0, 0, 0, 0.1);
   --shadow-hover: rgba(0, 0, 0, 0.15);
-  
-  /* Spacing */
-  --spacing-xs: 0.5rem;
-  --spacing-sm: 1rem;
-  --spacing-md: 1.5rem;
-  --spacing-lg: 2rem;
-  --spacing-xl: 3rem;
   
   /* Other */
   --border-radius: 8px;

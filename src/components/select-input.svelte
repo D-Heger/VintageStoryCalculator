@@ -1,6 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
   import type { SelectInputEvents, SelectInputProps } from "../types/components";
+  import { showHelpText } from "../stores/settings";
 
   export let id: SelectInputProps["id"];
   export let label: SelectInputProps["label"];
@@ -24,6 +25,8 @@
   const handleChange = (event: Event) => {
     dispatch("change", { value: parseValue(event), rawEvent: event });
   };
+  
+  $: shouldShowHelp = $showHelpText && helpText;
 </script>
 
 <div class="control">
@@ -33,8 +36,8 @@
     bind:this={selectEl}
     value={value}
     disabled={disabled}
-    title={helpText || undefined}
-    aria-describedby={helpText ? `${id}-help` : undefined}
+    title={shouldShowHelp ? helpText : undefined}
+    aria-describedby={shouldShowHelp ? `${id}-help` : undefined}
     on:input={handleInput}
     on:change={handleChange}
   >
@@ -42,7 +45,7 @@
       <option value={option.value} disabled={option.disabled}>{option.label}</option>
     {/each}
   </select>
-  {#if helpText}
+  {#if shouldShowHelp}
     <p class="control-help" id={`${id}-help`}>{helpText}</p>
   {/if}
 </div>

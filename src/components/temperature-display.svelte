@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { TemperatureDisplayProps } from "../types/components";
+  import { showHelpText } from "../stores/settings";
 
   export let label: TemperatureDisplayProps["label"] = "Smelting Temperature";
   export let temperature: TemperatureDisplayProps["temperature"];
@@ -9,12 +10,14 @@
 
   const formatTemperature = (value: TemperatureDisplayProps["temperature"]) =>
     unit ? `${value}${unit}` : String(value);
+  
+  $: shouldShowHelp = $showHelpText && helperText;
 </script>
 
 <div class="info-row">
   <span class="info-label">{label}:</span>
   <span class="info-value" id={valueId}>{formatTemperature(temperature)}</span>
-  {#if helperText}
+  {#if shouldShowHelp}
     <span class="info-note">{helperText}</span>
   {/if}
 </div>

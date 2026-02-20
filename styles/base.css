@@ -4,13 +4,18 @@
 :root {
   --font-body: "Source Sans 3", "Segoe UI", Tahoma, sans-serif;
   --font-display: "Outfit", "Segoe UI", Tahoma, sans-serif;
+  
+  /* Base font sizes (multiplied by --ui-scale for responsive scaling) */
+  --font-size-base: 16px;
 }
+
 * {
   box-sizing: border-box;
 }
 
 body {
   font-family: var(--font-body);
+  font-size: calc(var(--font-size-base) * var(--ui-scale));
   line-height: 1.6;
   margin: 0;
   padding: 0;
@@ -27,13 +32,13 @@ h1, h2, h3 {
 }
 
 h1 {
-  font-size: 1.75rem;
+  font-size: calc(1.75rem * var(--ui-scale));
   font-weight: 600;
   letter-spacing: -0.5px;
 }
 
 h2 {
-  font-size: 1.5rem;
+  font-size: calc(1.5rem * var(--ui-scale));
   color: var(--primary-color);
 }
 
