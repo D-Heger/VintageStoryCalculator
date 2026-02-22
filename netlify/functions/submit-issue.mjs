@@ -190,8 +190,12 @@ export async function handler(event) {
 
     if (!response.ok) {
       const errorPayload = await response.json().catch(() => ({}));
-      const message = ensureString(errorPayload?.message) || "GitHub API request failed.";
-      return jsonResponse(502, { error: message });
+      const rawMessage = ensureString(errorPayload?.message);
+      const safeMessage =
+        rawMessage && /rate limit/i.test(rawMessage)
+          ? "GitHub API rate limit exceeded. Please try again later."
+          : "Failed to create GitHub issue via GitHub API.";
+      return jsonResponse(502, { error: safeMessage });
     }
 
     const issue = await response.json();
