@@ -164,35 +164,35 @@
 
     if (activeMode === "bug") {
       params.set("description", form.description.trim());
-      params.set("steps_to_reproduce", form.stepsToReproduce.trim());
-      params.set("expected_behavior", form.expectedBehavior.trim());
-      params.set("actual_behavior", form.actualBehavior.trim());
+      params.set("steps-to-reproduce", form.stepsToReproduce.trim());
+      params.set("expected-behavior", form.expectedBehavior.trim());
+      params.set("actual-behavior", form.actualBehavior.trim());
       params.set("browser", form.browser.trim());
-      params.set("operating_system", form.operatingSystem.trim());
-      params.set("additional_context", form.additionalContext.trim());
+      params.set("operating-system", form.operatingSystem.trim());
+      params.set("additional-context", form.additionalContext.trim());
     }
 
     if (activeMode === "feature") {
-      params.set("feature_description", form.description.trim());
-      params.set("use_case", form.useCase.trim());
-      params.set("proposed_solution", form.proposedSolution.trim());
-      params.set("alternatives_considered", form.alternativesConsidered.trim());
+      params.set("feature-description", form.description.trim());
+      params.set("use-case", form.useCase.trim());
+      params.set("proposed-solution", form.proposedSolution.trim());
+      params.set("alternatives-considered", form.alternativesConsidered.trim());
       params.set("priority", form.priority);
       if (form.calculatorArea.length > 0) {
         for (const area of form.calculatorArea) {
-          params.append("calculator_area", area);
+          params.append("calculator-area", area);
         }
       }
-      params.set("additional_context", form.additionalContext.trim());
+      params.set("additional-context", form.additionalContext.trim());
     }
 
     if (activeMode === "feedback") {
-      params.set("issue_summary", form.title.trim());
-      params.set("issue_type", form.issueType);
+      params.set("issue-summary", form.title.trim());
+      params.set("issue-type", form.issueType);
       params.set("details", form.description.trim());
       params.set("browser", form.browser.trim());
-      params.set("operating_system", form.operatingSystem.trim());
-      params.set("additional_context", form.additionalContext.trim());
+      params.set("operating-system", form.operatingSystem.trim());
+      params.set("additional-context", form.additionalContext.trim());
     }
 
     url.search = params.toString();

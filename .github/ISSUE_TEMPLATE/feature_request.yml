@@ -5,7 +5,7 @@ labels: ["enhancement", "feature-request"]
 assignees: []
 body:
   - type: textarea
-    id: feature_description
+    id: feature-description
     attributes:
       label: Feature Description
       description: A clear and concise description of the feature you'd like to see.
@@ -14,7 +14,7 @@ body:
       required: true
 
   - type: textarea
-    id: use_case
+    id: use-case
     attributes:
       label: Use Case
       description: Describe the use case or problem this feature would solve.
@@ -26,7 +26,7 @@ body:
       required: true
 
   - type: textarea
-    id: proposed_solution
+    id: proposed-solution
     attributes:
       label: Proposed Solution
       description: Describe how you think this feature should work.
@@ -39,7 +39,7 @@ body:
       required: true
 
   - type: textarea
-    id: alternatives_considered
+    id: alternatives-considered
     attributes:
       label: Alternatives Considered
       description: Describe any alternative solutions or features you've considered.
@@ -61,7 +61,7 @@ body:
       required: true
 
   - type: dropdown
-    id: calculator_area
+    id: calculator-area
     attributes:
       label: Calculator Area
       description: Which part of the calculator would this feature affect?
@@ -76,7 +76,7 @@ body:
         - Other
 
   - type: textarea
-    id: additional_context
+    id: additional-context
     attributes:
       label: Additional Context
       description: Add any other context, screenshots, or examples about the feature request.

@@ -14,7 +14,7 @@ body:
       required: true
 
   - type: textarea
-    id: steps_to_reproduce
+    id: steps-to-reproduce
     attributes:
       label: Steps to Reproduce
       description: Provide step-by-step instructions to reproduce the issue.
@@ -32,7 +32,7 @@ body:
       required: true
 
   - type: textarea
-    id: expected_behavior
+    id: expected-behavior
     attributes:
       label: Expected Behavior
       description: What should happen when following the steps above?
@@ -41,7 +41,7 @@ body:
       required: true
 
   - type: textarea
-    id: actual_behavior
+    id: actual-behavior
     attributes:
       label: Actual Behavior
       description: What actually happens when following the steps above?
@@ -59,7 +59,7 @@ body:
       required: true
 
   - type: input
-    id: operating_system
+    id: operating-system
     attributes:
       label: Operating System
       description: Which operating system are you using?
@@ -68,14 +68,14 @@ body:
       required: true
 
   - type: input
-    id: calculator_version
+    id: calculator-version
     attributes:
       label: Calculator Version/Commit
       description: If applicable, which version or commit are you using?
       placeholder: e.g., v1.0.0, commit hash, or "latest from main branch"
 
   - type: textarea
-    id: additional_context
+    id: additional-context
     attributes:
       label: Additional Context
       description: Add any other context about the problem here, such as screenshots, error messages, or related issues.

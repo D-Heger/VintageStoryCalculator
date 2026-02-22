@@ -5,7 +5,7 @@ labels: ["question", "discussion"]
 assignees: []
 body:
   - type: textarea
-    id: issue_summary
+    id: issue-summary
     attributes:
       label: Issue Summary
       description: Provide a brief summary of your issue or question.
@@ -14,7 +14,7 @@ body:
       required: true
 
   - type: dropdown
-    id: issue_type
+    id: issue-type
     attributes:
       label: Issue Type
       description: What type of issue is this?
@@ -52,14 +52,14 @@ body:
       placeholder: e.g., Chrome 120, Firefox 119, Safari 17
 
   - type: input
-    id: operating_system
+    id: operating-system
     attributes:
       label: Operating System (if applicable)
       description: Which operating system are you using?
       placeholder: e.g., Windows 11, macOS 14, Ubuntu 22.04
 
   - type: textarea
-    id: additional_context
+    id: additional-context
     attributes:
       label: Additional Context
       description: Add any other context, screenshots, or related information.
