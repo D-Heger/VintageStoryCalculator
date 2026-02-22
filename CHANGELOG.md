@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Feedback mechanism for users to submit suggestions, bug reports, and feature requests
+
 ## [0.5.0-beta.2] - 2026-02-20
 
 ### Added

@@ -5,6 +5,7 @@
   import AlloyingCalculator from "./routes/AlloyingCalculator.svelte";
   import CastingCalculator from "./routes/CastingCalculator.svelte";
   import SettingsModal from "./components/settings-modal.svelte";
+  import IssueIntakeModal from "./components/issue-intake-modal.svelte";
   import { getProjectVersion } from "./lib/version";
   import { initTheme, setTheme } from "./stores/theme";
   import { initSettings, settings } from "./stores/settings";
@@ -18,6 +19,7 @@
   type RouteId = (typeof NAV_ITEMS)[number]["id"];
   type RouteHash = (typeof NAV_ITEMS)[number]["hash"];
   type RouteComponent = new (...args: any[]) => SvelteComponent;
+  type IntakeMode = "feature" | "feedback" | "bug";
 
   const ROUTES: Record<RouteId, RouteComponent> = {
     home: Home,
@@ -28,6 +30,8 @@
   let currentRoute: RouteId = "home";
   let version = "Loading...";
   let showSettings = false;
+  let showIssueIntake = false;
+  let issueIntakeMode: IntakeMode = "feedback";
   let lastAppliedTheme: string | null = null;
 
   const getRouteFromHash = (hash: string): RouteId => {
@@ -82,6 +86,15 @@
 
   const closeSettings = () => {
     showSettings = false;
+  };
+
+  const openIssueIntake = (mode: IntakeMode = "feedback") => {
+    issueIntakeMode = mode;
+    showIssueIntake = true;
+  };
+
+  const closeIssueIntake = () => {
+    showIssueIntake = false;
   };
 
   // Sync theme setting with theme store only when the theme changes
@@ -142,18 +155,30 @@
     <h1>Vintage Story Calculator</h1>
     <p>Your companion for game calculations</p>
   </a>
-  <button
-    class="settings-button"
-    type="button"
-    on:click={toggleSettings}
-    aria-label="Open settings"
-    title="Settings"
-  >
-    <span class="settings-icon" aria-hidden="true">⚙️</span>
-  </button>
+  <div class="header-actions">
+    <button
+      class="settings-button"
+      type="button"
+      on:click={() => openIssueIntake("feedback")}
+      aria-label="Open support panel"
+      title="Feedback, feature requests, and bug reports"
+    >
+      <span class="settings-icon" aria-hidden="true">💬</span>
+    </button>
+    <button
+      class="settings-button"
+      type="button"
+      on:click={toggleSettings}
+      aria-label="Open settings"
+      title="Settings"
+    >
+      <span class="settings-icon" aria-hidden="true">⚙️</span>
+    </button>
+  </div>
 </header>
 
 <SettingsModal isOpen={showSettings} onClose={closeSettings} />
+<IssueIntakeModal isOpen={showIssueIntake} mode={issueIntakeMode} onClose={closeIssueIntake} />
 
 <main>
   <nav aria-label="Main navigation">

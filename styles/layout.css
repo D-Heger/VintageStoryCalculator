@@ -50,6 +50,14 @@ header .subtle-link {
   font-size: 1rem;
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
 .settings-button:hover {
   background: rgba(255, 255, 255, 0.25);
   border-color: rgba(255, 255, 255, 0.5);
@@ -152,6 +160,11 @@ footer a:hover {
   
   header h1 {
     font-size: 1.4rem;
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: flex-start;
   }
   
   nav ul {

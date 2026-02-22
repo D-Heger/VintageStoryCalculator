@@ -48,6 +48,27 @@ Calculate the number of ore nuggets needed to cast metal ingots in a crucible. S
 - `npm run preview`: serve the production build locally for verification
 - `npm run lint`: run ESLint checks for TypeScript sources
 
+### Feedback, Feature, and Bug Intake
+
+The header includes a dedicated support panel button. Inside the panel, users can switch between:
+
+- Feature requests
+- General feedback
+- Bug reports
+
+Each flow opens an in-app form with two submission options:
+
+- **GitHub account (recommended)**: opens a prefilled GitHub issue form in a new tab
+- **Anonymous**: submits via Netlify Function and creates a GitHub issue through a bot token
+
+For anonymous submissions, configure these environment variables in Netlify:
+
+- `GITHUB_TOKEN` (required): token with permission to create issues on the repository
+- `GITHUB_OWNER` (optional, defaults to `D-Heger`)
+- `GITHUB_REPO` (optional, defaults to `VintageStoryCalculator`)
+
+Anonymous reporters are informed they must check issue progress manually unless they voluntarily provide contact info.
+
 ## Project Structure
 
 ```shell
