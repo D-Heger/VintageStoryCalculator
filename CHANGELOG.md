@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.1] - 2026-03-06
+
 ### Added
 
 - Added a dedicated no-account feedback page (`#feedback`) using reusable `src/components/feedback-form.svelte`, backed by Netlify Forms with a static detection form in `index.html` for SPA deployments
@@ -192,7 +194,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release with Alloying Calculator
 
-[Unreleased]: https://github.com/D-Heger/VintageStoryCalculator/compare/0.5.0...HEAD
+[Unreleased]: https://github.com/D-Heger/VintageStoryCalculator/compare/0.5.1...HEAD
+[0.5.1]: https://github.com/D-Heger/VintageStoryCalculator/releases/tag/0.5.1
 [0.5.0]: https://github.com/D-Heger/VintageStoryCalculator/releases/tag/0.5.0
 [0.5.0-beta.2]: https://github.com/D-Heger/VintageStoryCalculator/releases/tag/0.5.0-beta.2
 [0.5.0-beta.1]: https://github.com/D-Heger/VintageStoryCalculator/releases/tag/0.5.0-beta.1
