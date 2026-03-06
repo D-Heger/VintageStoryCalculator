@@ -15,6 +15,8 @@
     { id: "casting", label: "Casting Calculator", hash: "#casting" }
   ] as const;
 
+  const CALCULATOR_NAV_ITEMS = NAV_ITEMS.filter((item) => item.id !== "home");
+
   type RouteId = (typeof NAV_ITEMS)[number]["id"];
   type RouteHash = (typeof NAV_ITEMS)[number]["hash"];
   type RouteComponent = new (...args: any[]) => SvelteComponent;
@@ -84,6 +86,12 @@
     showSettings = false;
   };
 
+  const syncRouteFromHash = () => {
+    if (typeof window === "undefined") return;
+    currentRoute = getRouteFromHash(window.location.hash || "#home");
+    updateMetaForRoute(currentRoute);
+  };
+
   // Sync theme setting with theme store only when the theme changes
   $: if ($settings.theme && $settings.theme !== lastAppliedTheme) {
     lastAppliedTheme = $settings.theme;
@@ -100,27 +108,17 @@
     });
 
     if (typeof window !== "undefined") {
-      const applyHashRoute = () => {
-        currentRoute = getRouteFromHash(window.location.hash || "#home");
-        updateMetaForRoute(currentRoute);
-      };
-
-      applyHashRoute();
+      syncRouteFromHash();
 
       if (!window.location.hash) {
         window.location.hash = "#home";
       }
 
-      const handleHashChange = () => {
-        currentRoute = getRouteFromHash(window.location.hash || "#home");
-        updateMetaForRoute(currentRoute);
-      };
-
-      window.addEventListener("hashchange", handleHashChange);
+      window.addEventListener("hashchange", syncRouteFromHash);
 
       return () => {
         isActive = false;
-        window.removeEventListener("hashchange", handleHashChange);
+        window.removeEventListener("hashchange", syncRouteFromHash);
         cleanupTheme();
         cleanupSettings();
       };
@@ -138,24 +136,11 @@
 </script>
 
 <header>
-  <a class="subtle-link" href="#home" aria-label="Home" on:click={() => navigate("home")}>
-    <h1>Vintage Story Calculator</h1>
-    <p>Your companion for game calculations</p>
+  <a class="brand-link" href="#home" aria-label="Go to home" on:click|preventDefault={() => navigate("home")}>
+    <h1 class="brand-name">Vintage Story Calculator</h1>
+    <span class="brand-tagline">Tools for players</span>
   </a>
-  <button
-    class="settings-button"
-    type="button"
-    on:click={toggleSettings}
-    aria-label="Open settings"
-    title="Settings"
-  >
-    <span class="settings-icon" aria-hidden="true">⚙️</span>
-  </button>
-</header>
 
-<SettingsModal isOpen={showSettings} onClose={closeSettings} />
-
-<main>
   <nav aria-label="Main navigation">
     <ul>
       {#each NAV_ITEMS as item}
@@ -173,17 +158,44 @@
     </ul>
   </nav>
 
+  <button
+    class="settings-button"
+    type="button"
+    on:click={toggleSettings}
+    aria-label="Open settings"
+    title="Settings"
+  >
+    <span class="settings-icon" aria-hidden="true">⚙️</span>
+  </button>
+</header>
+
+<SettingsModal isOpen={showSettings} onClose={closeSettings} />
+
+<main>
   <svelte:component this={ActiveComponent} />
 </main>
 
 <footer>
-  <p>
-    2026 | Vintage Story Calculator | Version:
-    <span id="version"><a href="https://github.com/D-Heger/VintageStoryCalculator/releases">{version}</a> | <a href="https://github.com/D-Heger/VintageStoryCalculator/blob/release/CHANGELOG.md">Changelog</a></span>
-  </p>
-  <p>&copy; Developed by David Heger | Licensed under MIT</p>
-  <p>
-    Source code available on
-    <a href="https://github.com/D-Heger/VintageStoryCalculator">GitHub</a>
-  </p>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <strong>Vintage Story Calculator</strong>
+      <span>© 2026 David Heger — MIT License</span>
+    </div>
+    <div class="footer-section">
+      <span class="footer-heading">Calculators</span>
+      <ul>
+        {#each CALCULATOR_NAV_ITEMS as item}
+          <li><a href={item.hash} on:click|preventDefault={() => navigate(item.id)}>{item.label}</a></li>
+        {/each}
+      </ul>
+    </div>
+    <div class="footer-section">
+      <span class="footer-heading">Project</span>
+      <ul>
+        <li><a href="https://github.com/D-Heger/VintageStoryCalculator">GitHub</a></li>
+        <li><a href="https://github.com/D-Heger/VintageStoryCalculator/releases">Version {version}</a></li>
+        <li><a href="https://github.com/D-Heger/VintageStoryCalculator/blob/release/CHANGELOG.md">Changelog</a></li>
+      </ul>
+    </div>
+  </div>
 </footer>

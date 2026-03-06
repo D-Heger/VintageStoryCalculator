@@ -73,3 +73,27 @@ export interface TemperatureDisplayProps {
   valueId?: string;
   helperText?: string;
 }
+
+export type StackPlanProcess = {
+  nuggetsTotal?: number;
+  unitsTotal?: number;
+  ingotsTotal?: number;
+  isIngotStepValid?: boolean;
+  stacks: Array<{
+    metal: string;
+    amount: number;
+    color?: string;
+  }>;
+};
+
+export type StackPlanView = {
+  processes?: StackPlanProcess[];
+  totalStacks?: number;
+  requiresMultipleProcesses?: boolean;
+};
+
+export interface StackPlanPanelProps {
+  stackPlan: StackPlanView;
+  hasStackInputs: boolean;
+  formatQuantity: (value: number) => string;
+}
