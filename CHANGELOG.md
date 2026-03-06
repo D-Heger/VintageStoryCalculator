@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-03-06
+
 ### Added
 
 - Added a direct link to the awesome Vintage Story Wiki!
@@ -185,7 +187,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release with Alloying Calculator
 
-[Unreleased]: https://github.com/D-Heger/VintageStoryCalculator/compare/0.5.0-beta.2...HEAD
+[Unreleased]: https://github.com/D-Heger/VintageStoryCalculator/compare/0.5.0...HEAD
+[0.5.0]: https://github.com/D-Heger/VintageStoryCalculator/releases/tag/0.5.0
 [0.5.0-beta.2]: https://github.com/D-Heger/VintageStoryCalculator/releases/tag/0.5.0-beta.2
 [0.5.0-beta.1]: https://github.com/D-Heger/VintageStoryCalculator/releases/tag/0.5.0-beta.1
 [0.4.1]: https://github.com/D-Heger/VintageStoryCalculator/releases/tag/0.4.1
