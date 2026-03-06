@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added a dedicated no-account feedback page (`#feedback`) using reusable `src/components/feedback-form.svelte`, backed by Netlify Forms with a static detection form in `index.html` for SPA deployments
+- Added a dedicated privacy page (`#privacy`) documenting feedback data processing, retention, and user rights
+
 ## [0.5.0] - 2026-03-06
 
 ### Added

@@ -31,6 +31,10 @@ Calculate the exact amounts of metals needed to create your desired alloy. Suppo
 
 Calculate the number of ore nuggets needed to cast metal ingots in a crucible. Supports all 8 castable metals, shows smelting temperatures and ore source information, and includes a visual stack plan for each smelting process.
 
+### Feedback Form
+
+Send feedback from a dedicated in-app page without creating an account. Submissions are handled by Netlify Forms with spam filtering, minimal required fields, and a privacy acknowledgement.
+
 ## How to Use
 
 1. Run `npm install` to install dependencies
@@ -59,6 +63,7 @@ VintageStoryCalculator/         # Root directory
 │   ├── App.svelte              # Root layout and navigation
 │   ├── components/             # Reusable UI components
 │   │   ├── calculator-card.svelte
+│   │   ├── feedback-form.svelte
 │   │   ├── number-input.svelte
 │   │   ├── result-display.svelte
 │   │   ├── select-input.svelte
@@ -95,6 +100,8 @@ VintageStoryCalculator/         # Root directory
 │   └── routes/                 # Route-aligned components
 │       ├── AlloyingCalculator.svelte
 │       ├── CastingCalculator.svelte
+│       ├── Feedback.svelte
+│       ├── Privacy.svelte
 │       └── Home.svelte
 ├── tsconfig.json               # TypeScript configuration
 ├── .eslintrc.cjs               # ESLint configuration
