@@ -22,6 +22,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Rewrote `styles/layout.css` for the new header/nav/footer structure with updated responsive breakpoints
 - Unified hash-route synchronization in `src/App.svelte` and reused `NAV_ITEMS` to render footer calculator links, reducing duplicated navigation logic
 - Removed unused legacy home styles (`.feature-grid`, `.feature-card`) and dropped an empty script block from `src/routes/Home.svelte` to keep the redesign cleanup complete
+- Redesigned both calculator routes into a left-rail and right-workspace layout with consistent shared card styling across controls and summaries
+- Reworked stack-plan presentation in both calculators with section metrics, improved process-card hierarchy, denser stack chips, and stronger responsive behavior for large multi-process outputs
+- Moved casting ore-source details into the left quick summary and removed the redundant casting metal-info card to keep the right workspace focused on plan output
+- Extracted the shared stack-plan markup into `src/components/stack-plan-panel.svelte` and centralized whole-number formatting in `src/lib/numberFormatting.ts` to remove duplicated route logic
+- Removed unused calculator selectors (`.status`, `#calculator .control-row`) from `styles/calculator.css` as part of the calculator layout cleanup
 
 ## [0.5.0-beta.2] - 2026-02-20
 

@@ -120,7 +120,7 @@ header nav a[aria-current="page"] {
 main {
   flex: 1;
   padding: var(--spacing-lg);
-  max-width: 1200px;
+  max-width: 1480px;
   margin: 0 auto;
   width: 100%;
 }
@@ -134,7 +134,7 @@ footer {
 }
 
 .footer-inner {
-  max-width: 1200px;
+  max-width: 1480px;
   margin: 0 auto;
   display: grid;
   grid-template-columns: 1.6fr 1fr 1fr;

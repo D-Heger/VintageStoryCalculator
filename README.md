@@ -25,11 +25,11 @@ Planned features and improvements include (but are not limited to):
 
 ### Alloying Calculator
 
-Calculate the exact amounts of metals needed to create your desired alloy. Supports all alloys and solders in Vintage Story. Now includes smelting temperature information for each alloy.
+Calculate the exact amounts of metals needed to create your desired alloy. Supports all alloys and solders in Vintage Story. Includes smelting temperature information and a process-by-process stack plan view for multi-batch runs.
 
 ### Casting Calculator
 
-Calculate the number of ore nuggets needed to cast metal ingots in a crucible. Supports all 8 castable metals and shows smelting temperatures as well as ore source information.
+Calculate the number of ore nuggets needed to cast metal ingots in a crucible. Supports all 8 castable metals, shows smelting temperatures and ore source information, and includes a visual stack plan for each smelting process.
 
 ## How to Use
 
@@ -63,6 +63,7 @@ VintageStoryCalculator/         # Root directory
 │   │   ├── result-display.svelte
 │   │   ├── select-input.svelte
 │   │   ├── settings-modal.svelte
+│   │   ├── stack-plan-panel.svelte
 │   │   └── temperature-display.svelte
 │   ├── data/                   # Game data files
 │   │   ├── alloys.json         # Alloy recipes and definitions
@@ -73,6 +74,7 @@ VintageStoryCalculator/         # Root directory
 │   │   ├── calculations.ts     # Pure calculator helpers
 │   │   ├── constants.ts        # Typed constants exports
 │   │   ├── fuels.ts            # Typed fuel definitions
+│   │   ├── numberFormatting.ts # Shared numeric formatting helpers
 │   │   ├── stack-display.ts    # Process and stack display labels
 │   │   ├── stack-plan.ts       # Stack breakdown helper
 │   │   ├── smelting/           # Smelting planning and allocation helpers
