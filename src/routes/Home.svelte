@@ -58,6 +58,16 @@
       </div>
       <span class="tool-arrow" aria-hidden="true">→</span>
     </a>
+        <a href="#feedback" class="tool-card">
+      <div class="tool-icon" aria-hidden="true">✉️</div>
+      <div class="tool-body">
+        <h3>Feedback</h3>
+        <p>
+          Share bugs, ideas, and balancing notes through a simple form. No account required.
+        </p>
+      </div>
+      <span class="tool-arrow" aria-hidden="true">→</span>
+    </a>
     <a href="https://wiki.vintagestory.at/Main_Page" class="tool-card" target="_blank" rel="noopener noreferrer">
       <div class="tool-icon" aria-hidden="true">📚</div>
       <div class="tool-body">
