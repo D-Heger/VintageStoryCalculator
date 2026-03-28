@@ -341,6 +341,37 @@ export const setMetalPercentage = (metal: string, value: number) => {
   });
 };
 
+export const applyState = (partial: Partial<AlloyCalculatorState>) => {
+  alloyCalculator.update((state) => {
+    const next = { ...state };
+
+    if (partial.selectedAlloy !== undefined) {
+      const def = getAlloyDefinition(partial.selectedAlloy);
+      if (def) {
+        next.selectedAlloy = partial.selectedAlloy;
+        const defaultParts = buildDefaultParts(def);
+        next.metalPercentages = partsToPercentages(defaultParts);
+      }
+    }
+
+    if (partial.targetIngots !== undefined) {
+      next.targetIngots = Math.max(0, Number(partial.targetIngots) || 0);
+    }
+
+    if (partial.metalPercentages !== undefined) {
+      const definition = getAlloyDefinition(next.selectedAlloy);
+      if (definition) {
+        const merged = { ...next.metalPercentages, ...partial.metalPercentages };
+        const parts = buildPartsFromState(definition, merged);
+        normalizeParts(parts);
+        next.metalPercentages = partsToPercentages(parts);
+      }
+    }
+
+    return next;
+  });
+};
+
 export const alloyCalculation = derived(alloyCalculator, (state) => {
   const definition = getAlloyDefinition(state.selectedAlloy);
   if (!definition) {

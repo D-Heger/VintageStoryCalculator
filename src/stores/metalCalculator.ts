@@ -46,6 +46,25 @@ export const setTargetIngots = (value: number | null) => {
   }));
 };
 
+export const applyState = (partial: Partial<MetalCalculatorState>) => {
+  metalCalculator.update((state) => {
+    const next = { ...state };
+
+    if (partial.selectedMetal !== undefined) {
+      const def = getMetalDefinition(partial.selectedMetal);
+      if (def) {
+        next.selectedMetal = partial.selectedMetal;
+      }
+    }
+
+    if (partial.targetIngots !== undefined) {
+      next.targetIngots = Math.max(0, Number(partial.targetIngots) || 0);
+    }
+
+    return next;
+  });
+};
+
 export const metalCalculation = derived(metalCalculator, (state) => {
   const definition = getMetalDefinition(state.selectedMetal);
   if (!definition) {

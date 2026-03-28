@@ -8,6 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added shareable recipe URLs for Alloying and Casting calculators, including a reusable copy-to-clipboard share button in the calculator rail
+- Added a route-based URL state codec system in `src/lib/url-state.ts` so calculators can register standard `encode/apply` handlers for deep-linking
+
+### Changed
+
+- Updated the roadmap in README.md to reflect the current state of the project and upcoming features
+- Refactored URL-share registration out of calculator stores into focused modules under `src/stores/share/` and initialized them centrally from `src/App.svelte`
+- Split oversized calculator stylesheet into modular partials (`styles/calculator/*.css`) to improve maintainability and single-responsibility boundaries
+
 ## [0.5.1] - 2026-03-06
 
 ### Added

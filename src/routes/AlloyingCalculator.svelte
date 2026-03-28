@@ -2,6 +2,7 @@
   import CalculatorCard from "../components/calculator-card.svelte";
   import NumberInput from "../components/number-input.svelte";
   import SelectInput from "../components/select-input.svelte";
+  import ShareButton from "../components/share-button.svelte";
   import StackPlanPanel from "../components/stack-plan-panel.svelte";
   import alloyDefinitionsRaw from "../data/alloys.json";
   import { NUGGETS_PER_INGOT } from "../lib/constants";
@@ -93,6 +94,8 @@
         </p>
       </div>
     </CalculatorCard>
+
+    <ShareButton route="alloying" />
   </aside>
 
   <section class="calculator-workspace" aria-label="Alloy recipe results">
