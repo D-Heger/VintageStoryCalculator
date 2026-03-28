@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onDestroy } from "svelte";
   import { buildShareUrl } from "../lib/url-state";
 
   export let route: string;
@@ -8,10 +9,14 @@
 
   const copyToClipboard = async (text: string): Promise<void> => {
     if (navigator.clipboard) {
-      await navigator.clipboard.writeText(text);
-      return;
+      try {
+        await navigator.clipboard.writeText(text);
+        return;
+      } catch {
+        // Fall back to the textarea approach if writeText fails
+      }
     }
-    // Fallback for insecure contexts
+    // Fallback for insecure contexts or when writeText fails
     const textarea = document.createElement("textarea");
     textarea.value = text;
     textarea.setAttribute("readonly", "");
@@ -36,6 +41,10 @@
       // Silently fail — clipboard access may be blocked
     }
   };
+
+  onDestroy(() => {
+    clearTimeout(timeoutId);
+  });
 </script>
 
 <button

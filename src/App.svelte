@@ -111,8 +111,13 @@
 
   const syncRouteFromHash = () => {
     if (typeof window === "undefined") return;
-    currentRoute = getRouteFromHash(window.location.hash || "#home");
+    const hash = window.location.hash || "#home";
+    currentRoute = getRouteFromHash(hash);
     updateMetaForRoute(currentRoute);
+
+    if (hasShareParams(hash)) {
+      applyUrlState(hash);
+    }
   };
 
   // Sync theme setting with theme store only when the theme changes
@@ -136,11 +141,6 @@
 
       if (!window.location.hash) {
         window.location.hash = "#home";
-      }
-
-      // Apply shared calculator state from URL params (e.g. #alloying?a=tin_bronze&n=10)
-      if (hasShareParams(window.location.hash)) {
-        applyUrlState(window.location.hash);
       }
 
       window.addEventListener("hashchange", syncRouteFromHash);
