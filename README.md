@@ -18,7 +18,6 @@ Planned features and improvements include (but are not limited to):
 - Smelting time and fuel consumption calculations integrated into the Alloying and Casting calculators
 - Bloomery requirement information and iron/steel making support
 - Expanded help text throughout the application
-- Shareable calculator links via URL-encoded settings
 - Enhanced mobile UI and UX
 
 ### Medium Term
@@ -38,11 +37,20 @@ Planned features and improvements include (but are not limited to):
 
 ### Alloying Calculator
 
-Calculate the exact amounts of metals needed to create your desired alloy. Supports all alloys and solders in Vintage Story. Includes smelting temperature information and a process-by-process stack plan view for multi-batch runs.
+Calculate the exact amounts of metals needed to create your desired alloy. Supports all alloys and solders in Vintage Story. Includes smelting temperature information, a process-by-process stack plan view for multi-batch runs, and a share button that copies the current recipe URL.
 
 ### Casting Calculator
 
-Calculate the number of ore nuggets needed to cast metal ingots in a crucible. Supports all 8 castable metals, shows smelting temperatures and ore source information, and includes a visual stack plan for each smelting process.
+Calculate the number of ore nuggets needed to cast metal ingots in a crucible. Supports all 8 castable metals, shows smelting temperatures and ore source information, includes a visual stack plan for each smelting process, and supports shareable calculator URLs.
+
+## Shareable Recipe URLs
+
+Both calculators support URL-encoded state so you can share exact setups with others.
+
+- Use the `Share recipe` button in the calculator sidebar to copy the current setup URL.
+- Opening that URL restores calculator selections automatically.
+- URL format is route-aware, for example: `#alloying?a=tin_bronze&n=10&Copper=90.0&Tin=10.0` and `#casting?m=copper&n=10`.
+- The sharing system is extensible via per-route codecs registered through `src/lib/url-state.ts`.
 
 ### Feedback Form
 
@@ -80,6 +88,7 @@ VintageStoryCalculator/         # Root directory
 │   │   ├── number-input.svelte
 │   │   ├── result-display.svelte
 │   │   ├── select-input.svelte
+│   │   ├── share-button.svelte
 │   │   ├── settings-modal.svelte
 │   │   ├── stack-plan-panel.svelte
 │   │   └── temperature-display.svelte
@@ -95,6 +104,7 @@ VintageStoryCalculator/         # Root directory
 │   │   ├── numberFormatting.ts # Shared numeric formatting helpers
 │   │   ├── stack-display.ts    # Process and stack display labels
 │   │   ├── stack-plan.ts       # Stack breakdown helper
+│   │   ├── url-state.ts        # Share URL codec registry and parsing helpers
 │   │   ├── smelting/           # Smelting planning and allocation helpers
 │   │   │   ├── allocation.ts
 │   │   │   ├── index.ts
@@ -106,6 +116,10 @@ VintageStoryCalculator/         # Root directory
 │   │   ├── alloyCalculator.ts  # Alloying calculator store
 │   │   ├── metalCalculator.ts  # Casting calculator store
 │   │   ├── settings.ts         # Persistent UI settings store
+│   │   ├── share/              # URL sharing codecs per calculator
+│   │   │   ├── alloyCodec.ts
+│   │   │   ├── index.ts
+│   │   │   └── metalCodec.ts
 │   │   └── theme.ts            # Theme store
 │   ├── types/                  # Shared TypeScript interfaces
 │   │   ├── components.ts       # Component prop and event contracts
@@ -120,7 +134,12 @@ VintageStoryCalculator/         # Root directory
 ├── .eslintrc.cjs               # ESLint configuration
 ├── styles/                     # Shared styling
 │   ├── base.css
-│   ├── calculator.css
+│   ├── calculator.css          # Calculator style entrypoint importing modular partials
+│   ├── calculator/
+│   │   ├── layout.css
+│   │   ├── responsive.css
+│   │   ├── share-button.css
+│   │   └── stack.css
 │   ├── components.css
 │   ├── layout.css
 │   └── themes.css
