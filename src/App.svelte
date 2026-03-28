@@ -10,6 +10,12 @@
   import { getProjectVersion } from "./lib/version";
   import { initTheme, setTheme } from "./stores/theme";
   import { initSettings, settings } from "./stores/settings";
+  import {
+    getRouteFromHash as parseRouteFromHash,
+    applyUrlState,
+    hasShareParams
+  } from "./lib/url-state";
+  import { setupShareCodecs } from "./stores/share";
 
   const NAV_ITEMS = [
     { id: "home", label: "Home", hash: "#home" },
@@ -41,10 +47,11 @@
   let lastAppliedTheme: string | null = null;
 
   const getRouteFromHash = (hash: string): RouteId => {
-    if (hash === "#alloying") return "alloying";
-    if (hash === "#casting") return "casting";
-    if (hash === "#feedback") return "feedback";
-    if (hash === "#privacy") return "privacy";
+    const route = parseRouteFromHash(hash);
+    if (route === "alloying") return "alloying";
+    if (route === "casting") return "casting";
+    if (route === "feedback") return "feedback";
+    if (route === "privacy") return "privacy";
     return "home";
   };
 
@@ -118,6 +125,7 @@
     let isActive = true;
     const cleanupSettings = initSettings();
     const cleanupTheme = initTheme($settings.theme);
+    setupShareCodecs();
 
     getProjectVersion().then((value) => {
       if (isActive) version = value;
@@ -128,6 +136,11 @@
 
       if (!window.location.hash) {
         window.location.hash = "#home";
+      }
+
+      // Apply shared calculator state from URL params (e.g. #alloying?a=tin_bronze&n=10)
+      if (hasShareParams(window.location.hash)) {
+        applyUrlState(window.location.hash);
       }
 
       window.addEventListener("hashchange", syncRouteFromHash);
