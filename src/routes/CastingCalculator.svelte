@@ -1,5 +1,6 @@
 <script lang="ts">
   import CalculatorCard from "../components/calculator-card.svelte";
+  import ModeToggle from "../components/mode-toggle.svelte";
   import NumberInput from "../components/number-input.svelte";
   import SelectInput from "../components/select-input.svelte";
   import ShareButton from "../components/share-button.svelte";
@@ -10,10 +11,11 @@
   import {
     metalCalculation,
     metalCalculator,
-    setSelectedMetal,
-    setTargetIngots
+    setInputValue,
+    setMode,
+    setSelectedMetal
   } from "../stores/metalCalculator";
-  import type { Metal } from "../types/index";
+  import type { CalculationMode, Metal } from "../types/index";
   import type { SelectOption } from "../types/components";
 
   const metalDefinitions = metalDefinitionsRaw as Record<string, Metal>;
@@ -30,8 +32,12 @@
     setSelectedMetal(event.detail.value);
   };
 
-  const handleIngotsInput = (event: CustomEvent<{ value: number | null }>) => {
-    setTargetIngots(event.detail.value);
+  const handleModeChange = (event: CustomEvent<{ value: CalculationMode }>) => {
+    setMode(event.detail.value);
+  };
+
+  const handleValueInput = (event: CustomEvent<{ value: number | null }>) => {
+    setInputValue(event.detail.value);
   };
 </script>
 
@@ -42,12 +48,19 @@
       subtitle="Ore to ingot planning"
     >
       <p>
-        Calculate ore nuggets required for your target ingot count. Each ingot uses
-        {NUGGETS_PER_INGOT} nuggets ({UNITS_PER_INGOT} units).
+        {#if $metalCalculator.mode === "have"}
+          See how many ingots you can cast from your available nuggets. Each ingot uses
+          {NUGGETS_PER_INGOT} nuggets ({UNITS_PER_INGOT} units).
+        {:else}
+          Calculate ore nuggets required for your target ingot count. Each ingot uses
+          {NUGGETS_PER_INGOT} nuggets ({UNITS_PER_INGOT} units).
+        {/if}
       </p>
     </CalculatorCard>
 
     <div class="controls">
+      <ModeToggle mode={$metalCalculator.mode} on:change={handleModeChange} />
+
       <SelectInput
         id="metalSelect"
         label="Choose metal"
@@ -57,23 +70,46 @@
         on:change={handleMetalChange}
       />
 
-      <NumberInput
-        id="targetIngots"
-        label="Target ingots"
-        value={$metalCalculator.targetIngots}
-        min={0}
-        step={1}
-        helpText="Total ingots to cast."
-        on:input={handleIngotsInput}
-      />
+      {#if $metalCalculator.mode === "have"}
+        <NumberInput
+          id="availableNuggets"
+          label="Available nuggets"
+          value={$metalCalculator.inputValue}
+          min={0}
+          step={1}
+          helpText="How many nuggets you have."
+          on:input={handleValueInput}
+        />
+      {:else}
+        <NumberInput
+          id="targetIngots"
+          label="Target ingots"
+          value={$metalCalculator.inputValue}
+          min={0}
+          step={1}
+          helpText="Total ingots to cast."
+          on:input={handleValueInput}
+        />
+      {/if}
     </div>
 
     <CalculatorCard title="Quick Summary" headingTag="h3">
       <div class="calculator-meta-grid">
-        <p class="calculator-meta-item">
-          <span>Nuggets needed</span>
-          <strong>{formatQuantity($metalCalculation.nuggetsNeeded)}</strong>
-        </p>
+        {#if $metalCalculator.mode === "have"}
+          <p class="calculator-meta-item">
+            <span>Ingots produced</span>
+            <strong>{formatQuantity($metalCalculation.producedIngots)}</strong>
+          </p>
+          <p class="calculator-meta-item">
+            <span>Leftover nuggets</span>
+            <strong>{formatQuantity($metalCalculation.remainderNuggets)}</strong>
+          </p>
+        {:else}
+          <p class="calculator-meta-item">
+            <span>Nuggets needed</span>
+            <strong>{formatQuantity($metalCalculation.nuggetsNeeded)}</strong>
+          </p>
+        {/if}
         <p class="calculator-meta-item">
           <span>Smelting temp</span>
           <strong>{$metalCalculation.smeltTemp}</strong>

@@ -4,6 +4,7 @@
   import Home from "./routes/Home.svelte";
   import AlloyingCalculator from "./routes/AlloyingCalculator.svelte";
   import CastingCalculator from "./routes/CastingCalculator.svelte";
+  import UsageFinder from "./routes/UsageFinder.svelte";
   import Feedback from "./routes/Feedback.svelte";
   import Privacy from "./routes/Privacy.svelte";
   import SettingsModal from "./components/settings-modal.svelte";
@@ -21,12 +22,13 @@
     { id: "home", label: "Home", hash: "#home" },
     { id: "alloying", label: "Alloying Calculator", hash: "#alloying" },
     { id: "casting", label: "Casting Calculator", hash: "#casting" },
+    { id: "usage", label: "Usage Finder", hash: "#usage" },
     { id: "feedback", label: "Feedback", hash: "#feedback" },
     { id: "privacy", label: "Privacy", hash: "#privacy" }
   ] as const;
 
   const CALCULATOR_NAV_ITEMS = NAV_ITEMS.filter(
-    (item) => item.id === "alloying" || item.id === "casting"
+    (item) => item.id === "alloying" || item.id === "casting" || item.id === "usage"
   );
 
   type RouteId = (typeof NAV_ITEMS)[number]["id"];
@@ -37,6 +39,7 @@
     home: Home,
     alloying: AlloyingCalculator,
     casting: CastingCalculator,
+    usage: UsageFinder,
     feedback: Feedback,
     privacy: Privacy
   };
@@ -50,6 +53,7 @@
     const route = parseRouteFromHash(hash);
     if (route === "alloying") return "alloying";
     if (route === "casting") return "casting";
+    if (route === "usage") return "usage";
     if (route === "feedback") return "feedback";
     if (route === "privacy") return "privacy";
     return "home";
@@ -78,6 +82,7 @@
       home: `${baseTitle} — Home`,
       alloying: `${baseTitle} — Alloying Calculator`,
       casting: `${baseTitle} — Casting Calculator`,
+      usage: `${baseTitle} — Usage Finder`,
       feedback: `${baseTitle} — Feedback`,
       privacy: `${baseTitle} — Privacy`
     };
@@ -88,6 +93,8 @@
         "Calculate exact metal ratios and nuggets for Vintage Story alloys like Tin Bronze, Bismuth Bronze, Electrum, and more.",
       casting:
         "Calculate ore nuggets needed to cast metal ingots in Vintage Story. Supports all castable metals including Copper, Gold, Silver, and more.",
+      usage:
+        "Enter the metals you have and discover every alloy and casting option available to you in Vintage Story.",
       feedback:
         "Send feedback for Vintage Story Calculator without creating an account. Report bugs, request features, and share ideas.",
       privacy:

@@ -8,6 +8,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added Usage Finder tool (`#usage`) that lets players enter their metal inventory and discover every alloy and pure casting option available, with per-metal breakdowns, stack plans, and compatible fuels
+- Added "I have nuggets" / "I need ingots" mode toggle to the Alloying and Casting calculators so players can plan from either direction
+- Added `calculateAlloySplitFromNuggets` allocation algorithm that computes the maximum whole-ingot yield from available nuggets while respecting alloy percentage constraints
+- Added `mode-toggle.svelte` segmented-control component used by both calculators for switching calculation direction
+- Added shareable URLs for the Usage Finder and extended existing share codecs to encode the calculation mode and per-metal nugget counts
+
+### Changed
+
+- Replaced the two "More Tools Coming Soon" placeholders on the home page with the new Usage Finder card
+- Refactored the Casting calculator store to use a unified `inputValue` field instead of separate `targetIngots`, with a `mode` discriminator driving the derived calculation
+- Extended the Alloying calculator store with `metalNuggets` state and a "have" branch in the derived calculation that delegates to the new split-from-nuggets allocator
+- Widened the alloy results table to a six-column grid in "have" mode to show Available, Used, and Leftover columns
+
 ## [0.5.2] - 2026-03-28
 
 ### Added

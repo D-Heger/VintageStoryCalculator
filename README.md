@@ -37,11 +37,15 @@ Planned features and improvements include (but are not limited to):
 
 ### Alloying Calculator
 
-Calculate the exact amounts of metals needed to create your desired alloy. Supports all alloys and solders in Vintage Story. Includes smelting temperature information, a process-by-process stack plan view for multi-batch runs, and a share button that copies the current recipe URL.
+Calculate the exact amounts of metals needed to create your desired alloy. Supports all alloys and solders in Vintage Story. Switch between "I need ingots" and "I have nuggets" modes. The first mode calculates the required nuggets to produce the desired ingots, while the second mode figures out how many ingots you can produce from the nuggets on hand. Includes smelting temperature information, a process-by-process stack plan view for multi-batch runs, and a share button that copies the current recipe URL.
 
 ### Casting Calculator
 
-Calculate the number of ore nuggets needed to cast metal ingots in a crucible. Supports all 8 castable metals, shows smelting temperatures and ore source information, includes a visual stack plan for each smelting process, and supports shareable calculator URLs.
+Calculate the number of ore nuggets needed to cast metal ingots in a crucible. Supports all 8 castable metals, shows smelting temperatures and ore source information, includes a visual stack plan for each smelting process, and supports shareable calculator URLs. Also supports the "I have nuggets" mode to see how many ingots your stock produces.
+
+### Usage Finder
+
+Enter the metals you have and discover every alloy and casting option available to you. The tool checks your inventory against all game recipes, shows how many ingots each option yields, and provides a per-metal breakdown of nuggets used versus leftover. Expanding a result reveals the full stack plan and compatible fuels.
 
 ## Shareable Recipe URLs
 
@@ -49,7 +53,8 @@ Both calculators support URL-encoded state so you can share exact setups with ot
 
 - Use the `Share recipe` button in the calculator sidebar to copy the current setup URL.
 - Opening that URL restores calculator selections automatically.
-- URL format is route-aware, for example: `#alloying?a=tin_bronze&n=10&Copper=90.0&Tin=10.0` and `#casting?m=copper&n=10`.
+- URL format is route-aware, for example: `#alloying?a=tin_bronze&n=10&Copper=90.0&Tin=10.0`, `#casting?m=copper&n=10`, and `#usage?Copper=100&Tin=50`.
+- The "have" mode is encoded as `d=h` with per-metal nugget counts so shared links preserve the calculation direction.
 - The sharing system is extensible via per-route codecs registered through `src/lib/url-state.ts`.
 
 ### Feedback Form
@@ -65,6 +70,8 @@ Send feedback from a dedicated in-app page without creating an account. Submissi
 5. Optionally open settings from the header to customize theme, font family, UI scale, and help-text visibility
 6. For alloys: select your alloy type and adjust percentages to see exact nuggets needed
 7. For metals: select your metal and target ingots to see nuggets required
+8. Use the mode toggle to switch between "I need ingots" and "I have nuggets" in either calculator
+9. Use the Usage Finder to add metals from your inventory and see every recipe you can craft
 
 ## Development
 
@@ -85,6 +92,7 @@ VintageStoryCalculator/         # Root directory
 │   ├── components/             # Reusable UI components
 │   │   ├── calculator-card.svelte
 │   │   ├── feedback-form.svelte
+│   │   ├── mode-toggle.svelte
 │   │   ├── number-input.svelte
 │   │   ├── result-display.svelte
 │   │   ├── select-input.svelte
@@ -116,10 +124,12 @@ VintageStoryCalculator/         # Root directory
 │   │   ├── alloyCalculator.ts  # Alloying calculator store
 │   │   ├── metalCalculator.ts  # Casting calculator store
 │   │   ├── settings.ts         # Persistent UI settings store
+│   │   ├── usageFinder.ts      # Usage Finder inventory and results store
 │   │   ├── share/              # URL sharing codecs per calculator
 │   │   │   ├── alloyCodec.ts
 │   │   │   ├── index.ts
-│   │   │   └── metalCodec.ts
+│   │   │   ├── metalCodec.ts
+│   │   │   └── usageCodec.ts
 │   │   └── theme.ts            # Theme store
 │   ├── types/                  # Shared TypeScript interfaces
 │   │   ├── components.ts       # Component prop and event contracts
@@ -128,8 +138,9 @@ VintageStoryCalculator/         # Root directory
 │       ├── AlloyingCalculator.svelte
 │       ├── CastingCalculator.svelte
 │       ├── Feedback.svelte
+│       ├── Home.svelte
 │       ├── Privacy.svelte
-│       └── Home.svelte
+│       └── UsageFinder.svelte
 ├── tsconfig.json               # TypeScript configuration
 ├── .eslintrc.cjs               # ESLint configuration
 ├── styles/                     # Shared styling

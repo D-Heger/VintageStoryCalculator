@@ -1,5 +1,6 @@
 <script lang="ts">
   import CalculatorCard from "../components/calculator-card.svelte";
+  import ModeToggle from "../components/mode-toggle.svelte";
   import NumberInput from "../components/number-input.svelte";
   import SelectInput from "../components/select-input.svelte";
   import ShareButton from "../components/share-button.svelte";
@@ -12,11 +13,13 @@
     ALLOY_PERCENT_STEP,
     alloyCalculation,
     alloyCalculator,
+    setMetalNuggets,
     setMetalPercentage,
+    setMode,
     setSelectedAlloy,
     setTargetIngots
   } from "../stores/alloyCalculator";
-  import type { Alloy } from "../types/index";
+  import type { CalculationMode, Alloy } from "../types/index";
   import type { SelectOption } from "../types/components";
 
   const alloys = alloyDefinitionsRaw as Record<string, Alloy>;
@@ -33,6 +36,10 @@
     setSelectedAlloy(event.detail.value);
   };
 
+  const handleModeChange = (event: CustomEvent<{ value: CalculationMode }>) => {
+    setMode(event.detail.value);
+  };
+
   const handleIngotsInput = (event: CustomEvent<{ value: number | null }>) => {
     setTargetIngots(event.detail.value);
   };
@@ -43,6 +50,10 @@
     if (!Number.isFinite(value)) return;
     setMetalPercentage(metal, value);
   };
+
+  const handleNuggetInput = (metal: string, event: CustomEvent<{ value: number | null }>) => {
+    setMetalNuggets(metal, event.detail.value ?? 0);
+  };
 </script>
 
 <section class="calculator-shell">
@@ -52,12 +63,19 @@
       subtitle="Blend planning"
     >
       <p>
-        Calculate exact metal amounts for each alloy recipe. One ingot equals
-        {NUGGETS_PER_INGOT} nuggets.
+        {#if $alloyCalculator.mode === "have"}
+          Enter the nuggets you have for each metal and see how many ingots you can produce.
+          One ingot equals {NUGGETS_PER_INGOT} nuggets.
+        {:else}
+          Calculate exact metal amounts for each alloy recipe. One ingot equals
+          {NUGGETS_PER_INGOT} nuggets.
+        {/if}
       </p>
     </CalculatorCard>
 
     <div class="controls">
+      <ModeToggle mode={$alloyCalculator.mode} on:change={handleModeChange} />
+
       <SelectInput
         id="alloySelect"
         label="Choose alloy"
@@ -67,23 +85,44 @@
         on:change={handleAlloyChange}
       />
 
-      <NumberInput
-        id="targetIngots"
-        label="Target ingots"
-        value={$alloyCalculator.targetIngots}
-        min={0}
-        step={1}
-        helpText="Total ingots to produce."
-        on:input={handleIngotsInput}
-      />
+      {#if $alloyCalculator.mode === "have"}
+        {#each $alloyCalculation.parts as part}
+          <NumberInput
+            id="nuggets_{part.metal}"
+            label="{part.metal} nuggets"
+            value={$alloyCalculator.metalNuggets[part.metal] ?? 0}
+            min={0}
+            step={1}
+            helpText="Nuggets of {part.metal} you have."
+            on:input={(e) => handleNuggetInput(part.metal, e)}
+          />
+        {/each}
+      {:else}
+        <NumberInput
+          id="targetIngots"
+          label="Target ingots"
+          value={$alloyCalculator.targetIngots}
+          min={0}
+          step={1}
+          helpText="Total ingots to produce."
+          on:input={handleIngotsInput}
+        />
+      {/if}
     </div>
 
     <CalculatorCard title="Quick Summary" headingTag="h3">
       <div class="calculator-meta-grid">
-        <p class="calculator-meta-item">
-          <span>Total units</span>
-          <strong>{formatQuantity($alloyCalculation.totalUnits)}</strong>
-        </p>
+        {#if $alloyCalculator.mode === "have"}
+          <p class="calculator-meta-item">
+            <span>Ingots produced</span>
+            <strong>{formatQuantity($alloyCalculation.producedIngots)}</strong>
+          </p>
+        {:else}
+          <p class="calculator-meta-item">
+            <span>Total units</span>
+            <strong>{formatQuantity($alloyCalculation.totalUnits)}</strong>
+          </p>
+        {/if}
         <p class="calculator-meta-item">
           <span>Smelting temp</span>
           <strong>{$alloyCalculation.smeltTemp}</strong>
@@ -99,14 +138,20 @@
   </aside>
 
   <section class="calculator-workspace" aria-label="Alloy recipe results">
-    <div id="calculator" class="calculator-main">
+      <div id="calculator" class="calculator-main" class:calc-six-cols={$alloyCalculator.mode === "have"}>
       <table aria-label="Alloy recipe">
         <thead>
           <tr>
             <th>Metal</th>
             <th title="Target percent range for each metal.">Recipe %</th>
-            <th title="Units required to hit the target ingots.">Units needed</th>
-            <th title="Total nuggets required for each metal.">Nuggets</th>
+            {#if $alloyCalculator.mode === "have"}
+              <th title="Nuggets available for each metal.">Available</th>
+              <th title="Nuggets used in the alloy.">Used</th>
+              <th title="Nuggets remaining after alloying.">Leftover</th>
+            {:else}
+              <th title="Units required to hit the target ingots.">Units needed</th>
+              <th title="Total nuggets required for each metal.">Nuggets</th>
+            {/if}
             <th title="Fine-tune the percent with a slider.">Adjust</th>
           </tr>
         </thead>
@@ -129,8 +174,14 @@
                   on:change={(event) => handlePercentInput(part.metal, event)}
                 />
               </td>
-              <td class="units" data-label="Units needed">{formatQuantity(part.units)}</td>
-              <td class="nuggets" data-label="Nuggets">{formatQuantity(part.nuggets)}</td>
+              {#if $alloyCalculator.mode === "have"}
+                <td class="nuggets" data-label="Available">{formatQuantity(part.available ?? 0)}</td>
+                <td class="nuggets" data-label="Used">{formatQuantity(part.nuggets)}</td>
+                <td class="nuggets" data-label="Leftover">{formatQuantity(part.leftover ?? 0)}</td>
+              {:else}
+                <td class="units" data-label="Units needed">{formatQuantity(part.units)}</td>
+                <td class="nuggets" data-label="Nuggets">{formatQuantity(part.nuggets)}</td>
+              {/if}
               <td class="sliders" data-label="Adjust">
                 <input
                   class="slider"

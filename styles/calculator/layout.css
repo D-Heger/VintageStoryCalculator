@@ -125,6 +125,17 @@
   overflow-x: hidden;
 }
 
+/* 6-column grid for "have" mode with Available / Used / Leftover columns */
+#calculator.calc-six-cols {
+  --calc-grid: minmax(130px, 1.2fr) minmax(110px, 1fr) minmax(90px, 0.8fr) minmax(80px, 0.75fr) minmax(90px, 0.8fr) minmax(190px, 1.3fr);
+}
+
+#calculator.calc-six-cols th:nth-child(3),
+#calculator.calc-six-cols th:nth-child(4),
+#calculator.calc-six-cols th:nth-child(5) {
+  text-align: right;
+}
+
 .calculator-main {
   width: 100%;
   margin-bottom: 0;
