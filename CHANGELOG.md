@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed compatible fuels display for alloys now using the highest ingredient melting temperature instead of the alloy's own temperature (e.g. Cupronickel now correctly requires Coke to melt the Nickel at 1325°C)
+
+### Added
+
+- Added per-ingredient smelting breakdown in the Alloying Calculator and Usage Finder, showing each metal's individual melting temperature and compatible fuels
+
 ## [0.6.0] - 2026-04-14
 
 ### Added
