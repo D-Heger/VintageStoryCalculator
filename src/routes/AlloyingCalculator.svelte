@@ -124,7 +124,7 @@
           </p>
         {/if}
         <p class="calculator-meta-item">
-          <span>Smelting temp</span>
+          <span>Alloy temp</span>
           <strong>{$alloyCalculation.smeltTemp}</strong>
         </p>
         <p class="calculator-meta-item calculator-meta-item--full">
@@ -132,6 +132,19 @@
           <strong>{$alloyCalculation.compatibleFuels}</strong>
         </p>
       </div>
+
+      {#if $alloyCalculation.ingredientFuels.length > 0}
+        <div class="ingredient-fuel-details">
+          <p class="ingredient-fuel-heading">Per-ingredient smelting</p>
+          {#each $alloyCalculation.ingredientFuels as info}
+            <div class="ingredient-fuel-row">
+              <span class="ingredient-fuel-metal">{info.metal}</span>
+              <span class="ingredient-fuel-temp">{info.formattedTemp}</span>
+              <span class="ingredient-fuel-fuels">{info.formattedFuels}</span>
+            </div>
+          {/each}
+        </div>
+      {/if}
     </CalculatorCard>
 
     <ShareButton route="alloying" />

@@ -12,7 +12,7 @@ import {
   computeStackPlan,
   type StackInput
 } from "../lib/stack-plan";
-import { formatFuelList, getCompatibleFuels } from "../lib/fuels";
+import { formatFuelList, getBottleneckFuels, getCompatibleFuels, getIngredientFuelDetails, type IngredientFuelInfo } from "../lib/fuels";
 import { calculateAlloyAllocation, calculateAlloySplitFromNuggets } from "../lib/smelting";
 import type { CalculationMode, Alloy } from "../types/index";
 
@@ -430,6 +430,7 @@ export const alloyCalculation = derived(alloyCalculator, (state) => {
       remainderNuggets: 0,
       smeltTemp: formatTemperature(undefined),
       compatibleFuels: formatFuelList(undefined),
+      ingredientFuels: [] as IngredientFuelInfo[],
       barSegments: [{ label: "No metals", color: "#eee", flex: 1 }],
       stackInputs: [] as StackInput[],
       stackPlan: computeStackPlan([]),
@@ -440,9 +441,10 @@ export const alloyCalculation = derived(alloyCalculator, (state) => {
   const parts = buildPartsFromState(definition, state.metalPercentages);
   const { totalPercent } = validateAlloyRatios(parts);
 
-  const compatibleFuels = definition.smeltTemp !== undefined
-    ? formatFuelList(getCompatibleFuels(definition.smeltTemp))
-    : formatFuelList(undefined);
+  const metalNames = definition.parts.map((p) => p.metal);
+  const ingredientFuels = getIngredientFuelDetails(metalNames);
+  const bottleneck = getBottleneckFuels(metalNames);
+  const compatibleFuels = bottleneck.fuels;
 
   const barSegments = totalPercent <= 0
     ? [{ label: "No metals", color: "#eee", flex: 1 }]
@@ -499,6 +501,7 @@ export const alloyCalculation = derived(alloyCalculator, (state) => {
       remainderNuggets: splitResult.totalNuggets % NUGGETS_PER_INGOT,
       smeltTemp: formatTemperature(definition.smeltTemp),
       compatibleFuels,
+      ingredientFuels,
       barSegments,
       stackInputs,
       stackPlan: stackInputs.length
@@ -558,6 +561,7 @@ export const alloyCalculation = derived(alloyCalculator, (state) => {
     remainderNuggets: 0,
     smeltTemp: formatTemperature(definition.smeltTemp),
     compatibleFuels,
+    ingredientFuels,
     barSegments,
     stackInputs,
     stackPlan: stackInputs.length
