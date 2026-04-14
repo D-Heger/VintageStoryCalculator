@@ -162,9 +162,22 @@
                 </table>
 
                 <div class="result-meta">
-                  <span><strong>Smelting temp:</strong> {result.smeltTemp}</span>
+                  <span><strong>Alloy temp:</strong> {result.smeltTemp}</span>
                   <span><strong>Fuels:</strong> {result.compatibleFuels}</span>
                 </div>
+
+                {#if result.ingredientFuels.length > 1}
+                  <div class="ingredient-fuel-details">
+                    <p class="ingredient-fuel-heading">Per-ingredient smelting</p>
+                    {#each result.ingredientFuels as info}
+                      <div class="ingredient-fuel-row">
+                        <span class="ingredient-fuel-metal">{info.metal}</span>
+                        <span class="ingredient-fuel-temp">{info.formattedTemp}</span>
+                        <span class="ingredient-fuel-fuels">{info.formattedFuels}</span>
+                      </div>
+                    {/each}
+                  </div>
+                {/if}
 
                 <StackPlanPanel
                   stackPlan={result.stackPlan}

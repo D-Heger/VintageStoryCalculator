@@ -730,3 +730,52 @@
   font-size: 0.88rem;
   margin-bottom: var(--spacing-md);
 }
+
+/* Per-ingredient smelting details */
+.ingredient-fuel-details {
+  margin-top: var(--spacing-sm);
+  border: 1px solid var(--border-soft);
+  border-radius: calc(var(--border-radius) / 1.5);
+  background: var(--surface-muted);
+  padding: var(--spacing-sm) var(--spacing-md);
+}
+
+.ingredient-fuel-heading {
+  margin: 0 0 var(--spacing-xs);
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.ingredient-fuel-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px var(--spacing-sm);
+  padding: 6px 0;
+  font-size: 0.88rem;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.ingredient-fuel-row:last-child {
+  border-bottom: none;
+}
+
+.ingredient-fuel-metal {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.ingredient-fuel-temp {
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.ingredient-fuel-fuels {
+  flex-basis: 100%;
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  line-height: 1.4;
+}

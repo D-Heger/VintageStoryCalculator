@@ -8,7 +8,7 @@ import {
 } from "../lib/constants";
 import { calculateAlloySplitFromNuggets } from "../lib/smelting";
 import { computeAlloyStackPlan, computeIngotStackPlan } from "../lib/stack-plan";
-import { formatFuelList, getCompatibleFuels } from "../lib/fuels";
+import { formatFuelList, getBottleneckFuels, getCompatibleFuels, getIngredientFuelDetails, type IngredientFuelInfo } from "../lib/fuels";
 import type { Alloy, Calculation, Metal } from "../types/index";
 
 const ALLOY_DEFINITIONS = alloyDefinitionsRaw as Record<string, Alloy>;
@@ -33,6 +33,7 @@ export type UsageResult = {
   leftoverNuggets: number;
   smeltTemp: string;
   compatibleFuels: string;
+  ingredientFuels: IngredientFuelInfo[];
   stackPlan: Calculation;
   hasStackInputs: boolean;
   details: UsageResultDetail[];
@@ -145,6 +146,7 @@ export const usageFinderResults = derived(usageFinder, (state): UsageResult[] =>
       leftoverNuggets: leftover,
       smeltTemp: formatTemperature(def.smeltTemp),
       compatibleFuels: formatFuelList(getCompatibleFuels(def.smeltTemp)),
+      ingredientFuels: getIngredientFuelDetails([def.name]),
       stackPlan: computeIngotStackPlan(stackInputs),
       hasStackInputs: true,
       details: [
@@ -191,6 +193,10 @@ export const usageFinderResults = derived(usageFinder, (state): UsageResult[] =>
 
     const totalLeftover = split.parts.reduce((sum, p) => sum + p.leftover, 0);
 
+    const alloyMetalNames = alloy.parts.map((p) => p.metal);
+    const ingredientFuels = getIngredientFuelDetails(alloyMetalNames);
+    const bottleneck = getBottleneckFuels(alloyMetalNames);
+
     results.push({
       key: `alloy_${alloyKey}`,
       type: "alloy",
@@ -198,9 +204,8 @@ export const usageFinderResults = derived(usageFinder, (state): UsageResult[] =>
       ingots: split.producedIngots,
       leftoverNuggets: totalLeftover,
       smeltTemp: formatTemperature(alloy.smeltTemp),
-      compatibleFuels: alloy.smeltTemp !== undefined
-        ? formatFuelList(getCompatibleFuels(alloy.smeltTemp))
-        : formatFuelList(undefined),
+      compatibleFuels: bottleneck.fuels,
+      ingredientFuels,
       stackPlan: computeAlloyStackPlan(stackInputs, constraints),
       hasStackInputs: stackInputs.length > 0,
       details: split.parts.map((p) => ({
