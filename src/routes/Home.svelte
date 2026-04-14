@@ -36,24 +36,13 @@
       </div>
       <span class="tool-arrow" aria-hidden="true">→</span>
     </a>
-    <a href="#coming-soon" class="tool-card tool-coming-soon">
-      <div class="tool-icon" aria-hidden="true">⏳</div>
+    <a href="#usage" class="tool-card">
+      <div class="tool-icon" aria-hidden="true">🔍</div>
       <div class="tool-body">
-        <h3>More Tools Coming Soon</h3>
+        <h3>Usage Finder</h3>
         <p>
-          I'm planning more calculators and utilities to help with resource planning, smelting
-          optimization, and more. Stay tuned!
-        </p>
-      </div>
-      <span class="tool-arrow" aria-hidden="true">→</span>
-    </a>
-    <a href="#coming-soon" class="tool-card tool-coming-soon">
-      <div class="tool-icon" aria-hidden="true">🧪</div>
-      <div class="tool-body">
-        <h3>More Tools Coming Soon</h3>
-        <p>
-          I'm planning more calculators and utilities to help with resource planning, smelting
-          optimization, and more. Stay tuned!
+          Enter the metals you have and discover every alloy and casting option
+          available to you.
         </p>
       </div>
       <span class="tool-arrow" aria-hidden="true">→</span>

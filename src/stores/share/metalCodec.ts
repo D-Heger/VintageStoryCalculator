@@ -18,7 +18,10 @@ export function registerMetalShareCodec(): void {
       const state = get(metalCalculator);
       const params = new URLSearchParams();
       params.set("m", state.selectedMetal);
-      params.set("n", String(state.targetIngots));
+      params.set("n", String(state.inputValue));
+      if (state.mode === "have") {
+        params.set("d", "h");
+      }
       return params;
     },
     apply(params) {
@@ -29,11 +32,18 @@ export function registerMetalShareCodec(): void {
         partial.selectedMetal = metalKey;
       }
 
-      const ingots = params.get("n");
-      if (ingots !== null) {
-        const n = Number(ingots);
-        if (Number.isFinite(n) && n >= 0) {
-          partial.targetIngots = n;
+      const direction = params.get("d");
+      if (direction === "h") {
+        partial.mode = "have";
+      } else {
+        partial.mode = "need";
+      }
+
+      const n = params.get("n");
+      if (n !== null) {
+        const value = Number(n);
+        if (Number.isFinite(value) && value >= 0) {
+          partial.inputValue = value;
         }
       }
 

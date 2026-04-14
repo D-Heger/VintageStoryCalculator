@@ -42,6 +42,23 @@ export type AlloyAllocationResult = {
   >;
 };
 
+export type AlloySplitPart = MetalAllocation & {
+  available: number;
+  leftover: number;
+  min: number;
+  max: number;
+  pctTarget: number;
+  pctActual: number;
+};
+
+export type AlloySplitResult = {
+  totalNuggets: number;
+  producedIngots: number;
+  remainderNuggets: number;
+  producedUnits: number;
+  parts: AlloySplitPart[];
+};
+
 export type SmeltingPlannerOptions = {
   alloyParts?: AlloyPartConstraint[];
   enforceMinProcessNuggets?: number;

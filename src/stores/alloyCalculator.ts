@@ -1,6 +1,7 @@
 import { derived, writable } from "svelte/store";
 import alloyDefinitionsRaw from "../data/alloys.json";
 import {
+  NUGGETS_PER_INGOT,
   UNITS_PER_INGOT,
   formatTemperature,
   getMetalColor
@@ -12,13 +13,17 @@ import {
   type StackInput
 } from "../lib/stack-plan";
 import { formatFuelList, getCompatibleFuels } from "../lib/fuels";
-import { calculateAlloyAllocation } from "../lib/smelting";
-import type { Alloy } from "../types/index";
+import { calculateAlloyAllocation, calculateAlloySplitFromNuggets } from "../lib/smelting";
+import type { CalculationMode, Alloy } from "../types/index";
+
+const DEFAULT_HAVE_NUGGETS = 100;
 
 export type AlloyCalculatorState = {
   selectedAlloy: string;
+  mode: CalculationMode;
   targetIngots: number;
   metalPercentages: Record<string, number>;
+  metalNuggets: Record<string, number>;
 };
 
 type AlloyPartState = {
@@ -286,6 +291,14 @@ const partsToPercentages = (parts: AlloyPartState[]) => {
   return percentages;
 };
 
+const buildDefaultNuggets = (alloy: Alloy): Record<string, number> => {
+  const nuggets: Record<string, number> = {};
+  for (const part of alloy.parts) {
+    nuggets[part.metal] = DEFAULT_HAVE_NUGGETS;
+  }
+  return nuggets;
+};
+
 const initializeState = (): AlloyCalculatorState => {
   const alloyKeys = Object.keys(ALLOY_DEFINITIONS);
   const defaultAlloy = alloyKeys[0] ?? "";
@@ -293,8 +306,10 @@ const initializeState = (): AlloyCalculatorState => {
   const defaultParts = definition ? buildDefaultParts(definition) : [];
   return {
     selectedAlloy: defaultAlloy,
+    mode: "need",
     targetIngots: 10,
-    metalPercentages: partsToPercentages(defaultParts)
+    metalPercentages: partsToPercentages(defaultParts),
+    metalNuggets: definition ? buildDefaultNuggets(definition) : {}
   };
 };
 
@@ -307,8 +322,21 @@ export const setSelectedAlloy = (alloyKey: string) => {
   alloyCalculator.update((state) => ({
     ...state,
     selectedAlloy: alloyKey,
-    metalPercentages: partsToPercentages(defaultParts)
+    metalPercentages: partsToPercentages(defaultParts),
+    metalNuggets: buildDefaultNuggets(definition)
   }));
+};
+
+export const setMode = (mode: CalculationMode) => {
+  alloyCalculator.update((state) => {
+    if (state.mode === mode) return state;
+    const definition = getAlloyDefinition(state.selectedAlloy);
+    return {
+      ...state,
+      mode,
+      metalNuggets: definition ? buildDefaultNuggets(definition) : state.metalNuggets
+    };
+  });
 };
 
 export const setTargetIngots = (value: number | null) => {
@@ -341,6 +369,14 @@ export const setMetalPercentage = (metal: string, value: number) => {
   });
 };
 
+export const setMetalNuggets = (metal: string, value: number) => {
+  const safe = Math.max(0, Number(value) || 0);
+  alloyCalculator.update((state) => ({
+    ...state,
+    metalNuggets: { ...state.metalNuggets, [metal]: safe }
+  }));
+};
+
 export const applyState = (partial: Partial<AlloyCalculatorState>) => {
   alloyCalculator.update((state) => {
     const next = { ...state };
@@ -351,7 +387,12 @@ export const applyState = (partial: Partial<AlloyCalculatorState>) => {
         next.selectedAlloy = partial.selectedAlloy;
         const defaultParts = buildDefaultParts(def);
         next.metalPercentages = partsToPercentages(defaultParts);
+        next.metalNuggets = buildDefaultNuggets(def);
       }
+    }
+
+    if (partial.mode !== undefined) {
+      next.mode = partial.mode;
     }
 
     if (partial.targetIngots !== undefined) {
@@ -368,6 +409,10 @@ export const applyState = (partial: Partial<AlloyCalculatorState>) => {
       }
     }
 
+    if (partial.metalNuggets !== undefined) {
+      next.metalNuggets = { ...next.metalNuggets, ...partial.metalNuggets };
+    }
+
     return next;
   });
 };
@@ -376,10 +421,13 @@ export const alloyCalculation = derived(alloyCalculator, (state) => {
   const definition = getAlloyDefinition(state.selectedAlloy);
   if (!definition) {
     return {
+      mode: state.mode,
       alloyName: "",
-      parts: [],
+      parts: [] as Array<AlloyPartState & { units: number; nuggets: number; available: number; leftover: number }>,
       totalUnits: 0,
       totalPercent: 0,
+      producedIngots: 0,
+      remainderNuggets: 0,
       smeltTemp: formatTemperature(undefined),
       compatibleFuels: formatFuelList(undefined),
       barSegments: [{ label: "No metals", color: "#eee", flex: 1 }],
@@ -390,6 +438,85 @@ export const alloyCalculation = derived(alloyCalculator, (state) => {
   }
 
   const parts = buildPartsFromState(definition, state.metalPercentages);
+  const { totalPercent } = validateAlloyRatios(parts);
+
+  const compatibleFuels = definition.smeltTemp !== undefined
+    ? formatFuelList(getCompatibleFuels(definition.smeltTemp))
+    : formatFuelList(undefined);
+
+  const barSegments = totalPercent <= 0
+    ? [{ label: "No metals", color: "#eee", flex: 1 }]
+    : parts
+        .filter((part) => part.pct > 0)
+        .map((part) => ({
+          label: `${part.metal} ${part.pct.toFixed(1)}%`,
+          color: part.color || "#ccc",
+          flex: part.pct
+        }));
+
+  if (state.mode === "have") {
+    const splitResult = calculateAlloySplitFromNuggets(
+      state.metalNuggets,
+      parts.map((part) => ({
+        metal: part.metal,
+        color: part.color,
+        min: part.min,
+        max: part.max,
+        pct: part.pct
+      }))
+    );
+
+    const splitByMetal = new Map(
+      splitResult.parts.map((entry) => [entry.metal, entry])
+    );
+
+    const partsWithAllocations = parts.map((part) => {
+      const split = splitByMetal.get(part.metal);
+      return {
+        ...part,
+        units: split?.units ?? 0,
+        nuggets: split?.nuggets ?? 0,
+        available: split?.available ?? (state.metalNuggets[part.metal] ?? 0),
+        leftover: split?.leftover ?? (state.metalNuggets[part.metal] ?? 0)
+      };
+    });
+
+    const stackInputs = partsWithAllocations
+      .filter((part) => part.nuggets > 0)
+      .map((part) => ({
+        metal: part.metal,
+        color: part.color,
+        nuggets: part.nuggets
+      }));
+
+    return {
+      mode: state.mode,
+      alloyName: definition.name,
+      parts: partsWithAllocations,
+      totalUnits: splitResult.producedUnits,
+      totalPercent,
+      producedIngots: splitResult.producedIngots,
+      remainderNuggets: splitResult.totalNuggets % NUGGETS_PER_INGOT,
+      smeltTemp: formatTemperature(definition.smeltTemp),
+      compatibleFuels,
+      barSegments,
+      stackInputs,
+      stackPlan: stackInputs.length
+        ? computeAlloyStackPlan(
+          stackInputs,
+          parts.map((part) => ({
+            metal: part.metal,
+            color: part.color,
+            min: part.min,
+            max: part.max,
+            pct: part.pct
+          }))
+        )
+        : computeStackPlan([]),
+      hasStackInputs: stackInputs.length > 0
+    };
+  }
+
   const totalUnits = Math.max(0, state.targetIngots) * UNITS_PER_INGOT;
   const alloyAllocation = calculateAlloyAllocation(
     totalUnits,
@@ -408,24 +535,10 @@ export const alloyCalculation = derived(alloyCalculator, (state) => {
   const partsWithAllocations = parts.map((part) => ({
     ...part,
     units: allocationByMetal.get(part.metal)?.units ?? 0,
-    nuggets: allocationByMetal.get(part.metal)?.nuggets ?? 0
+    nuggets: allocationByMetal.get(part.metal)?.nuggets ?? 0,
+    available: 0,
+    leftover: 0
   }));
-
-  const { totalPercent } = validateAlloyRatios(parts);
-
-  const compatibleFuels = definition.smeltTemp !== undefined
-    ? formatFuelList(getCompatibleFuels(definition.smeltTemp))
-    : formatFuelList(undefined);
-
-  const barSegments = totalPercent <= 0
-    ? [{ label: "No metals", color: "#eee", flex: 1 }]
-    : parts
-        .filter((part) => part.pct > 0)
-        .map((part) => ({
-          label: `${part.metal} ${part.pct.toFixed(1)}%`,
-          color: part.color || "#ccc",
-          flex: part.pct
-        }));
 
   const stackInputs = partsWithAllocations
     .filter((part) => part.nuggets > 0)
@@ -436,10 +549,13 @@ export const alloyCalculation = derived(alloyCalculator, (state) => {
     }));
 
   return {
+    mode: state.mode,
     alloyName: definition.name,
     parts: partsWithAllocations,
     totalUnits,
     totalPercent,
+    producedIngots: 0,
+    remainderNuggets: 0,
     smeltTemp: formatTemperature(definition.smeltTemp),
     compatibleFuels,
     barSegments,

@@ -1,3 +1,5 @@
+export type CalculationMode = "need" | "have";
+
 export interface AlloyPart {
   metal: string;
   min: number;
