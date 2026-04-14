@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.1] - 2026-04-14
+
 ### Fixed
 
 - Fixed compatible fuels display for alloys now using the highest ingredient melting temperature instead of the alloy's own temperature (e.g. Cupronickel now correctly requires Coke to melt the Nickel at 1325°C)
@@ -232,7 +234,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release with Alloying Calculator
 
-[Unreleased]: https://github.com/D-Heger/VintageStoryCalculator/compare/0.6.0...HEAD
+[Unreleased]: https://github.com/D-Heger/VintageStoryCalculator/compare/0.6.1...HEAD
+[0.6.1]: https://github.com/D-Heger/VintageStoryCalculator/releases/tag/0.6.1
 [0.6.0]: https://github.com/D-Heger/VintageStoryCalculator/releases/tag/0.6.0
 [0.5.2]: https://github.com/D-Heger/VintageStoryCalculator/releases/tag/0.5.2
 [0.5.1]: https://github.com/D-Heger/VintageStoryCalculator/releases/tag/0.5.1
