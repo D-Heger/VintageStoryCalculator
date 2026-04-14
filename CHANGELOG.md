@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-04-14
+
 ### Added
 
 - Added Usage Finder tool (`#usage`) that lets players enter their metal inventory and discover every alloy and pure casting option available, with per-metal breakdowns, stack plans, and compatible fuels
@@ -222,7 +224,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release with Alloying Calculator
 
-[Unreleased]: https://github.com/D-Heger/VintageStoryCalculator/compare/0.5.2...HEAD
+[Unreleased]: https://github.com/D-Heger/VintageStoryCalculator/compare/0.6.0...HEAD
+[0.6.0]: https://github.com/D-Heger/VintageStoryCalculator/releases/tag/0.6.0
 [0.5.2]: https://github.com/D-Heger/VintageStoryCalculator/releases/tag/0.5.2
 [0.5.1]: https://github.com/D-Heger/VintageStoryCalculator/releases/tag/0.5.1
 [0.5.0]: https://github.com/D-Heger/VintageStoryCalculator/releases/tag/0.5.0
