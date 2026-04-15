@@ -8,15 +8,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added dependabot pipeline to keep dependencies updated
+- Added a dependency review workflow to check for known vulnerabilities in dependencies
+- Added a audit workflow that executes npm audit to check for problems
+
+### Changed
+
+- Updated release pipeline to use newest features instead of archived/deprecated ones
+
 ## [0.6.1] - 2026-04-14
-
-### Fixed
-
-- Fixed compatible fuels display for alloys now using the highest ingredient melting temperature instead of the alloy's own temperature (e.g. Cupronickel now correctly requires Coke to melt the Nickel at 1325°C)
 
 ### Added
 
 - Added per-ingredient smelting breakdown in the Alloying Calculator and Usage Finder, showing each metal's individual melting temperature and compatible fuels
+
+### Fixed
+
+- Fixed compatible fuels display for alloys now using the highest ingredient melting temperature instead of the alloy's own temperature (e.g. Cupronickel now correctly requires Coke to melt the Nickel at 1325°C)
 
 ## [0.6.0] - 2026-04-14
 

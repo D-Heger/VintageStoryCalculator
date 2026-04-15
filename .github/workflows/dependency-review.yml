@@ -1,0 +1,34 @@
+name: Dependency Review
+
+on:
+  pull_request:
+    branches:
+      - master
+      - release
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  dependency-review:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Dependency Review
+        uses: actions/dependency-review-action@v4
+        with:
+          # Fail on high/critical vulnerabilities
+          fail-on-severity: high
+          # Block packages with known vulnerabilities
+          vulnerability-check: true
+          # License check - allow common permissive licenses
+          license-check: true
+          allow-licenses: >
+            MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause, ISC,
+            0BSD, BlueOak-1.0.0, CC0-1.0, Unlicense, CC-BY-4.0,
+            Python-2.0, MPL-2.0
+          # Comment a summary on the PR
+          comment-summary-in-pr: on-failure
