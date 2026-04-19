@@ -17,6 +17,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Updated release workflow to use latest versions of `actions/checkout` and `actions/setup-node`, and node.js
 - Replaced deprecated `actions/create-release` with `softprops/action-gh-release`
+- Migrated ESLint from v8 (`.eslintrc.cjs`) to v10 with flat config (`eslint.config.js`), replacing `@typescript-eslint/eslint-plugin` and `@typescript-eslint/parser` with `typescript-eslint` and adding `@eslint/js` and `globals`
+- Bumped `minimatch` from 3.1.2 to 3.1.5, ref [changes](https://github.com/D-Heger/VintageStoryCalculator/commit/74887c132abdcc898578c6317b84f76c6cfe693a)
+- Bumped `flatted` from 3.3.3 to 3.4.2, ref [changes](https://github.com/D-Heger/VintageStoryCalculator/commit/ff4b956af885e756625d03a7f49e209aab235531)
+- Bumped `picomatch` from 2.3.1 to 2.3.2, ref [changes](https://github.com/D-Heger/VintageStoryCalculator/commit/89ba483d9f27d71770edc2deadd94370ccde537c)
+- Bumped `rollup` from 4.53.3 to 4.60.2, ref [changes](https://github.com/D-Heger/VintageStoryCalculator/commit/4056c3c326e46051aefd5fc5555e35f174b13011)
 
 ### Removed
 
