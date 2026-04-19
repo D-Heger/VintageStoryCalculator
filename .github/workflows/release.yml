@@ -30,7 +30,7 @@ jobs:
           fi
       
       - name: Checkout master branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: master
           fetch-depth: 0
@@ -42,9 +42,9 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
       
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
       
       - name: Install dependencies
@@ -129,12 +129,10 @@ jobs:
           echo "EOF" >> $GITHUB_OUTPUT
       
       - name: Create GitHub Release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ inputs.version }}
-          release_name: Release ${{ inputs.version }}
+          name: Release ${{ inputs.version }}
           body_path: release-notes.md
           draft: false
           prerelease: ${{ inputs.prerelease }}

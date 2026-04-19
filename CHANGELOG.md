@@ -8,6 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added base dependabot configuration for automated dependency updates with weekly schedule and PRs targeting the `master` branch
+- Added basic ci gate for pull requests that runs `npm install` and `npm run build` to catch build errors before merging into `master` or another protected branch
+
+### Changed
+
+- Updated release workflow to use latest versions of `actions/checkout` and `actions/setup-node`, and node.js
+- Replaced deprecated `actions/create-release` with `softprops/action-gh-release`
+
 ### Removed
 
 - Removed variable getCompatibleFuels from alloyCalculator.ts since it was not being used anymore after refactoring fuel details to getIngredientFuelDetails
