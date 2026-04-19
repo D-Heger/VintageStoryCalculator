@@ -10,8 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Added base dependabot configuration for automated dependency updates with weekly schedule and PRs targeting the `main` branch
-- Added basic ci gate for pull requests that runs `npm install` and `npm run build` to catch build errors before merging into main or another protected branch
+- Added base dependabot configuration for automated dependency updates with weekly schedule and PRs targeting the `master` branch
+- Added basic ci gate for pull requests that runs `npm install` and `npm run build` to catch build errors before merging into `master` or another protected branch
 
 ### Removed
 
