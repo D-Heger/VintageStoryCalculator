@@ -1,0 +1,14 @@
+{
+  "firewoodPerLog": 4,
+  "firewoodPerStack": 32,
+  "charcoalPerStack": {
+    "min": 4,
+    "max": 7,
+    "avg": 5.5
+  },
+  "maxPitDimension": 11,
+  "minPitDimension": 1,
+  "burnTimeGameHours": 18,
+  "defaultRealMinutesPerGameDay": 60,
+  "gameHoursPerDay": 24
+}

@@ -8,15 +8,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added Charcoal Calculator tool (`#charcoal`) for pit planning, firewood resource estimation, and charcoal yield calculations
+- Added interactive 3D isometric pit preview component that visualizes charcoal pit dimensions
+- Added charcoal calculator store with bidirectional calculation support ("I have a pit" and "I need charcoal" modes) and clamped dimension inputs
+- Added configurable button labels (`needLabel`, `haveLabel`) to `mode-toggle.svelte` so each calculator can use context-specific wording
+- Added charcoal share codec supporting shareable URLs for saved pit configurations (e.g., `#charcoal?d=h&w=5&dp=5&h=5`)
+- Added burn time calculations in both game hours and real-world minutes (configurable via charcoal data constants)
+- Added charcoal data definitions module (`src/data/charcoal.json`) with pit limits, firewood-to-charcoal ratios, and burn-time constants
+
+### Changed
+
+- Updated home page to feature the new Charcoal Calculator alongside other tools
+- Updated app navigation to include Charcoal Calculator route and home page tool cards
+
 ## [0.6.1] - 2026-04-14
-
-### Fixed
-
-- Fixed compatible fuels display for alloys now using the highest ingredient melting temperature instead of the alloy's own temperature (e.g. Cupronickel now correctly requires Coke to melt the Nickel at 1325°C)
 
 ### Added
 
 - Added per-ingredient smelting breakdown in the Alloying Calculator and Usage Finder, showing each metal's individual melting temperature and compatible fuels
+
+### Fixed
+
+- Fixed compatible fuels display for alloys now using the highest ingredient melting temperature instead of the alloy's own temperature (e.g. Cupronickel now correctly requires Coke to melt the Nickel at 1325°C)
 
 ## [0.6.0] - 2026-04-14
 
