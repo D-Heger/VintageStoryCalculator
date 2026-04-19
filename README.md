@@ -47,6 +47,10 @@ Calculate the number of ore nuggets needed to cast metal ingots in a crucible. S
 
 Enter the metals you have and discover every alloy and casting option available to you. The tool checks your inventory against all game recipes, shows how many ingots each option yields, and provides a per-metal breakdown of nuggets used versus leftover. Expanding a result reveals the full stack plan and compatible fuels.
 
+### Charcoal Calculator
+
+Calculate pit dimensions, firewood requirements, and charcoal yield for your smelting operations. Supports both "I have a pit" mode (calculate resources needed) and "I need charcoal" mode (find suggested pit size). Includes burn time calculations in both game and real-world minutes, an interactive 3D pit preview, and support for shareable calculator URLs.
+
 ## Shareable Recipe URLs
 
 Both calculators support URL-encoded state so you can share exact setups with others.
@@ -83,69 +87,75 @@ Send feedback from a dedicated in-app page without creating an account. Submissi
 ## Project Structure
 
 ```shell
-VintageStoryCalculator/         # Root directory
-├── .github/                    # Issue templates and repo automation
-├── index.html                  # Vite entry point
-├── package.json                # Project configuration and scripts
-├── src/                        # Svelte application source
-│   ├── App.svelte              # Root layout and navigation
-│   ├── components/             # Reusable UI components
+VintageStoryCalculator/             # Root directory
+├── .github/                        # Issue templates and repo automation
+├── index.html                      # Vite entry point
+├── package.json                    # Project configuration and scripts
+├── src/                            # Svelte application source
+│   ├── App.svelte                  # Root layout and navigation
+│   ├── components/                 # Reusable UI components
 │   │   ├── calculator-card.svelte
 │   │   ├── feedback-form.svelte
 │   │   ├── mode-toggle.svelte
 │   │   ├── number-input.svelte
+│   │   ├── pit-preview.svelte
 │   │   ├── result-display.svelte
 │   │   ├── select-input.svelte
 │   │   ├── share-button.svelte
 │   │   ├── settings-modal.svelte
 │   │   ├── stack-plan-panel.svelte
 │   │   └── temperature-display.svelte
-│   ├── data/                   # Game data files
-│   │   ├── alloys.json         # Alloy recipes and definitions
-│   │   ├── constants.json      # Shared game constants and fuel data
-│   │   ├── fuels.json          # Fuel definitions and burn times
-│   │   └── metals.json         # Metal definitions
-│   ├── lib/                    # Shared utilities
-│   │   ├── calculations.ts     # Pure calculator helpers
-│   │   ├── constants.ts        # Typed constants exports
-│   │   ├── fuels.ts            # Typed fuel definitions
-│   │   ├── numberFormatting.ts # Shared numeric formatting helpers
-│   │   ├── stack-display.ts    # Process and stack display labels
-│   │   ├── stack-plan.ts       # Stack breakdown helper
-│   │   ├── url-state.ts        # Share URL codec registry and parsing helpers
-│   │   ├── smelting/           # Smelting planning and allocation helpers
+│   ├── data/                       # Game data files
+│   │   ├── alloys.json             # Alloy recipes and definitions
+│   │   ├── charcoal.json           # Charcoal pit constants and yield data
+│   │   ├── constants.json          # Shared game constants and fuel data
+│   │   ├── fuels.json              # Fuel definitions and burn times
+│   │   └── metals.json             # Metal definitions
+│   ├── lib/                        # Shared utilities
+│   │   ├── calculations.ts         # Pure calculator helpers
+│   │   ├── charcoal.ts             # Charcoal calculation and pit planning helpers
+│   │   ├── constants.ts            # Typed constants exports
+│   │   ├── fuels.ts                # Typed fuel definitions
+│   │   ├── numberFormatting.ts     # Shared numeric formatting helpers
+│   │   ├── stack-display.ts        # Process and stack display labels
+│   │   ├── stack-plan.ts           # Stack breakdown helper
+│   │   ├── url-state.ts            # Share URL codec registry and parsing helpers
+│   │   ├── smelting/               # Smelting planning and allocation helpers
 │   │   │   ├── allocation.ts
 │   │   │   ├── index.ts
 │   │   │   ├── planner.ts
 │   │   │   └── types.ts
-│   │   └── version.ts          # Changelog parser
-│   ├── main.ts                 # Application bootstrap
-│   ├── stores/                 # Svelte stores
-│   │   ├── alloyCalculator.ts  # Alloying calculator store
-│   │   ├── metalCalculator.ts  # Casting calculator store
-│   │   ├── settings.ts         # Persistent UI settings store
-│   │   ├── usageFinder.ts      # Usage Finder inventory and results store
-│   │   ├── share/              # URL sharing codecs per calculator
+│   │   └── version.ts              # Changelog parser
+│   ├── main.ts                     # Application bootstrap
+│   ├── stores/                     # Svelte stores
+│   │   ├── alloyCalculator.ts      # Alloying calculator store
+│   │   ├── charcoalCalculator.ts   # Charcoal calculator store
+│   │   ├── metalCalculator.ts      # Casting calculator store
+│   │   ├── settings.ts             # Persistent UI settings store
+│   │   ├── usageFinder.ts          # Usage Finder inventory and results store
+│   │   ├── share/                  # URL sharing codecs per calculator
 │   │   │   ├── alloyCodec.ts
+│   │   │   ├── charcoalCodec.ts
 │   │   │   ├── index.ts
 │   │   │   ├── metalCodec.ts
 │   │   │   └── usageCodec.ts
-│   │   └── theme.ts            # Theme store
-│   ├── types/                  # Shared TypeScript interfaces
-│   │   ├── components.ts       # Component prop and event contracts
-│   │   └── index.ts            # Data and calculation types
-│   └── routes/                 # Route-aligned components
+│   │   └── theme.ts                # Theme store
+│   ├── types/                      # Shared TypeScript interfaces
+│   │   ├── components.ts           # Component prop and event contracts
+│   │   └── index.ts                # Data and calculation types
+│   └── routes/                     # Route-aligned components
 │       ├── AlloyingCalculator.svelte
 │       ├── CastingCalculator.svelte
+│       ├── CharcoalCalculator.svelte
 │       ├── Feedback.svelte
 │       ├── Home.svelte
 │       ├── Privacy.svelte
 │       └── UsageFinder.svelte
-├── tsconfig.json               # TypeScript configuration
-├── .eslintrc.cjs               # ESLint configuration
-├── styles/                     # Shared styling
+├── tsconfig.json                   # TypeScript configuration
+├── .eslintrc.cjs                   # ESLint configuration
+├── styles/                         # Shared styling
 │   ├── base.css
-│   ├── calculator.css          # Calculator style entrypoint importing modular partials
+│   ├── calculator.css              # Calculator style entrypoint importing modular partials
 │   ├── calculator/
 │   │   ├── layout.css
 │   │   ├── responsive.css
@@ -154,9 +164,9 @@ VintageStoryCalculator/         # Root directory
 │   ├── components.css
 │   ├── layout.css
 │   └── themes.css
-├── CHANGELOG.md                # Release notes
-├── LICENSE                     # MIT License
-└── README.md                   # Project overview
+├── CHANGELOG.md                    # Release notes
+├── LICENSE                         # MIT License
+└── README.md                       # Project overview
 ```
 
 ## Browser Support
