@@ -18,6 +18,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Updated release pipeline to use newest features instead of archived/deprecated ones
 
+## [0.7.0] - 2026-04-19
+
+### Added
+
+- Added Charcoal Calculator tool (`#charcoal`) for pit planning, firewood resource estimation, and charcoal yield calculations
+- Added interactive 3D isometric pit preview component that visualizes charcoal pit dimensions
+- Added charcoal calculator store with bidirectional calculation support ("I have a pit" and "I need charcoal" modes) and clamped dimension inputs
+- Added configurable button labels (`needLabel`, `haveLabel`) to `mode-toggle.svelte` so each calculator can use context-specific wording
+- Added charcoal share codec supporting shareable URLs for saved pit configurations (e.g., `#charcoal?d=h&w=5&dp=5&h=5`)
+- Added burn time calculations in both game hours and real-world minutes (configurable via charcoal data constants)
+- Added charcoal data definitions module (`src/data/charcoal.json`) with pit limits, firewood-to-charcoal ratios, and burn-time constants
+
+### Changed
+
+- Updated home page to feature the new Charcoal Calculator alongside other tools
+- Updated app navigation to include Charcoal Calculator route and home page tool cards
+
 ## [0.6.1] - 2026-04-14
 
 ### Added
@@ -244,7 +261,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release with Alloying Calculator
 
-[Unreleased]: https://github.com/D-Heger/VintageStoryCalculator/compare/0.6.1...HEAD
+[Unreleased]: https://github.com/D-Heger/VintageStoryCalculator/compare/0.7.0...HEAD
+[0.7.0]: https://github.com/D-Heger/VintageStoryCalculator/releases/tag/0.7.0
 [0.6.1]: https://github.com/D-Heger/VintageStoryCalculator/releases/tag/0.6.1
 [0.6.0]: https://github.com/D-Heger/VintageStoryCalculator/releases/tag/0.6.0
 [0.5.2]: https://github.com/D-Heger/VintageStoryCalculator/releases/tag/0.5.2

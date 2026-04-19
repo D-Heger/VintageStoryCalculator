@@ -3,6 +3,8 @@
   import type { CalculationMode } from "../types/index";
 
   export let mode: CalculationMode = "need";
+  export let needLabel: string = "I need ingots";
+  export let haveLabel: string = "I have nuggets";
 
   const dispatch = createEventDispatcher<{ change: { value: CalculationMode } }>();
 
@@ -20,7 +22,7 @@
     class:active={mode === "need"}
     on:click={() => handleClick("need")}
   >
-    I need ingots
+    {needLabel}
   </button>
   <button
     type="button"
@@ -29,6 +31,6 @@
     class:active={mode === "have"}
     on:click={() => handleClick("have")}
   >
-    I have nuggets
+    {haveLabel}
   </button>
 </div>
