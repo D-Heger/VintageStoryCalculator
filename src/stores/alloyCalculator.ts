@@ -12,7 +12,7 @@ import {
   computeStackPlan,
   type StackInput
 } from "../lib/stack-plan";
-import { formatFuelList, getBottleneckFuels, getCompatibleFuels, getIngredientFuelDetails, type IngredientFuelInfo } from "../lib/fuels";
+import { formatFuelList, getBottleneckFuels, getIngredientFuelDetails, type IngredientFuelInfo } from "../lib/fuels";
 import { calculateAlloyAllocation, calculateAlloySplitFromNuggets } from "../lib/smelting";
 import type { CalculationMode, Alloy } from "../types/index";
 
