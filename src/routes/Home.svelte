@@ -7,10 +7,6 @@
     Precise calculators for Vintage Story &middot; alloy ratios, ingot casting,
     smelting temperatures. Everything you need before you light the forge.
   </p>
-  <div class="hero-actions">
-    <a href="#alloying" class="btn-primary">Alloying Calculator</a>
-    <a href="#casting" class="btn-outline">Casting Calculator</a>
-  </div>
 </section>
 
 <section class="tools-section">

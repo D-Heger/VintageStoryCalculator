@@ -190,50 +190,6 @@
   max-width: 540px;
 }
 
-.hero-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--spacing-sm);
-  align-items: center;
-}
-
-.btn-primary {
-  display: inline-flex;
-  align-items: center;
-  padding: 10px 22px;
-  background: var(--primary-color);
-  color: white;
-  border-radius: var(--border-radius);
-  font-weight: 600;
-  font-size: 0.95rem;
-  transition: all var(--transition);
-}
-
-.btn-primary:hover {
-  background: var(--primary-dark);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 14px var(--shadow-hover);
-}
-
-.btn-outline {
-  display: inline-flex;
-  align-items: center;
-  padding: 10px 22px;
-  background: transparent;
-  color: var(--primary-color);
-  border-radius: var(--border-radius);
-  font-weight: 600;
-  font-size: 0.95rem;
-  border: 2px solid var(--border-strong);
-  transition: all var(--transition);
-}
-
-.btn-outline:hover {
-  border-color: var(--primary-color);
-  background: var(--surface-muted);
-  transform: translateY(-1px);
-}
-
 .tools-section {
   margin-bottom: var(--spacing-lg);
 }

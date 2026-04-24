@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 - Removed variable getCompatibleFuels from alloyCalculator.ts since it was not being used anymore after refactoring fuel details to getIngredientFuelDetails
+- Removed the two redundant hero CTA buttons from the home page now that the same destinations are already covered by the tool cards below
 
 ## [0.7.0] - 2026-04-19
 
