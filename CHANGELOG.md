@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added base dependabot configuration for automated dependency updates with weekly schedule and PRs targeting the `master` branch
 - Added basic ci gate for pull requests that runs `npm install` and `npm run build` to catch build errors before merging into `master` or another protected branch
 
+### Fixed
+
+- Added consistent spacing below reusable card heading divider lines so section content no longer sits too close to the border
+
 ### Changed
 
 - Updated release workflow to use latest versions of `actions/checkout` and `actions/setup-node`, and node.js
