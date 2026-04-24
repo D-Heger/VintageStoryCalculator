@@ -23,6 +23,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bumped `picomatch` from 2.3.1 to 2.3.2, ref [changes](https://github.com/D-Heger/VintageStoryCalculator/commit/89ba483d9f27d71770edc2deadd94370ccde537c)
 - Bumped `rollup` from 4.53.3 to 4.60.2, ref [changes](https://github.com/D-Heger/VintageStoryCalculator/commit/4056c3c326e46051aefd5fc5555e35f174b13011)
 
+### Fixed
+
+- Added consistent spacing below reusable card heading divider lines so section content no longer sits too close to the border
+
 ### Removed
 
 - Removed variable getCompatibleFuels from alloyCalculator.ts since it was not being used anymore after refactoring fuel details to getIngredientFuelDetails
