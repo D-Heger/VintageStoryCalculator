@@ -19,7 +19,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Removed the two redundant hero CTA buttons from the home page now that the same destinations are already covered by the tool cards below
 - Updated release workflow to use latest versions of `actions/checkout` and `actions/setup-node`, and node.js
 - Replaced deprecated `actions/create-release` with `softprops/action-gh-release`
 - Migrated ESLint from v8 (`.eslintrc.cjs`) to v10 with flat config (`eslint.config.js`), replacing `@typescript-eslint/eslint-plugin` and `@typescript-eslint/parser` with `typescript-eslint` and adding `@eslint/js` and `globals`
@@ -31,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 - Removed variable getCompatibleFuels from alloyCalculator.ts since it was not being used anymore after refactoring fuel details to getIngredientFuelDetails
+- Removed the two redundant hero CTA buttons from the home page now that the same destinations are already covered by the tool cards below
 
 ## [0.7.0] - 2026-04-19
 
