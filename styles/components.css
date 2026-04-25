@@ -32,6 +32,34 @@
   margin-bottom: var(--spacing-sm);
 }
 
+.card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: calc(var(--spacing-xs) * 0.9);
+  margin: 0 0 var(--spacing-sm) 0;
+}
+
+.card-subtitle {
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+  line-height: 1.4;
+}
+
+.card-info-badge {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--border-soft);
+  border-radius: 999px;
+  background: var(--surface-muted);
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1;
+  padding: 0.38rem 0.65rem;
+  white-space: nowrap;
+}
+
 .card > p {
   margin: 0;
   color: var(--text-secondary);

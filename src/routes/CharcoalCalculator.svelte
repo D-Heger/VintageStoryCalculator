@@ -5,6 +5,7 @@
   import ShareButton from "../components/share-button.svelte";
   import PitPreview from "../components/pit-preview.svelte";
   import { formatWholeNumber } from "../lib/numberFormatting";
+  import { VERIFIED_TOOL_VERSIONS } from "../lib/toolVerification";
   import {
     firewoodPerLog,
     firewoodPerStack,
@@ -57,6 +58,7 @@
     <CalculatorCard
       title="Charcoal Calculator"
       subtitle="Charcoal pit planning"
+      verifiedVersion={VERIFIED_TOOL_VERSIONS.charcoal}
     >
       <p>
         {#if $charcoalCalculator.mode === "have"}

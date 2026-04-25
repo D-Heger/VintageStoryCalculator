@@ -8,6 +8,7 @@
   import alloyDefinitionsRaw from "../data/alloys.json";
   import { NUGGETS_PER_INGOT } from "../lib/constants";
   import { formatWholeNumber } from "../lib/numberFormatting";
+  import { VERIFIED_TOOL_VERSIONS } from "../lib/toolVerification";
   import {
     ALLOY_PERCENT_PRECISION,
     ALLOY_PERCENT_STEP,
@@ -61,6 +62,7 @@
     <CalculatorCard
       title="Alloying Calculator"
       subtitle="Blend planning"
+      verifiedVersion={VERIFIED_TOOL_VERSIONS.alloying}
     >
       <p>
         {#if $alloyCalculator.mode === "have"}

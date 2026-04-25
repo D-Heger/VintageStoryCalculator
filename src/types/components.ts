@@ -13,6 +13,7 @@ export type HeadingTag = "h2" | "h3" | "h4";
 export interface CalculatorCardProps {
   title: string;
   subtitle?: string;
+  verifiedVersion?: string;
   headingTag?: HeadingTag;
   className?: string;
 }

@@ -8,6 +8,7 @@
   import metalDefinitionsRaw from "../data/metals.json";
   import { NUGGETS_PER_INGOT, UNITS_PER_INGOT } from "../lib/constants";
   import { formatWholeNumber } from "../lib/numberFormatting";
+  import { VERIFIED_TOOL_VERSIONS } from "../lib/toolVerification";
   import {
     metalCalculation,
     metalCalculator,
@@ -46,6 +47,7 @@
     <CalculatorCard
       title="Casting Calculator"
       subtitle="Ore to ingot planning"
+      verifiedVersion={VERIFIED_TOOL_VERSIONS.casting}
     >
       <p>
         {#if $metalCalculator.mode === "have"}
