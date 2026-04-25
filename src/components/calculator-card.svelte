@@ -3,6 +3,7 @@
 
   export let title: CalculatorCardProps["title"];
   export let subtitle: CalculatorCardProps["subtitle"] = "";
+  export let verifiedVersion: CalculatorCardProps["verifiedVersion"] = "";
   export let headingTag: CalculatorCardProps["headingTag"] = "h2";
   export let className: CalculatorCardProps["className"] = "";
 
@@ -16,8 +17,21 @@
 
 <div class={cardClassName}>
   <svelte:element this={headingTag}>{title}</svelte:element>
-  {#if subtitle}
-    <p>{subtitle}</p>
+  {#if subtitle || verifiedVersion}
+    <div class="card-meta">
+      {#if subtitle}
+        <span class="card-subtitle">{subtitle}</span>
+      {/if}
+      {#if verifiedVersion}
+        <span
+          class="card-info-badge"
+          aria-label={`Accuracy verified for Vintage Story ${verifiedVersion}`}
+          title={`Accuracy verified for Vintage Story ${verifiedVersion}`}
+        >
+          Verified for {verifiedVersion}
+        </span>
+      {/if}
+    </div>
   {/if}
   <slot />
 </div>

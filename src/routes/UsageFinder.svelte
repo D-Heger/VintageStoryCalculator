@@ -6,6 +6,7 @@
   import StackPlanPanel from "../components/stack-plan-panel.svelte";
   import { NUGGETS_PER_INGOT } from "../lib/constants";
   import { formatWholeNumber } from "../lib/numberFormatting";
+  import { VERIFIED_TOOL_VERSIONS } from "../lib/toolVerification";
   import {
     addMetal,
     allMetalKeys,
@@ -52,6 +53,7 @@
     <CalculatorCard
       title="Usage Finder"
       subtitle="What can I make?"
+      verifiedVersion={VERIFIED_TOOL_VERSIONS.usage}
     >
       <p>
         Add the metals you have and see everything you can craft. One ingot

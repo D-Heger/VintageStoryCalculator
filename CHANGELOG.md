@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added base dependabot configuration for automated dependency updates with weekly schedule and PRs targeting the `master` branch
 - Added basic ci gate for pull requests that runs `npm install` and `npm run build` to catch build errors before merging into `master` or another protected branch
 - Added a standard pull request template under `.github/PULL_REQUEST_TEMPLATE/standard.md` with sections for change summary, testing, risks, and reviewer checklist
+- Added per-tool verification badges to calculator intro cards so each tool shows the Vintage Story version its accuracy was last verified against
 
 ### Fixed
 
