@@ -4,7 +4,7 @@
   method="POST"
   data-netlify="true"
   netlify-honeypot="bot-field"
-  action="/#feedback"
+  action="/feedback/"
 >
   <input type="hidden" name="form-name" value="user-feedback" />
   <p class="feedback-honeypot" aria-hidden="true">
@@ -38,7 +38,7 @@
   <div class="feedback-control feedback-control--full feedback-checkbox">
     <input id="feedback-consent" name="privacy-consent" type="checkbox" required />
     <label for="feedback-consent">
-      I have read the <a href="#privacy">Privacy Notice</a> and agree to sending this feedback.
+      I have read the <a href="/privacy/">Privacy Notice</a> and agree to sending this feedback.
     </label>
   </div>
 

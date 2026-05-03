@@ -12,7 +12,7 @@
 <section class="tools-section">
   <h2 class="section-label">Available Tools</h2>
   <div class="tools-grid">
-    <a href="#alloying" class="tool-card">
+    <a href="/alloying/" class="tool-card">
       <div class="tool-icon" aria-hidden="true">⚗️</div>
       <div class="tool-body">
         <h3>Alloying Calculator</h3>
@@ -24,7 +24,7 @@
       </div>
       <span class="tool-arrow" aria-hidden="true">→</span>
     </a>
-    <a href="#casting" class="tool-card">
+    <a href="/casting/" class="tool-card">
       <div class="tool-icon" aria-hidden="true">🔩</div>
       <div class="tool-body">
         <h3>Casting Calculator</h3>
@@ -36,7 +36,7 @@
       </div>
       <span class="tool-arrow" aria-hidden="true">→</span>
     </a>
-    <a href="#usage" class="tool-card">
+    <a href="/usage-finder/" class="tool-card">
       <div class="tool-icon" aria-hidden="true">🔍</div>
       <div class="tool-body">
         <h3>Usage Finder</h3>
@@ -47,7 +47,7 @@
       </div>
       <span class="tool-arrow" aria-hidden="true">→</span>
     </a>
-    <a href="#charcoal" class="tool-card">
+    <a href="/charcoal/" class="tool-card">
       <div class="tool-icon" aria-hidden="true">🔥</div>
       <div class="tool-body">
         <h3>Charcoal Calculator</h3>
@@ -58,7 +58,7 @@
       </div>
       <span class="tool-arrow" aria-hidden="true">→</span>
     </a>
-    <a href="#feedback" class="tool-card">
+    <a href="/feedback/" class="tool-card">
       <div class="tool-icon" aria-hidden="true">✉️</div>
       <div class="tool-body">
         <h3>Feedback</h3>
