@@ -57,7 +57,8 @@ Both calculators support URL-encoded state so you can share exact setups with ot
 
 - Use the `Share recipe` button in the calculator sidebar to copy the current setup URL.
 - Opening that URL restores calculator selections automatically.
-- URL format is route-aware, for example: `#alloying?a=tin_bronze&n=10&Copper=90.0&Tin=10.0`, `#casting?m=copper&n=10`, and `#usage?Copper=100&Tin=50`.
+- URL format is route-aware, for example: `/alloying/?shareRoute=alloying&a=tin_bronze&n=10&Copper=90.0&Tin=10.0`, `/casting/?shareRoute=casting&m=copper&n=10`, and `/usage-finder/?shareRoute=usage&Copper=100&Tin=50`.
+- Existing hash-only links such as `#alloying?...` remain supported.
 - The "have" mode is encoded as `d=h` with per-metal nugget counts so shared links preserve the calculation direction.
 - The sharing system is extensible via per-route codecs registered through `src/lib/url-state.ts`.
 

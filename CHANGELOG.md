@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added basic ci gate for pull requests that runs `npm install` and `npm run build` to catch build errors before merging into `master` or another protected branch
 - Added a standard pull request template under `.github/PULL_REQUEST_TEMPLATE/standard.md` with sections for change summary, testing, risks, and reviewer checklist
 - Added per-tool verification badges to calculator intro cards so each tool shows the Vintage Story version its accuracy was last verified against
+- Added a generated Open Graph preview image (`public/og-image.png`) and expanded social meta tags (`og:*`, `twitter:*`) for richer previews across social platforms
 
 ### Fixed
 
@@ -28,6 +29,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bumped `flatted` from 3.3.3 to 3.4.2, ref [changes](https://github.com/D-Heger/VintageStoryCalculator/commit/ff4b956af885e756625d03a7f49e209aab235531)
 - Bumped `picomatch` from 2.3.1 to 2.3.2, ref [changes](https://github.com/D-Heger/VintageStoryCalculator/commit/89ba483d9f27d71770edc2deadd94370ccde537c)
 - Bumped `rollup` from 4.53.3 to 4.60.2, ref [changes](https://github.com/D-Heger/VintageStoryCalculator/commit/4056c3c326e46051aefd5fc5555e35f174b13011)
+- Updated shared links to clean route path URLs with query-encoded state while remaining backward compatible with existing hash-only links
+- Added crawlable calculator route paths, sitemap entries, and Netlify SPA fallback routing for better route-level discovery
+- Updated share action behavior to use native rich share payloads (`title`, `text`, `url`) when available and copy-link fallback otherwise
 
 ### Removed
 

@@ -1,10 +1,12 @@
 <script lang="ts">
   import { onDestroy } from "svelte";
+  import { buildSharePreview } from "../lib/share-preview";
   import { buildShareUrl } from "../lib/url-state";
 
   export let route: string;
 
   let copied = false;
+  let successLabel = "Copied!";
   let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
   const copyToClipboard = async (text: string): Promise<void> => {
@@ -31,7 +33,21 @@
   const handleClick = async () => {
     try {
       const url = buildShareUrl(route);
-      await copyToClipboard(url);
+      const preview = buildSharePreview(route);
+
+      // Prefer native share dialogs where available because they preserve rich text + URL.
+      if (navigator.share) {
+        await navigator.share({
+          title: preview.title,
+          text: preview.text,
+          url
+        });
+        successLabel = "Shared!";
+      } else {
+        await copyToClipboard(url);
+        successLabel = "Copied!";
+      }
+
       copied = true;
       clearTimeout(timeoutId);
       timeoutId = setTimeout(() => {
@@ -52,14 +68,14 @@
   class:share-button--copied={copied}
   type="button"
   on:click={handleClick}
-  aria-label={copied ? "Link copied to clipboard" : "Copy shareable link"}
-  title={copied ? "Copied!" : "Share this recipe"}
+  aria-label={copied ? "Share action completed" : "Share this recipe"}
+  title={copied ? successLabel : "Share this recipe"}
 >
   {#if copied}
     <svg class="share-button__icon" viewBox="0 0 20 20" fill="none" aria-hidden="true">
       <path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
-    <span class="share-button__label">Copied!</span>
+    <span class="share-button__label">{successLabel}</span>
   {:else}
     <svg class="share-button__icon" viewBox="0 0 20 20" fill="none" aria-hidden="true">
       <path d="M8 12a3 3 0 0 0 4.243 0l2.828-2.829a3 3 0 0 0-4.243-4.243L9.586 6.172" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>

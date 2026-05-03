@@ -4,8 +4,9 @@
  * Generic, extensible system for encoding calculator state into shareable URLs.
  * Each calculator registers a codec that knows how to serialize/deserialize its own state.
  *
- * URL format: #route?key=value&key=value
- * Example:    #alloying?a=tin_bronze&n=10&Copper=90.0&Tin=10.0
+ * URL format: /route/?shareRoute=route&key=value&key=value
+ * Legacy hash URLs remain supported for existing shared links.
+ * Example:    /alloying/?shareRoute=alloying&a=tin_bronze&n=10&Copper=90.0&Tin=10.0
  */
 
 export interface ShareCodec {
@@ -16,6 +17,44 @@ export interface ShareCodec {
 }
 
 const registry = new Map<string, ShareCodec>();
+const SHARE_ROUTE_PARAM = "shareRoute";
+
+export const ROUTE_PATHS: Record<string, string> = {
+  home: "/",
+  alloying: "/alloying/",
+  casting: "/casting/",
+  charcoal: "/charcoal/",
+  usage: "/usage-finder/",
+  feedback: "/feedback/",
+  privacy: "/privacy/"
+};
+
+const PATH_ROUTES = new Map<string, string>([
+  ["/", "home"],
+  ["/alloying", "alloying"],
+  ["/casting", "casting"],
+  ["/charcoal", "charcoal"],
+  ["/usage", "usage"],
+  ["/usage-finder", "usage"],
+  ["/feedback", "feedback"],
+  ["/privacy", "privacy"]
+]);
+
+const normalizePath = (pathname: string): string => {
+  const cleanPath = (pathname || "/").split(/[?#]/, 1)[0] || "/";
+  if (cleanPath === "/") return cleanPath;
+  return cleanPath.replace(/\/+$/, "");
+};
+
+/** Return the canonical public path for a route. */
+export function getCanonicalPathForRoute(route: string): string {
+  return ROUTE_PATHS[route] ?? `/#${encodeURIComponent(route)}`;
+}
+
+/** Parse a route from a crawlable path URL. */
+export function getRouteFromPath(pathname: string): string | null {
+  return PATH_ROUTES.get(normalizePath(pathname)) ?? null;
+}
 
 /** Register a share codec for a given route. Call at module scope in each calculator store. */
 export function registerShareCodec(route: string, codec: ShareCodec): void {
@@ -43,14 +82,41 @@ export function getRouteFromHash(hash: string): string {
   return parseHash(hash).route;
 }
 
+/** Extract a route and optional params from the URL search segment used in share links. */
+export function parseSearch(search: string): { route: string | null; params: URLSearchParams | null } {
+  const raw = search.startsWith("?") ? search.slice(1) : search;
+  if (!raw) return { route: null, params: null };
+
+  const allParams = new URLSearchParams(raw);
+  const route = allParams.get(SHARE_ROUTE_PARAM);
+  if (!route) return { route: null, params: null };
+
+  allParams.delete(SHARE_ROUTE_PARAM);
+  if (!allParams.toString()) {
+    return { route, params: null };
+  }
+  return { route, params: allParams };
+}
+
+/** Parse route from the URL search segment used in share links. */
+export function getRouteFromSearch(search: string): string | null {
+  return parseSearch(search).route;
+}
+
 /** Build a full shareable URL for the given route using its registered codec. */
 export function buildShareUrl(route: string): string {
-  const base = `${window.location.origin}${window.location.pathname}`;
+  const url = new URL(getCanonicalPathForRoute(route), window.location.origin);
   const codec = registry.get(route);
-  if (!codec) return `${base}#${route}`;
+  if (!codec) {
+    return url.toString();
+  }
+
   const params = codec.encode();
-  const paramStr = params.toString();
-  return paramStr ? `${base}#${route}?${paramStr}` : `${base}#${route}`;
+  if (params.toString()) {
+    params.set(SHARE_ROUTE_PARAM, route);
+    url.search = params.toString();
+  }
+  return url.toString();
 }
 
 /** Apply shared state from URL params to the appropriate calculator store. Returns true if state was applied. */
@@ -63,8 +129,24 @@ export function applyUrlState(hash: string): boolean {
   return true;
 }
 
+/** Apply shared state from URL search params to the appropriate calculator store. Returns true if state was applied. */
+export function applyUrlStateFromSearch(search: string): boolean {
+  const { route, params } = parseSearch(search);
+  if (!route || !params) return false;
+  const codec = registry.get(route);
+  if (!codec) return false;
+  codec.apply(params);
+  return true;
+}
+
 /** Check whether the hash contains share parameters. */
 export function hasShareParams(hash: string): boolean {
   const { params } = parseHash(hash);
   return params !== null && params.toString() !== "";
+}
+
+/** Check whether URL search contains share parameters. */
+export function hasShareParamsInSearch(search: string): boolean {
+  const { route, params } = parseSearch(search);
+  return route !== null && params !== null && params.toString() !== "";
 }
