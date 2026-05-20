@@ -1,3 +1,7 @@
+⚠️
+# This Repo has been Migrated to [Codeberg](https://codeberg.org/D-Heger/VintageStoryCalculator), this Github Page only serves as a public archive. Please still feel free to visit and contribute on the new page! ❤️
+⚠️
+
 # Vintage Story Calculator
 
 [![License][license-badge]][license]
